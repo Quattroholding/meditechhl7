@@ -131,7 +131,8 @@
                                 <x-input-error :messages="$errors->get('consultation_type')"/>
                             </div>
                         @elseif($doctor_id)
-                            {{-- Mostrar alerta si el doctor NO tiene Zoom configurado --}}
+                            {{--}}
+                            {{-- Mostrar alerta si el doctor NO tiene Zoom configurado
                             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                 <i class="fas fa-video-slash me-2"></i>
                                 <strong>Citas virtuales no disponibles</strong>
@@ -142,6 +143,7 @@
                                     </a>
                                 </p>
                             </div>
+                            --}}
                         @endif
 
                         {{-- Consultorio (solo visible si es presencial) --}}

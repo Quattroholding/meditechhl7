@@ -15,7 +15,6 @@ class ZoomOAuthController extends Controller
     public function __construct()
     {
         $this->httpClient = new Client();
-        $this->middleware('auth');
     }
 
     /**

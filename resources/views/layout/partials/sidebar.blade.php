@@ -284,6 +284,9 @@
                         <li><a class="{{ Request::is('settings/waitlist-settings') ? 'active' : '' }}"  href="{{ route('setting.waitlist_settings') }}">{{ __('Lista de Espera') }}</a></li>
                         <li><a class="{{ Request::is('settings/external-storage') ? 'active' : '' }}"  href="{{ route('setting.external_storage') }}">{{ __('Almacenamiento Externo') }}</a></li>
                         @endif
+                        @if(auth()->user()->hasRole('doctor'))
+                            <li><a class="{{ Request::is('settings/zoom') ? 'active' : '' }}" href="{{ route('practitioner.settings.zoom') }}">{{ __('Mi Cuenta Zoom') }}</a></li>
+                        @endif
                         @endif
                         @can('settings.signature_and_seal' && auth()->user()->practitioner)
                             @if(auth()->user()->practitioner && !auth()->user()->practitioner->is_medical_student)
