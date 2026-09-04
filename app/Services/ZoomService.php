@@ -148,14 +148,20 @@ class ZoomService
                 'settings' => [
                     'host_video' => true,
                     'participant_video' => true,
-                    'join_before_host' => false,
+                    'join_before_host' => true,
                     'waiting_room' => false,
                     'auto_recording' => 'cloud',
+                    'meeting_authentication' => false,
                 ],
             ];
 
+            // Si tienes un host_user_id configurado, usarlo; si no, crear como usuarios sin host específico
+            $endpoint = $this->hostUserId
+                ? $this->baseUrl.'/users/'.$this->hostUserId.'/meetings'
+                : $this->baseUrl.'/users/me/meetings';
+
             $response = $this->httpClient->post(
-                $this->baseUrl.'/users/me/meetings',
+                $endpoint,
                 [
                     'headers' => [
                         'Authorization' => 'Bearer '.$accessToken,

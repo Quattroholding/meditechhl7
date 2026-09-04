@@ -37,8 +37,8 @@
                 @if($virtualRoomUrl ?? false)
                     <p style="margin: 0 0 10px 0; color: #1565c0;">
                         <strong>Enlace de acceso:</strong><br>
-                        <a href="{{ $virtualRoomUrl }}" style="color: #1976d2; text-decoration: none; word-break: break-all;">
-                            {{ $virtualRoomUrl }}
+                        <a href="{{ $zoomRoomUrl }}" style="color: #1976d2; text-decoration: none; word-break: break-all;">
+                            {{ $zoomRoomUrl }}
                         </a>
                     </p>
                 @endif
