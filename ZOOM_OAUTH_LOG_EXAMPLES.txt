@@ -1,0 +1,321 @@
+================================================================================
+                    EJEMPLOS DE LOGS - ZOOM OAUTH INTEGRATION
+================================================================================
+
+Este archivo muestra ejemplos reales de lo que verás en los logs durante el
+flujo de conexión con Zoom.
+
+================================================================================
+                            CASO 1: FLUJO EXITOSO
+================================================================================
+
+PASO 1: Usuario hace click en "Conectar Zoom"
+────────────────────────────────────────────────────────────────────────────
+
+[2026-09-05 15:30:00] local.INFO: === ZOOM OAUTH AUTHORIZE STEP 1 ===
+[2026-09-05 15:30:00] local.INFO: Parámetros individuales que se envían a Zoom:
+{
+  "response_type": "code",
+  "client_id": "k1gmqPNvQGO3ZMbRz28ahA",
+  "redirect_uri": "https://sami.meditecpty.com/settings/zoom/callback",
+  "scope": "meeting:write:meeting user:read:user",
+  "state": "abcd1234e5f67890g1h23ij4k567890l..."
+}
+[2026-09-05 15:30:00] local.INFO: URL COMPLETA generada:
+{
+  "authorization_url": "https://zoom.us/oauth/authorize?response_type=code&client_id=k1gmqPNvQGO3ZMbRz28ahA&redirect_uri=https%3A%2F%2Fsami.meditecpty.com%2Fsettings%2Fzoom%2Fcallback&scope=meeting%3Awrite%3Ameeting+user%3Aread%3Auser&state=abcd1234e5f67890g1h23ij4k567890l",
+  "url_length": 287
+}
+[2026-09-05 15:30:00] local.INFO: Usuario autenticado:
+{
+  "user_id": 42,
+  "user_email": "doctor@sami.meditecpty.com",
+  "user_name": "Dr. Juan García"
+}
+[2026-09-05 15:30:00] local.INFO: Configuración de la aplicación:
+{
+  "app_url": "https://sami.meditecpty.com",
+  "app_env": "production",
+  "zoom_api_base_url": "https://zoom.us/v2"
+}
+[2026-09-05 15:30:00] local.INFO: === Redirigiendo a Zoom... ===
+
+👉 AQUÍ: Usuario es redirigido a https://zoom.us/oauth/authorize?...
+         Usuario hace login en Zoom y autoriza la app
+
+
+PASO 2: Zoom redirige de vuelta a la app con el código
+────────────────────────────────────────────────────────────────────────────
+
+[2026-09-05 15:31:15] local.INFO: === ZOOM OAUTH CALLBACK STEP 2 ===
+[2026-09-05 15:31:15] local.INFO: Datos recibidos del callback de Zoom:
+{
+  "code": "eJydUsFOwzAM_BXLT9zYUApDHLhwmDQh...",
+  "state": "abcd1234e5f67890g1h23ij4k567890l..."
+}
+[2026-09-05 15:31:15] local.INFO: Headers de la request:
+{
+  "host": "sami.meditecpty.com",
+  "user-agent": "Mozilla/5.0...",
+  "referer": "https://zoom.us/oauth/authorize"
+}
+[2026-09-05 15:31:15] local.INFO: Validando state token (CSRF protection):
+{
+  "session_state": "abcd1234...",
+  "request_state": "abcd1234...",
+  "states_match": true
+}
+[2026-09-05 15:31:15] local.INFO: === Código de autorización recibido ===
+{
+  "code_received": true,
+  "code_preview": "eJydUsFO...",
+  "user_id": 42,
+  "user_email": "doctor@sami.meditecpty.com"
+}
+
+
+PASO 3: App intercambia código por access_token
+────────────────────────────────────────────────────────────────────────────
+
+[2026-09-05 15:31:16] local.INFO: === ZOOM OAUTH STEP 3: Solicitando access token ===
+[2026-09-05 15:31:16] local.INFO: Parámetros que se envían a zoom.us/oauth/token:
+{
+  "client_id": "k1gmqPNvQGO3ZMbRz28ahA",
+  "client_secret": "***** (ocultado)",
+  "grant_type": "authorization_code",
+  "code": "eJydUsFO... (ocultado)",
+  "redirect_uri": "https://sami.meditecpty.com/settings/zoom/callback"
+}
+
+👉 AQUÍ: App hace POST a https://zoom.us/oauth/token
+         Con el código, client_id, client_secret
+
+[2026-09-05 15:31:18] local.INFO: === Respuesta de Zoom recibida ===
+{
+  "status_code": 200,
+  "has_access_token": true,
+  "access_token_preview": "eyJ0eXAi...",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "has_refresh_token": true,
+  "refresh_token_preview": "eyJ0eXAi...",
+  "user_id": 42
+}
+
+✅ Token recibido correctamente (válido por 1 hora)
+
+
+PASO 4: App obtiene información del usuario de Zoom
+────────────────────────────────────────────────────────────────────────────
+
+[2026-09-05 15:31:18] local.INFO: === ZOOM OAUTH STEP 4: Obteniendo info del usuario ===
+[2026-09-05 15:31:18] local.INFO: Llamando a GET /v2/users/me con token:
+{
+  "access_token_preview": "eyJ0eXAi...",
+  "user_id": 42
+}
+
+👉 AQUÍ: App hace GET a https://zoom.us/v2/users/me
+         Con el Authorization header: Bearer [access_token]
+
+[2026-09-05 15:31:19] local.INFO: === Información del usuario Zoom recibida ===
+{
+  "zoom_user_id": 16123456789,
+  "zoom_email": "doctor@zoom.us",
+  "zoom_user_type": 1,
+  "zoom_first_name": "Juan",
+  "zoom_last_name": "García",
+  "zoom_pic_url": "https://zoom.us/profile/123456789",
+  "zoom_timezone": "America/Panama",
+  "app_user_id": 42
+}
+
+
+PASO 5: App busca el practitioner local
+────────────────────────────────────────────────────────────────────────────
+
+[2026-09-05 15:31:19] local.INFO: === ZOOM OAUTH STEP 5: Buscando practitioner ===
+[2026-09-05 15:31:19] local.INFO: Practitioner encontrado:
+{
+  "practitioner_id": 45,
+  "practitioner_name": "Juan García",
+  "app_user_id": 42
+}
+
+
+PASO 6: App guarda el zoom profile en la BD
+────────────────────────────────────────────────────────────────────────────
+
+[2026-09-05 15:31:19] local.INFO: === ZOOM OAUTH STEP 6: Guardando/actualizando zoom profile ===
+[2026-09-05 15:31:19] local.INFO: Datos que se guardarán en practitioner_zoom_profiles:
+{
+  "practitioner_id": 45,
+  "zoom_user_id": 16123456789,
+  "zoom_email": "doctor@zoom.us",
+  "access_token": "eyJ0eXAi... (ocultado)",
+  "refresh_token": "eyJ0eXAi... (ocultado)",
+  "expires_in": "3600 segundos",
+  "token_expires_at": "2026-09-05 16:31:19"
+}
+
+👉 AQUÍ: Se inserta/actualiza en tabla practitioner_zoom_profiles
+         Los tokens se guardan encriptados en la BD
+
+[2026-09-05 15:31:20] local.INFO: === ✅ Zoom profile conectado exitosamente ===
+{
+  "practitioner_id": 45,
+  "zoom_user_id": 16123456789,
+  "zoom_email": "doctor@zoom.us",
+  "app_user_id": 42,
+  "connection_time": "2026-09-05 15:31:20"
+}
+
+✅ ÉXITO: Usuario redirigido a settings con mensaje "Cuenta de Zoom conectada correctamente"
+
+
+================================================================================
+                        CASO 2: ERROR EN STEP 3 (Token)
+================================================================================
+
+Supongamos que el código recibido es inválido o ha expirado...
+
+[2026-09-05 15:31:16] local.INFO: === ZOOM OAUTH STEP 3: Solicitando access token ===
+[2026-09-05 15:31:16] local.INFO: Parámetros que se envían a zoom.us/oauth/token:
+{
+  "client_id": "k1gmqPNvQGO3ZMbRz28ahA",
+  "client_secret": "***** (ocultado)",
+  "grant_type": "authorization_code",
+  "code": "INVALID_CODE... (ocultado)",
+  "redirect_uri": "https://sami.meditecpty.com/settings/zoom/callback"
+}
+
+[2026-09-05 15:31:18] local.ERROR: === ❌ ERROR: Zoom API ClientException (4xx) ===
+{
+  "status_code": 400,
+  "error": "invalid_grant",
+  "error_description": "The provided authorization code has expired.",
+  "error_code": "invalid_grant",
+  "full_response": "{\"error\": \"invalid_grant\", \"error_description\": \"The provided authorization code has expired.\"}",
+  "request_url": "https://zoom.us/oauth/token",
+  "user_id": 42
+}
+
+❌ ERROR: Usuario redirigido back con mensaje "Error de Zoom: The provided authorization code has expired."
+
+
+================================================================================
+                    CASO 3: ERROR DE CSRF TOKEN MISMATCH
+================================================================================
+
+Supongamos que la sesión expiró entre STEP 1 y STEP 2...
+
+[2026-09-05 15:31:15] local.INFO: Validando state token (CSRF protection):
+{
+  "session_state": "abcd1234e5f67890g1h23ij4k567890l...",
+  "request_state": "zyxwvutsr9ponmlkj9ihgfedcba9876543...",
+  "states_match": false
+}
+
+[2026-09-05 15:31:15] local.WARNING: === ERROR: State token mismatch (CSRF attack?) ===
+{
+  "user_id": 42,
+  "session_state": "abcd1234...",
+  "request_state": "zyxwvuts..."
+}
+
+❌ ERROR: Usuario redirigido back con mensaje "Error de seguridad en OAuth. Intenta de nuevo."
+
+
+================================================================================
+                    CASO 4: USUARIO DESCONECTA ZOOM
+================================================================================
+
+Usuario hace click en "Desconectar Zoom"
+
+[2026-09-05 16:00:00] local.INFO: === ZOOM DISCONNECT INITIATED ===
+[2026-09-05 16:00:00] local.INFO: Usuario intentando desconectar:
+{
+  "user_id": 42,
+  "user_email": "doctor@sami.meditecpty.com"
+}
+[2026-09-05 16:00:00] local.INFO: Zoom profile encontrado, procediendo con eliminación:
+{
+  "practitioner_id": 45,
+  "zoom_user_id": 16123456789,
+  "zoom_email": "doctor@zoom.us"
+}
+[2026-09-05 16:00:00] local.INFO: === ✅ Zoom profile desconectado exitosamente ===
+{
+  "practitioner_id": 45,
+  "user_id": 42,
+  "disconnection_time": "2026-09-05 16:00:00"
+}
+
+✅ ÉXITO: Usuario redirigido a settings con mensaje "Cuenta de Zoom desconectada"
+
+
+================================================================================
+                            CÓMO LEER LOS LOGS
+================================================================================
+
+OPCIÓN 1: Ver en tiempo real mientras intentas conectar
+────────────────────────────────────────────────────────
+
+Terminal 1:
+$ php artisan pail --timeout=0 --filter="ZOOM OAUTH"
+
+Terminal 2:
+$ # Aquí haces click en "Conectar Zoom" en la app
+
+Ver cómo aparecen los logs en tiempo real paso a paso
+
+
+OPCIÓN 2: Ver archivo log después
+─────────────────────────────────
+
+$ tail -100 storage/logs/laravel-$(date +%Y-%m-%d).log | grep -i zoom
+
+Ver los últimas 100 líneas que contienen "zoom"
+
+
+OPCIÓN 3: Buscar un usuario específico
+──────────────────────────────────────
+
+$ grep "user_id.*42" storage/logs/laravel-$(date +%Y-%m-%d).log | grep ZOOM
+
+Ver todos los logs de Zoom del usuario ID 42
+
+
+================================================================================
+                        INFORMACIÓN IMPORTANTE
+================================================================================
+
+✅ INFORMACIÓN QUE VES EN LOGS:
+   - IDs de usuario
+   - Emails
+   - Nombres
+   - Parámetros de configuración
+   - Pasos del flujo
+   - Errores con detalles
+
+❌ INFORMACIÓN OCULTA EN LOGS:
+   - Tokens (solo preview: "eyJ0eXAi...")
+   - Client secret
+   - Passwords
+   - Datos sensibles de pacientes
+   - Datos personales de terceros
+
+🔒 SEGURIDAD:
+   - Los logs se guardan localmente en tu servidor
+   - No se envían a Zoom ni a terceros
+   - Los tokens reales están encriptados en la BD
+   - Los logs se archivan automáticamente cada día
+
+📌 DEBUGGING:
+   - Si algo falla, buscas por ERROR en los logs
+   - Los pasos numerados te ayudan a ver dónde se detiene el flujo
+   - Los tiempos te muestran cuánto tardó cada parte
+
+================================================================================
+
+¿Dudas? Consulta ZOOM_OAUTH_LOGGING_GUIDE.md para más detalles
