@@ -140,5 +140,4 @@
 </div>
 @endif
 <!-- Timer de consulta (si aplica) -->
-{{--}}
-@livewire('consultation.consultation-timer', ['encounter' => $encounter, 'appointment' => $appointment])
+{{-- @livewire('consultation.consultation-timer', ['encounter' => $encounter, 'appointment' => $appointment]) --}}
