@@ -551,12 +551,18 @@ document.addEventListener('alpine:init', () => {
         this.api.addEventListener('errorOccurred', (error) => {
             console.error('Jitsi error:', error);
 
-            let statusMessage = 'Error: ' + (error.error || error.message || 'Desconocido');
+            let statusMessage = 'Error de conexión';
+            let errorStr = String(error.error || error.message || '');
 
-            // Detectar errores de permisos específicamente
-            if (error.error && (error.error.includes('Permission') || error.error.includes('NotAllowedError'))) {
+            // Detectar errores específicos
+            if (errorStr.includes('Permission') || errorStr.includes('NotAllowedError')) {
                 statusMessage = 'Permiso denegado para acceder a cámara/micrófono';
                 console.warn('Permisos de dispositivos denegados. El usuario puede habilitar desde el botón de micrófono/cámara.');
+            } else if (errorStr.includes('membersOnly') || errorStr.includes('conference.connectionError.membersOnly')) {
+                statusMessage = 'Sala bloqueada. El moderador debe estar presente.';
+                console.warn('Esperando al moderador...');
+            } else if (errorStr) {
+                statusMessage = 'Error: ' + errorStr;
             }
 
             this.connectionStatus = statusMessage;

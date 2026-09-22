@@ -158,6 +158,9 @@ class JitsiService
                 'enableInsecureRoomNameWarning' => false,
                 'enableNoAudioDetection' => false,
                 'enableNoisyMicDetection' => false,
+                // IMPORTANTE: Deshabilitar membersOnly para permitir que cualquiera entre
+                // Sin esto, la sala queda bloqueada si no hay moderador
+                'membersOnly' => false,
                 'enableLobbyChat' => false,
                 'disableInviteFunctions' => true,
                 // Desactivar P2P para mejor compatibilidad
