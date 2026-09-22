@@ -93,64 +93,50 @@
 
 
 </div>
-{{--}}
-<!-- Zoom Meeting Details (if virtual) -->
+<!-- Jitsi Meeting Details (if virtual) -->
 @if($encounter->appointment->consultation_type === 'virtual' && $encounter->appointment->virtual_room_id)
 @php
-        $password = $encounter->appointment->virtual_session_metadata['meeting_password'] ?? null;
-        $zoomUrl = 'https://zoom.us/j/' . $encounter->appointment->virtual_room_id;
-        if ($password) {
-            $encodedPassword = urlencode(base64_encode($password));
-            $zoomUrl .= '?pwd=' . $encodedPassword;
-        }
-    @endphp
+    $token = hash_hmac('sha256', $encounter->appointment->id . $encounter->appointment->patient_id, config('app.key'));
+    $patientJoinUrl = route('virtual-consultation.join', [
+        'appointment' => $encounter->appointment->id,
+        'token' => $token,
+    ]);
+@endphp
 <div class="patient-banner-new">
-    <!-- Equipo Médico -->
     <div class="banner-block-new">
         <h3>
             <i class="fas fa-video"></i>
-            Detalles video consulta
+            Detalles Cita Virtual
         </h3>
         <div class="data-row-new">
             <span class="data-label-new">
                 <i class="fas fa-list-numeric"></i>
-                Meeting Id:
+                Sala:
             </span>
             <span class="data-value-new">{{ $encounter->appointment->virtual_room_id }}</span>
         </div>
         <div class="data-row-new">
             <span class="data-label-new">
                 <i class="fas fa-link"></i>
-                Link zoom:
+                Enlace Paciente:
             </span>
-                <span class="data-value-new">{{ $zoomUrl }}</span>
+            <span class="data-value-new"><a href="{{ $patientJoinUrl }}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none;">{{ $patientJoinUrl }}</a></span>
         </div>
-
         <div class="data-row-new">
             <span class="data-label-new">
                 <i class="fas fa-graduation-cap"></i>
                 Acción:
             </span>
             <span class="data-value-new">
-                 <a href="{{ $zoomUrl }}" target="_blank" rel="noopener noreferrer"
-                    style="display: inline-flex; align-items: center; gap: 4px; background: #0e5aa8; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; cursor: pointer; white-space: nowrap; flex-shrink: 0;"
-                    onmouseover="this.style.background='#0d4a8a'; this.style.transform='scale(1.05)';"
-                    onmouseout="this.style.background='#0e5aa8'; this.style.transform='scale(1)';">
-                    <i class="fas fa-external-link-alt"></i> Abrir Zoom
+                <a href="{{ $patientJoinUrl }}" target="_blank" rel="noopener noreferrer"
+                   style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; cursor: pointer; white-space: nowrap; flex-shrink: 0;"
+                   onmouseover="this.style.transform='scale(1.05)';"
+                   onmouseout="this.style.transform='scale(1)';">
+                    <i class="fas fa-external-link-alt"></i> Abrir Jitsi
                 </a>
             </span>
         </div>
-        @if($password)
-        <div class="data-row-new">
-            <span class="data-label-new">
-                <i class="fas fa-graduation-cap"></i>
-                Código Reunión:
-            </span>
-            <span class="data-value-new">{{ $password }}</span>
-        </div>
-        @endif
     </div>
-
 </div>
 @endif
 <!-- Timer de consulta (si aplica) -->
