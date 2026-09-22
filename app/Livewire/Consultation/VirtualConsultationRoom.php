@@ -3,7 +3,7 @@
 namespace App\Livewire\Consultation;
 
 use App\Models\Appointment;
-use App\Services\ZoomService;
+use App\Services\JitsiService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -11,7 +11,7 @@ class VirtualConsultationRoom extends Component
 {
     public Appointment $appointment;
 
-    public array $zoomConfig;
+    public array $jitsiConfig;
 
     public bool $isDoctor;
 
@@ -21,11 +21,11 @@ class VirtualConsultationRoom extends Component
 
     public string $patientJoinUrl = '';
 
-    protected ZoomService $zoomService;
+    protected JitsiService $jitsiService;
 
-    public function boot(ZoomService $zoomService)
+    public function boot(JitsiService $jitsiService)
     {
-        $this->zoomService = $zoomService;
+        $this->jitsiService = $jitsiService;
     }
 
     public function mount(Appointment $appointment, string $displayMode = 'sidebar')
@@ -41,13 +41,13 @@ class VirtualConsultationRoom extends Component
             'token' => $token,
         ]);
 
-        // Create Zoom meeting if it doesn't exist
+        // Create Jitsi room if it doesn't exist
         if (! $this->appointment->virtual_room_id) {
             try {
-                $this->zoomService->createMeeting($this->appointment);
+                $this->jitsiService->createRoom($this->appointment);
                 $this->appointment->refresh();
             } catch (\Exception $e) {
-                \Log::error('Failed to create Zoom meeting', ['error' => $e->getMessage()]);
+                \Log::error('Failed to create Jitsi room', ['error' => $e->getMessage()]);
                 $this->dispatch('error', message: 'Error al crear la sala de videoconferencia');
             }
         }
@@ -69,9 +69,9 @@ class VirtualConsultationRoom extends Component
             $userId = 'patient_'.$this->appointment->patient_id;
         }
 
-        // Prepare Zoom Meeting SDK configuration
+        // Prepare Jitsi configuration
         try {
-            $this->zoomConfig = $this->zoomService->getZoomConfig(
+            $this->jitsiConfig = $this->jitsiService->getJitsiConfig(
                 $this->appointment,
                 [
                     'name' => $displayName,
@@ -81,8 +81,8 @@ class VirtualConsultationRoom extends Component
                 ]
             );
         } catch (\Exception $e) {
-            \Log::error('Failed to get Zoom config', ['error' => $e->getMessage()]);
-            $this->dispatch('error', message: 'Error al cargar configuración de Zoom');
+            \Log::error('Failed to get Jitsi config', ['error' => $e->getMessage()]);
+            $this->dispatch('error', message: 'Error al cargar configuración de Jitsi');
         }
     }
 
@@ -140,7 +140,7 @@ class VirtualConsultationRoom extends Component
         $nextIndex = ($currentIndex + 1) % count($modes);
         $this->displayMode = $modes[$nextIndex];
 
-        $this->dispatch('zoom-display-mode-changed', mode: $this->displayMode);
+        $this->dispatch('jitsi-display-mode-changed', mode: $this->displayMode);
     }
 
     public function render()
