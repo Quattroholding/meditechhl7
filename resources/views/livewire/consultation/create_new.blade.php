@@ -144,8 +144,11 @@
     <!-- Botón Flotante de Licencia Médica -->
     @livewire('consultation.medical-leave-button', ['encounter_id' => $encounter_id])
 
-    <!-- Botón Flotante de Dictado por Voz -->
-    @livewire('consultation.voice-dictation-button', ['encounter_id' => $encounter_id])
+
+    <!-- Botón Flotante de Dictado por Voz (solo si está habilitado para el cliente) -->
+    @if(auth()->user()->getCurrentClient()->voice_dictation_enabled)
+        @livewire('consultation.voice-dictation-button', ['encounter_id' => $encounter_id])
+    @endif
 
     <!-- Menú lateral de información del paciente -->
     @include('consultations.partials.patient_info', array('id' => $patient->id))

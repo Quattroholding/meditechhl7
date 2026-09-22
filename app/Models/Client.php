@@ -18,6 +18,7 @@ class Client extends Model
         'show_consultation_timer',
         'enable_virtual_appointments',
         'zoom_enabled',
+        'voice_dictation_enabled',
         'group',
         'ruc',
         'dv',
@@ -38,6 +39,7 @@ class Client extends Model
         'show_consultation_timer' => 'boolean',
         'enable_virtual_appointments' => 'boolean',
         'zoom_enabled' => 'boolean',
+        'voice_dictation_enabled' => 'boolean',
         'hemoscreen_only' => 'boolean',
     ];
 

@@ -21,10 +21,16 @@ class VoiceDictationButton extends Component
 
     public $transcription = null;
 
+    public $voiceDictationEnabled = false;
+
     public function mount()
     {
         $this->encounter = Encounter::with(['patient', 'practitioner'])
             ->findOrFail($this->encounter_id);
+
+        // Check if voice dictation is enabled for the current client
+        $client = auth()->user()?->client;
+        $this->voiceDictationEnabled = $client && $client->voice_dictation_enabled;
     }
 
     /**
@@ -32,8 +38,9 @@ class VoiceDictationButton extends Component
      */
     public function processAudioDictation(string $audioBase64, string $mimeType)
     {
-        // Check if voice dictation is enabled
-        if (! config('services.claude.voice_dictation_enabled', true)) {
+        // Check if voice dictation is enabled for the current client
+        $client = auth()->user()->client;
+        if (! $client || ! $client->voice_dictation_enabled) {
             $this->errorMessage = 'El dictado por voz no está habilitado';
             $this->dispatch('showToastrConsultation', [
                 'type' => 'error',
