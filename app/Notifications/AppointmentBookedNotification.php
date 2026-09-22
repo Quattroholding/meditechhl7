@@ -97,7 +97,6 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
                 'appointmentUrl' => route('appointment.calendar'),
                 'isVirtual' => $isVirtual,
                 'virtualRoomUrl' => $isVirtual ? $this->appointment->getPatientJoinUrl() : null,
-                'zoomRoomUrl' => $isVirtual ? $this->appointment->getZoomDirectUrl() : null,
                 'meetingPassword' => $meetingPassword,
             ])->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
