@@ -465,9 +465,9 @@ document.addEventListener('alpine:init', () => {
             },
         };
 
-        // Solo agregar JWT si está configurado y estamos en 8x8.vc
-        // Para meet.jit.si público, NO usar JWT
-        if (config.jwt && domain === '8x8.vc') {
+        // Agregar JWT si está disponible (solo para 8x8.vc con autenticación)
+        // El JWT proporciona acceso autenticado y evita el problema de members-only
+        if (config.jwt) {
             options.jwt = config.jwt;
         }
 
@@ -475,6 +475,7 @@ document.addEventListener('alpine:init', () => {
             domain,
             roomName: config.roomName,
             hasJWT: !!options.jwt,
+            isAuthenticated: !!config.jwt,
             configOverwrite: options.configOverwrite,
             interfaceConfigOverwrite: options.interfaceConfigOverwrite
         });

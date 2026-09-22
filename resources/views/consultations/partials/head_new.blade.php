@@ -93,7 +93,7 @@
 
 
 </div>
-
+{{--}}
 <!-- Zoom Meeting Details (if virtual) -->
 @if($encounter->appointment->consultation_type === 'virtual' && $encounter->appointment->virtual_room_id)
 @php
@@ -154,4 +154,5 @@
 </div>
 @endif
 <!-- Timer de consulta (si aplica) -->
+{{--}}
 @livewire('consultation.consultation-timer', ['encounter' => $encounter, 'appointment' => $appointment])
