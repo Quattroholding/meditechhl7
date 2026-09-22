@@ -178,7 +178,9 @@
     </div>
 
 @assets
-<script src="https://{{ config('services.jitsi.domain') }}/external_api.js" async></script>
+{{-- Always use meet.jit.si for the external API (more stable)
+     The domain can be overridden per-room if needed, but the API script is stable from meet.jit.si --}}
+<script src="https://meet.jit.si/external_api.js" async></script>
 @endassets
 
 <script>

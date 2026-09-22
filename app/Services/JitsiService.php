@@ -134,17 +134,10 @@ class JitsiService
     {
         $roomName = $appointment->virtual_room_id ?? $this->generateRoomName($appointment);
 
-        // Use public meet.jit.si for better compatibility, unless 8x8.vc credentials are fully configured
-        $domain = $this->domain;
+        // Use public meet.jit.si for maximum compatibility and stability
+        // 8x8.vc has issues with MediaDevices API in some configurations
+        $domain = 'meet.jit.si';
         $fullRoomName = $roomName;
-
-        // Only use 8x8.vc if we have complete credentials
-        if ($domain === '8x8.vc' && $this->appId && strpos($roomName, $this->appId) === false) {
-            $fullRoomName = $this->appId.'/'.$roomName;
-        } else if ($domain === '8x8.vc' && (! $this->appId || ! $this->appSecret)) {
-            // Fall back to public Jitsi if 8x8.vc credentials are incomplete
-            $domain = 'meet.jit.si';
-        }
 
         $config = [
             'domain' => $domain,
