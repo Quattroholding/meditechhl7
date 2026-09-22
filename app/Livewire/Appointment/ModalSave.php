@@ -1370,14 +1370,12 @@ class ModalSave extends Component
 
             $this->doctorClientId = $client->id;
 
-            // Verificar si el doctor tiene una cuenta de Zoom configurada
-            $hasZoomConfigured = $practitioner->zoomProfile && $practitioner->zoomProfile->isConfigured();
-            $this->enableVirtualAppointments = $hasZoomConfigured;
+            // Verificar si el cliente tiene las citas virtuales habilitadas
+            $this->enableVirtualAppointments = (bool) $client->enable_virtual_appointments;
 
             Log::info('Virtual appointments status checked', [
                 'doctor_id' => $this->doctor_id,
                 'client_id' => $client->id,
-                'has_zoom_configured' => $hasZoomConfigured,
                 'enable_virtual_appointments' => $this->enableVirtualAppointments,
             ]);
         } catch (\Exception $e) {

@@ -94,7 +94,7 @@
 
 </div>
 <!-- Jitsi Meeting Details (if virtual) -->
-@if($encounter->appointment->consultation_type === 'virtual' && $encounter->appointment->virtual_room_id)
+@if($encounter->appointment->consultation_type === 'virtual')
 @php
     $token = hash_hmac('sha256', $encounter->appointment->id . $encounter->appointment->patient_id, config('app.key'));
     $patientJoinUrl = route('virtual-consultation.join', [
@@ -122,6 +122,7 @@
             </span>
             <span class="data-value-new"><a href="{{ $patientJoinUrl }}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none;">{{ $patientJoinUrl }}</a></span>
         </div>
+        {{--}}
         <div class="data-row-new">
             <span class="data-label-new">
                 <i class="fas fa-graduation-cap"></i>
@@ -136,6 +137,7 @@
                 </a>
             </span>
         </div>
+        {{--}}
     </div>
 </div>
 @endif

@@ -49,7 +49,7 @@
                                 <div class="mb-4">
                                     <h5 class="mb-3">Estado de Conexión</h5>
                                     @php
-                                        $zoomProfile = auth()->user()->practitioner->zoomProfile;
+                                        $zoomProfile = auth()->user()->practitioner?->zoomProfile;
                                     @endphp
 
                                     @if ($zoomProfile && $zoomProfile->isConfigured())

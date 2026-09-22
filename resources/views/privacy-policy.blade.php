@@ -28,9 +28,9 @@
 
                     <section>
                         <h2 class="text-xl font-semibold text-gray-900 mb-3">1. OBJETO Y ALCANCE</h2>
-                        <p>La presente Política de Privacidad establece la forma en que SOLUCIONES MEDITEC, S.A., en adelante "SAMI", recopila, utiliza, almacena, protege y, cuando corresponda, comparte datos personales en relación con la plataforma tecnológica SAMI.</p>
-                        <p>Esta Política aplica a los usuarios de la plataforma, pacientes, clientes, profesionales de la salud, personal administrativo y demás personas cuyos datos personales sean tratados a través de SAMI.</p>
-                        <p>El tratamiento de datos personales se realizará de conformidad con la Ley 81 de 26 de marzo de 2019 sobre Protección de Datos Personales, su reglamentación mediante Decreto Ejecutivo No. 285 de 28 de mayo de 2021 y demás normas aplicables.</p>
+                        <p>La presente Política de Privacidad establece la forma en que <b>SOLUCIONES MEDITEC, S.A.,</b> en adelante <b>"SAMI"</b>, recopila, utiliza, almacena, protege y, cuando corresponda, comparte datos personales en relación con la plataforma tecnológica SAMI.</p><br/>
+                        <p>Esta Política aplica a los usuarios de la plataforma, pacientes, clientes, profesionales de la salud, personal administrativo y demás personas cuyos datos personales sean tratados a través de SAMI.</p><br/>
+                        <p>El tratamiento de datos personales se realizará de conformidad con la <b>Ley 81 de 26 de marzo de 2019 sobre Protección de Datos Personales</b>, su reglamentación mediante Decreto Ejecutivo No. 285 de 28 de mayo de 2021 y demás normas aplicables.</p>
                     </section>
 
                     <section>
@@ -53,7 +53,7 @@
 
                     <section>
                         <h2 class="text-xl font-semibold text-gray-900 mb-3">3. DATOS RELATIVOS A LA SALUD</h2>
-                        <p>Los datos relativos a la salud reciben una protección especial conforme a la legislación aplicable. Cuando médicos, clínicas, hospitales u otros clientes incorporen información de pacientes a SAMI, dichos clientes serán responsables de contar con la legitimación, autorización o base legal correspondiente para su recopilación y tratamiento.</p>
+                        <p>Los datos relativos a la salud reciben una protección especial conforme a la legislación aplicable.<br/> <br/>  Cuando médicos, clínicas, hospitales u otros clientes incorporen información de pacientes a SAMI, dichos clientes serán responsables de contar con la legitimación, autorización o base legal correspondiente para su recopilación y tratamiento.</p><br/>
                         <p>SAMI tratará dichos datos únicamente en la medida necesaria para prestar los servicios contratados y conforme a las instrucciones, configuraciones y permisos establecidos por el cliente, sin adquirir la propiedad de la información clínica.</p>
                     </section>
 
@@ -77,8 +77,8 @@
 
                     <section>
                         <h2 class="text-xl font-semibold text-gray-900 mb-3">5. BASE LEGAL DEL TRATAMIENTO</h2>
-                        <p>El tratamiento de datos personales se realizará sobre la base jurídica que corresponda en cada caso, incluyendo el consentimiento del titular, la ejecución de una relación contractual, el cumplimiento de obligaciones legales o las demás condiciones permitidas por la legislación panameña.</p>
-                        <p>Cuando el tratamiento requiera consentimiento, este deberá ser obtenido por el responsable correspondiente de manera previa, informada y conforme a la normativa aplicable. El consentimiento podrá ser revocado cuando corresponda, sin efectos retroactivos.</p>
+                        <p>El tratamiento de datos personales se realizará sobre la base jurídica que corresponda en cada caso, incluyendo el consentimiento del titular, la ejecución de una relación contractual, el cumplimiento de obligaciones legales o las demás condiciones permitidas por la legislación panameña.</p><br/>
+                        <p>Cuando el tratamiento requiera consentimiento, este deberá ser obtenido por el responsable correspondiente de manera previa, informada y conforme a la normativa aplicable.<br/> <br/>  El consentimiento podrá ser revocado cuando corresponda, sin efectos retroactivos.</p>
                     </section>
 
                     <section>
@@ -96,28 +96,28 @@
 
                     <section>
                         <h2 class="text-xl font-semibold text-gray-900 mb-3">7. PROVEEDORES Y TERCEROS</h2>
-                        <p>Para prestar adecuadamente sus servicios, SAMI podrá utilizar proveedores tecnológicos especializados en servicios tales como alojamiento, almacenamiento, respaldo, seguridad, comunicaciones, soporte técnico, procesamiento de información y otras funciones necesarias para la operación de la plataforma.</p>
-                        <p>SAMI procurará que dichos proveedores estén sujetos a obligaciones de confidencialidad y protección de datos compatibles con la naturaleza de los servicios prestados. Cuando resulte necesario realizar transferencias nacionales o internacionales de datos, estas se efectuarán de conformidad con las condiciones y requisitos establecidos por la legislación aplicable.</p>
+                        <p>Para prestar adecuadamente sus servicios, SAMI podrá utilizar proveedores tecnológicos especializados en servicios tales como alojamiento, almacenamiento, respaldo, seguridad, comunicaciones, soporte técnico, procesamiento de información y otras funciones necesarias para la operación de la plataforma.</p><br/>
+                        <p>SAMI procurará que dichos proveedores estén sujetos a obligaciones de confidencialidad y protección de datos compatibles con la naturaleza de los servicios prestados.<br/> <br/>  Cuando resulte necesario realizar transferencias nacionales o internacionales de datos, estas se efectuarán de conformidad con las condiciones y requisitos establecidos por la legislación aplicable.</p>
                     </section>
 
                     <section>
                         <h2 class="text-xl font-semibold text-gray-900 mb-3">8. INTELIGENCIA ARTIFICIAL Y FUNCIONALIDADES AUTOMATIZADAS</h2>
-                        <p>Cuando SAMI incorpore funcionalidades de inteligencia artificial u otras herramientas automatizadas, estas podrán utilizar información proporcionada por el usuario o generada dentro de la plataforma para ofrecer funciones de apoyo.</p>
-                        <p>Estas funcionalidades tienen carácter asistencial y tecnológico y no sustituyen el criterio, conocimiento, juicio ni responsabilidad del profesional de la salud.</p>
-                        <p>En particular, cuando una funcionalidad proporcione posibles alternativas, sugerencias o información de apoyo relacionada con una consulta médica, corresponde exclusivamente al profesional evaluar dicha información y determinar y documentar el diagnóstico y tratamiento que considere aplicables.</p>
+                        <p>Cuando SAMI incorpore funcionalidades de inteligencia artificial u otras herramientas automatizadas, estas podrán utilizar información proporcionada por el usuario o generada dentro de la plataforma para ofrecer funciones de apoyo.</p><br/>
+                        <p>Estas funcionalidades tienen carácter asistencial y tecnológico y no sustituyen el criterio, conocimiento, juicio ni responsabilidad del profesional de la salud.</p><br/>
+                        <p>En particular, cuando una funcionalidad proporcione posibles alternativas, sugerencias o información de apoyo relacionada con una consulta médica, corresponde exclusivamente al profesional evaluar dicha información y determinar y documentar el diagnóstico y tratamiento que considere aplicables.</p><br/>
                         <p>SAMI no utilizará datos personales o datos de salud para entrenar modelos de terceros con fines ajenos a la prestación de los servicios contratados, salvo que exista una base legal que lo permita y se haya informado al titular cuando corresponda.</p>
                     </section>
 
                     <section>
                         <h2 class="text-xl font-semibold text-gray-900 mb-3">9. SEGURIDAD Y CONFIDENCIALIDAD</h2>
-                        <p>SAMI implementará medidas técnicas y organizativas razonables destinadas a proteger los datos personales contra acceso, uso, modificación, divulgación, pérdida o destrucción no autorizados.</p>
-                        <p>El acceso a la información estará sujeto a los mecanismos de autenticación, permisos y controles disponibles en la plataforma. SAMI mantendrá la obligación de confidencialidad respecto de los datos personales a los que tenga acceso con motivo de la prestación de sus servicios.</p>
+                        <p>SAMI implementará medidas técnicas y organizativas razonables destinadas a proteger los datos personales contra acceso, uso, modificación, divulgación, pérdida o destrucción no autorizados.</p><br/>
+                        <p>El acceso a la información estará sujeto a los mecanismos de autenticación, permisos y controles disponibles en la plataforma.<br/> <br/>  SAMI mantendrá la obligación de confidencialidad respecto de los datos personales a los que tenga acceso con motivo de la prestación de sus servicios.</p>
                     </section>
 
                     <section>
                         <h2 class="text-xl font-semibold text-gray-900 mb-3">10. CONSERVACIÓN DE LOS DATOS</h2>
-                        <p>Los datos personales serán conservados durante el tiempo necesario para cumplir las finalidades para las cuales fueron recopilados, atender obligaciones legales o contractuales y ejercer o defender derechos.</p>
-                        <p>En el caso de información clínica administrada por médicos, clínicas u hospitales, la conservación deberá además atender los períodos y obligaciones establecidos por la legislación aplicable a dichos responsables. Una vez finalizada la relación contractual, SAMI podrá conservar determinada información cuando exista una obligación legal o una razón legítima para ello. La información que no deba conservarse será eliminada o anonimizada conforme a los procedimientos aplicables.</p>
+                        <p>Los datos personales serán conservados durante el tiempo necesario para cumplir las finalidades para las cuales fueron recopilados, atender obligaciones legales o contractuales y ejercer o defender derechos.</p><br/>
+                        <p>En el caso de información clínica administrada por médicos, clínicas u hospitales, la conservación deberá además atender los períodos y obligaciones establecidos por la legislación aplicable a dichos responsables.<br/> <br/>  Una vez finalizada la relación contractual, SAMI podrá conservar determinada información cuando exista una obligación legal o una razón legítima para ello. La información que no deba conservarse será eliminada o anonimizada conforme a los procedimientos aplicables.</p>
                     </section>
 
                     <section>
@@ -130,21 +130,21 @@
                             <li>Oposición</li>
                             <li>Portabilidad</li>
                         </ul>
-                        <p class="mt-3">Cuando los datos hayan sido tratados dentro de SAMI por cuenta de un médico, clínica, hospital u otra organización, el titular podrá dirigir su solicitud al responsable correspondiente. SAMI prestará la asistencia razonable que corresponda al cliente para atender dichas solicitudes.</p>
-                        <p>Las solicitudes relacionadas con datos cuyo tratamiento sea responsabilidad directa de SAMI podrán dirigirse a:</p>
-                        <p><strong>Correo electrónico:</strong> business@meditecpty.com<br><strong>Responsable:</strong> Bárbara Paván</p>
+                        <p class="mt-3">Cuando los datos hayan sido tratados dentro de SAMI por cuenta de un médico, clínica, hospital u otra organización, el titular podrá dirigir su solicitud al responsable correspondiente. SAMI prestará la asistencia razonable que corresponda al cliente para atender dichas solicitudes.</p><br/>
+                        <p>Las solicitudes relacionadas con datos cuyo tratamiento sea responsabilidad directa de SAMI podrán dirigirse a:</p><br/>
+                        <p><strong>Correo electrónico:</strong> business@meditecpty.com<br><strong>Responsable:</strong> Bárbara Paván</p><br/>
                         <p>SAMI atenderá las solicitudes dentro de los plazos establecidos por la legislación aplicable.</p>
                     </section>
 
                     <section>
                         <h2 class="text-xl font-semibold text-gray-900 mb-3">12. CAMBIOS A LA POLÍTICA DE PRIVACIDAD</h2>
-                        <p>SAMI podrá actualizar esta Política de Privacidad cuando resulte necesario por cambios legales, regulatorios, tecnológicos o en sus servicios. Cuando los cambios sean relevantes, SAMI podrá comunicar dichos cambios mediante la plataforma, correo electrónico, sitio web u otros medios razonables.</p>
+                        <p>SAMI podrá actualizar esta Política de Privacidad cuando resulte necesario por cambios legales, regulatorios, tecnológicos o en sus servicios.<br/> <br/>  Cuando los cambios sean relevantes, SAMI podrá comunicar dichos cambios mediante la plataforma, correo electrónico, sitio web u otros medios razonables.</p><br/>
                         <p>La versión vigente estará disponible en los medios oficiales de SAMI.</p>
                     </section>
 
                     <section>
                         <h2 class="text-xl font-semibold text-gray-900 mb-3">13. ACEPTACIÓN</h2>
-                        <p>Al utilizar SAMI, el usuario declara haber tenido acceso a esta Política de Privacidad y comprender el tratamiento de datos personales descrito en ella. Cuando la legislación requiera consentimiento específico para determinado tratamiento, dicho consentimiento será solicitado mediante los mecanismos correspondientes.</p>
+                        <p>Al utilizar SAMI, el usuario declara haber tenido acceso a esta Política de Privacidad y comprender el tratamiento de datos personales descrito en ella. <br/> <br/>  Cuando la legislación requiera consentimiento específico para determinado tratamiento, dicho consentimiento será solicitado mediante los mecanismos correspondientes.</p><br/>
                     </section>
 
                 </div>
