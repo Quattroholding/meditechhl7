@@ -94,7 +94,7 @@
 
 </div>
 <!-- Jitsi Meeting Details (if virtual) -->
-@if($encounter->appointment->consultation_type === 'virtual')
+@if($encounter->appointment->consultation_type === 'virtual' && $encounter->getRawOriginal('status') <> 'finished')
 @php
     $token = hash_hmac('sha256', $encounter->appointment->id . $encounter->appointment->patient_id, config('app.key'));
     $patientJoinUrl = route('virtual-consultation.join', [

@@ -25,7 +25,7 @@
         </div>
 
         <!-- Sala virtual si aplica -->
-        @if($appointment->isVirtual())
+        @if($appointment->isVirtual() && $encounter->getRawOriginal('status') <> 'finished')
             @livewire('consultation.virtual-consultation-room', [
                 'appointment' => $appointment,
                 'displayMode' => 'sidebar',
