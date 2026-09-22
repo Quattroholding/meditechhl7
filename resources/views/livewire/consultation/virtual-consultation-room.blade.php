@@ -178,9 +178,7 @@
     </div>
 
 @assets
-{{-- Always use meet.jit.si for the external API (more stable)
-     The domain can be overridden per-room if needed, but the API script is stable from meet.jit.si --}}
-<script src="https://meet.jit.si/external_api.js" async></script>
+<script src="https://{{ config('services.jitsi.domain') }}/external_api.js" async></script>
 @endassets
 
 <script>
@@ -457,28 +455,38 @@ document.addEventListener('alpine:init', () => {
             width: '100%',
             height: '100%',
             parentNode: document.querySelector('#jitsi-meet-container'),
-            configOverwrite: config.configOverwrite || {},
-            interfaceConfigOverwrite: config.interfaceConfigOverwrite || {},
+            configOverwrite: {
+                ...config.configOverwrite,
+                // Opciones adicionales para compatibilidad con Chrome
+                disableRtx: false,
+                enableLayerSuspension: true,
+                testing: {
+                    disableE2EE: false,
+                },
+            },
+            interfaceConfigOverwrite: {
+                ...config.interfaceConfigOverwrite,
+                // Forzar compatibilidad y deshabilitar input de nombre
+                ENFORCE_NOTIFICATION_AUTO_DISMISS_TIMEOUT: 15000,
+                DISABLE_JOIN_LEAVE_NOTIFICATIONS: false,
+                // Ocultar botones de autenticación para salas públicas
+                TOOLBAR_BUTTONS: config.interfaceConfigOverwrite?.TOOLBAR_BUTTONS || [
+                    'microphone', 'camera', 'closedcaptions', 'desktop',
+                    'fullscreen', 'fodeviceselection', 'hangup', 'chat',
+                    'settings', 'videoquality', 'filmstrip', 'stats', 'tileview'
+                ],
+            },
             userInfo: {
                 displayName: displayName,
                 email: userInfo.email || ''
             },
         };
 
-        // Agregar JWT si está disponible (solo para 8x8.vc con autenticación)
-        // El JWT proporciona acceso autenticado y evita el problema de members-only
+        // Solo agregar JWT si está configurado (para servidores privados)
+        // Para meet.jit.si público, NO usar JWT
         if (config.jwt) {
             options.jwt = config.jwt;
         }
-
-        console.log('Jitsi configuration:', {
-            domain,
-            roomName: config.roomName,
-            hasJWT: !!options.jwt,
-            isAuthenticated: !!config.jwt,
-            configOverwrite: options.configOverwrite,
-            interfaceConfigOverwrite: options.interfaceConfigOverwrite
-        });
 
         try {
             // Verificar que JitsiMeetExternalAPI esté disponible
@@ -507,18 +515,7 @@ document.addEventListener('alpine:init', () => {
         } catch (error) {
             console.error('Error starting Jitsi Meet:', error);
             this.connectionStatus = 'Error al conectar';
-
-            // Mensajes de error más informativos
-            let errorMessage = 'Error al iniciar la videollamada.';
-            if (error.message.includes('Permission denied')) {
-                errorMessage = 'Permiso denegado para acceder a cámara/micrófono. Por favor, verifica la configuración de permisos de tu navegador.';
-            } else if (error.message.includes('getUserMedia')) {
-                errorMessage = 'No se pudo acceder a los dispositivos de audio/video. Asegúrate de tener permisos habilitados.';
-            } else if (error.message) {
-                errorMessage += ' ' + error.message;
-            }
-
-            alert(errorMessage);
+            alert('Error al iniciar la videollamada: ' + error.message + '\n\nAsegúrate de permitir el acceso a la cámara y micrófono.');
         }
     },
 
@@ -551,22 +548,7 @@ document.addEventListener('alpine:init', () => {
 
         this.api.addEventListener('errorOccurred', (error) => {
             console.error('Jitsi error:', error);
-
-            let statusMessage = 'Error de conexión';
-            let errorStr = String(error.error || error.message || '');
-
-            // Detectar errores específicos
-            if (errorStr.includes('Permission') || errorStr.includes('NotAllowedError')) {
-                statusMessage = 'Permiso denegado para acceder a cámara/micrófono';
-                console.warn('Permisos de dispositivos denegados. El usuario puede habilitar desde el botón de micrófono/cámara.');
-            } else if (errorStr.includes('membersOnly') || errorStr.includes('conference.connectionError.membersOnly')) {
-                statusMessage = 'Sala bloqueada. El moderador debe estar presente.';
-                console.warn('Esperando al moderador...');
-            } else if (errorStr) {
-                statusMessage = 'Error: ' + errorStr;
-            }
-
-            this.connectionStatus = statusMessage;
+            this.connectionStatus = 'Error: ' + error.error;
         });
     },
 

@@ -47,10 +47,9 @@ class JitsiService
      */
     protected function generateRoomName(Appointment $appointment): string
     {
-        // Format: meditech2_consultation_123_v2_random
-        // The 'v2_' prefix helps avoid cached rooms that had membersOnly issues
+        // Format: meditech2_consultation_123_abc123
         return sprintf(
-            'meditech_c%d_v2_%s',
+            'meditec_consultation_%d_%s',
             $appointment->id,
             Str::random(8)
         );
@@ -65,22 +64,16 @@ class JitsiService
     }
 
     /**
-     * Generate a JWT token for authenticated access (JaaS with JWT)
+     * Generate a JWT token for authenticated access (if using self-hosted Jitsi with JWT)
      */
     public function generateToken(string $roomName, array $userInfo): ?string
     {
-        // Only generate token if app_id and key are configured
-        if (! $this->appId || ! $this->keyId) {
+        // Only generate token if app_id and app_secret are configured
+        if (! $this->appId || ! $this->appSecret) {
             return null;
         }
 
         $isModerator = $userInfo['is_moderator'] ?? false;
-
-        \Log::info('Jitsi getJitsiConfig called', [
-            'userInfo' => $userInfo,
-            'isModerator' => $isModerator,
-            'is_moderator_from_userInfo' => $userInfo['is_moderator'] ?? 'NOT_SET',
-        ]);
 
         // For JaaS (8x8.vc), the payload structure is specific
         $payload = [
@@ -89,13 +82,13 @@ class JitsiService
             'exp' => time() + 7200, // 2 hours
             'nbf' => time() - 10, // Not before: 10 seconds ago
             'sub' => $this->appId,
-            'room' => strtolower($roomName), // Jitsi room names must be lowercase
+            'room' => $roomName, // Specific room name for this session
             'context' => [
                 'user' => [
                     'name' => $userInfo['name'],
                     'email' => $userInfo['email'] ?? '',
                     'id' => (string) $userInfo['id'],
-                    'moderator' => $isModerator,  // Use boolean, not string
+                    'moderator' => $isModerator ? 'true' : 'false',
                     'avatar' => $userInfo['avatar'] ?? '',
                 ],
                 'features' => [
@@ -108,56 +101,30 @@ class JitsiService
             'moderator' => $isModerator,
         ];
 
-        // For JaaS, include the Key ID (kid) in the JWT header
-        $headers = ['kid' => $this->keyId];
-
-        // Load the private key from environment or file
-        $privateKey = config('services.jitsi.app_secret');
-
-        // If not in config, try loading from file (more reliable for multiline content)
-        if (! $privateKey) {
-            $keyPath = storage_path('app/private/local.meditecpty.com.pk');
-            if (file_exists($keyPath)) {
-                $privateKey = file_get_contents($keyPath);
-            }
+        // For JaaS, we need to include the Key ID (kid) in the JWT header
+        $headers = [];
+        if ($this->keyId) {
+            $headers = ['kid' => $this->keyId];
         }
 
-        if (! $privateKey) {
-            \Log::error('Jitsi private key not found in config or file');
+        // Load the private key properly for RS256 signing
+        // Check if it's a file path or the actual key content
+        $privateKey = $this->appSecret;
 
-            return null;
+        // If it looks like a PEM key in env, normalize newlines
+        if (strpos($privateKey, 'BEGIN PRIVATE KEY') !== false) {
+            // Replace \n with actual newlines if it's stored as string in env
+            $privateKey = str_replace('\n', "\n", $privateKey);
+            $privateKey = str_replace('"', '', $privateKey);
         }
 
-        \Log::info('Jitsi JWT generation started', [
-            'key_length' => strlen($privateKey),
-            'key_id' => $this->keyId,
-            'room_name' => $roomName,
-            'app_id' => $this->appId,
-        ]);
-
-        try {
-            $token = JWT::encode($payload, $privateKey, 'RS256', null, $headers);
-
-            \Log::info('Jitsi JWT generated successfully', [
-                'key_id' => $this->keyId,
-                'room' => $roomName,
-                'token_length' => strlen($token),
-                'payload_exp' => $payload['exp'],
-                'payload_nbf' => $payload['nbf'],
-            ]);
-
-            return $token;
-        } catch (\Exception $e) {
-            \Log::error('Failed to generate Jitsi JWT', [
-                'error' => $e->getMessage(),
-                'key_id' => $this->keyId,
-                'room' => $roomName,
-                'exception_class' => get_class($e),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return null;
+        // Try to load from file if exists
+        $keyPath = storage_path('app/private/jitsi_private_key.pk');
+        if (file_exists($keyPath)) {
+            $privateKey = file_get_contents($keyPath);
         }
+
+        return JWT::encode($payload, $privateKey, 'RS256', null, $headers);
     }
 
     /**
@@ -167,63 +134,70 @@ class JitsiService
     {
         $roomName = $appointment->virtual_room_id ?? $this->generateRoomName($appointment);
 
-        // Use configured domain (8x8.vc with JWT if auth is enabled)
-        // Only fall back to meet.jit.si if no authentication is configured
-        $domain = $this->isAuthenticationEnabled() ? '8x8.vc' : 'meet.jit.si';
+        // For JaaS, prepend the tenant to the room name if not already present
         $fullRoomName = $roomName;
+        if ($this->domain === '8x8.vc' && $this->appId && strpos($roomName, $this->appId) === false) {
+            $fullRoomName = $this->appId.'/'.$roomName;
+        }
 
         $config = [
-            'domain' => $domain,
+            'domain' => $this->domain,
             'roomName' => $fullRoomName,
             'configOverwrite' => [
-                'startWithAudioMuted' => true,
-                'startWithVideoMuted' => true,
+                'startWithAudioMuted' => false,
+                'startWithVideoMuted' => false,
                 'enableWelcomePage' => false,
                 'prejoinPageEnabled' => false,
                 'disableDeepLinking' => true,
                 'enableClosePage' => false,
                 'defaultLanguage' => 'es',
-                // Deshabilitar petición inicial de permisos para evitar errores de navegador
-                'disableInitialGUMRequest' => true,
-                'startScreenSharing' => false,
-                // Configuración simple para máxima compatibilidad
-                'requireDisplayName' => false,
-                'enableInsecureRoomNameWarning' => false,
+                'resolution' => 720,
+                // Desactivar verificaciones que causan problemas de compatibilidad
                 'enableNoAudioDetection' => false,
                 'enableNoisyMicDetection' => false,
-                // IMPORTANTE: Con JWT en 8x8.vc, la autenticación previene issues de lobby
-                // Sin JWT (meet.jit.si), estos parámetros no se respetan a nivel servidor
-                'membersOnly' => false,
+                'requireDisplayName' => false,
+                'enableInsecureRoomNameWarning' => false,
+                // Desactivar pantalla de bienvenida y prejoin
+                'disableInitialGUMRequest' => false,
+                'startScreenSharing' => false,
+                'startSilent' => false,
+                // IMPORTANTE: Deshabilitar autenticación y lobby para salas públicas
                 'enableLobbyChat' => false,
-                'lobbyMode' => false,
                 'disableInviteFunctions' => true,
-                // Permitir entrada sin moderador en la sala (evita el error "moderators not yet arrived")
-                'requireModeratorApproval' => false,
-                'startVideoMuted' => true,
-                'startAudioMuted' => true,
-                // Configuraciones específicas para 8x8.vc
-                'enforcedVideoConstraints' => [
-                    'height' => [
-                        'ideal' => 480,
-                        'max' => 720,
-                        'min' => 240,
-                    ],
-                ],
-                // Desactivar P2P para mejor compatibilidad con navegadores
+                // Desactivar P2P para mejor compatibilidad
                 'p2p' => [
                     'enabled' => false,
+                ],
+                'constraints' => [
+                    'video' => [
+                        'height' => ['ideal' => 720, 'max' => 720, 'min' => 240],
+                        'width' => ['ideal' => 1280, 'max' => 1280, 'min' => 320],
+                    ],
                 ],
             ],
             'interfaceConfigOverwrite' => [
                 'TOOLBAR_BUTTONS' => [
                     'microphone',
                     'camera',
+                    'closedcaptions',
                     'desktop',
                     'fullscreen',
+                    'fodeviceselection',
                     'hangup',
+                    'chat',
                     'settings',
+                    'videoquality',
+                    'filmstrip',
+                    'stats',
+                    'tileview',
                 ],
+                'SHOW_JITSI_WATERMARK' => false,
+                'SHOW_WATERMARK_FOR_GUESTS' => false,
+                'SHOW_BRAND_WATERMARK' => false,
+                'BRAND_WATERMARK_LINK' => '',
                 'SHOW_POWERED_BY' => false,
+                'HIDE_INVITE_MORE_HEADER' => true,
+                'MOBILE_APP_PROMO' => false,
                 'APP_NAME' => 'Meditech2',
                 'PROVIDER_NAME' => 'Meditech2',
             ],
@@ -233,24 +207,12 @@ class JitsiService
             ],
         ];
 
-        // Add JWT token when using 8x8.vc with complete credentials
-        // JWT authentication prevents members-only lobbying issues on JaaS
-        // For public meet.jit.si, no JWT is needed or supported
-        $isAuthEnabled = $this->isAuthenticationEnabled();
-        \Log::info('Jitsi config authentication check', [
-            'auth_enabled' => $isAuthEnabled,
-            'app_id' => $this->appId,
-            'key_id' => $this->keyId,
-            'key_file_exists' => file_exists(storage_path('app/private/jitsi_private_key.pem')),
-        ]);
-
-        if ($isAuthEnabled) {
+        // Add JWT token ONLY if explicitly configured (not for public meet.jit.si)
+        // For public Jitsi servers, JWT causes authentication issues
+        if ($this->isAuthenticationEnabled()) {
             $token = $this->generateToken($roomName, $userInfo);
             if ($token) {
                 $config['jwt'] = $token;
-                \Log::info('JWT token added to Jitsi config');
-            } else {
-                \Log::warning('JWT token generation returned null');
             }
         }
 
@@ -262,20 +224,7 @@ class JitsiService
      */
     public function isAuthenticationEnabled(): bool
     {
-        // Check if we have the required JWT credentials
-        if (empty($this->appId) || empty($this->keyId)) {
-            return false;
-        }
-
-        // Check if the private key is configured in the environment
-        if (! empty(config('services.jitsi.app_secret'))) {
-            return true;
-        }
-
-        // Fallback: check if the private key file exists
-        $keyPath = storage_path('app/private/local.meditecpty.com.pk');
-
-        return file_exists($keyPath);
+        return ! empty($this->appId) && ! empty($this->appSecret);
     }
 
     /**
