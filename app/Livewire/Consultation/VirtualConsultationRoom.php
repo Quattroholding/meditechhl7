@@ -31,7 +31,23 @@ class VirtualConsultationRoom extends Component
     public function mount(Appointment $appointment, string $displayMode = 'sidebar')
     {
         $this->appointment = $appointment;
-        $this->isDoctor = Auth::check() && Auth::user()->hasRole('doctor');
+
+        // Check if user is a doctor (has 'doctor' role) or is the practitioner for this appointment
+        $user = Auth::user();
+        $isPractitionerForThisAppointment = $user && $appointment->practitioner_id &&
+                                             $user->practitioner &&
+                                             $user->practitioner->id === $appointment->practitioner_id;
+
+        $this->isDoctor = Auth::check() && (Auth::user()->hasRole('doctor') || $isPractitionerForThisAppointment);
+
+        \Log::info('VirtualConsultationRoom mounted', [
+            'isDoctor' => $this->isDoctor,
+            'hasRole' => Auth::check() ? Auth::user()->hasRole('doctor') : false,
+            'isPractitioner' => $isPractitionerForThisAppointment,
+            'userId' => Auth::id(),
+            'appointmentPractitioner' => $appointment->practitioner_id,
+        ]);
+
         $this->displayMode = $displayMode;
 
         // Generate patient join URL with secure token
@@ -89,16 +105,36 @@ class VirtualConsultationRoom extends Component
     public function startSession()
     {
         if (! $this->isDoctor) {
+            \Log::warning('Non-doctor user tried to start session', [
+                'userId' => Auth::id(),
+                'appointmentId' => $this->appointment->id,
+            ]);
             $this->dispatch('error', message: 'Solo el médico puede iniciar la consulta');
 
             return;
         }
 
-        $this->appointment->update([
-            'virtual_session_started_at' => now(),
-        ]);
+        try {
+            $this->appointment->update([
+                'virtual_session_started_at' => now(),
+            ]);
 
-        $this->sessionActive = true;
+            $this->sessionActive = true;
+
+            \Log::info('Virtual session started', [
+                'appointmentId' => $this->appointment->id,
+                'doctorId' => Auth::id(),
+                'timestamp' => now(),
+            ]);
+
+            $this->dispatch('info', message: 'Sesión iniciada. El paciente puede unirse ahora.');
+        } catch (\Exception $e) {
+            \Log::error('Failed to start session', [
+                'error' => $e->getMessage(),
+                'appointmentId' => $this->appointment->id,
+            ]);
+            $this->dispatch('error', message: 'Error al iniciar la sesión');
+        }
     }
 
     public function endSession()
