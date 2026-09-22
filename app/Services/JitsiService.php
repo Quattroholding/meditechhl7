@@ -47,9 +47,10 @@ class JitsiService
      */
     protected function generateRoomName(Appointment $appointment): string
     {
-        // Format: meditech2_consultation_123_abc123
+        // Format: meditech2_consultation_123_v2_random
+        // The 'v2_' prefix helps avoid cached rooms that had membersOnly issues
         return sprintf(
-            'meditec_consultation_%d_%s',
+            'meditech_c%d_v2_%s',
             $appointment->id,
             Str::random(8)
         );
@@ -158,10 +159,11 @@ class JitsiService
                 'enableInsecureRoomNameWarning' => false,
                 'enableNoAudioDetection' => false,
                 'enableNoisyMicDetection' => false,
-                // IMPORTANTE: Deshabilitar membersOnly para permitir que cualquiera entre
+                // IMPORTANTE: Deshabilitar membersOnly y lobby
                 // Sin esto, la sala queda bloqueada si no hay moderador
                 'membersOnly' => false,
                 'enableLobbyChat' => false,
+                'lobbyMode' => false,
                 'disableInviteFunctions' => true,
                 // Desactivar P2P para mejor compatibilidad
                 'p2p' => [
