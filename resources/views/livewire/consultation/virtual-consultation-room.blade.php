@@ -515,7 +515,18 @@ document.addEventListener('alpine:init', () => {
         } catch (error) {
             console.error('Error starting Jitsi Meet:', error);
             this.connectionStatus = 'Error al conectar';
-            alert('Error al iniciar la videollamada: ' + error.message + '\n\nAsegúrate de permitir el acceso a la cámara y micrófono.');
+
+            // Mensajes de error más informativos
+            let errorMessage = 'Error al iniciar la videollamada.';
+            if (error.message.includes('Permission denied')) {
+                errorMessage = 'Permiso denegado para acceder a cámara/micrófono. Por favor, verifica la configuración de permisos de tu navegador.';
+            } else if (error.message.includes('getUserMedia')) {
+                errorMessage = 'No se pudo acceder a los dispositivos de audio/video. Asegúrate de tener permisos habilitados.';
+            } else if (error.message) {
+                errorMessage += ' ' + error.message;
+            }
+
+            alert(errorMessage);
         }
     },
 
@@ -548,7 +559,16 @@ document.addEventListener('alpine:init', () => {
 
         this.api.addEventListener('errorOccurred', (error) => {
             console.error('Jitsi error:', error);
-            this.connectionStatus = 'Error: ' + error.error;
+
+            let statusMessage = 'Error: ' + (error.error || error.message || 'Desconocido');
+
+            // Detectar errores de permisos específicamente
+            if (error.error && (error.error.includes('Permission') || error.error.includes('NotAllowedError'))) {
+                statusMessage = 'Permiso denegado para acceder a cámara/micrófono';
+                console.warn('Permisos de dispositivos denegados. El usuario puede habilitar desde el botón de micrófono/cámara.');
+            }
+
+            this.connectionStatus = statusMessage;
         });
     },
 

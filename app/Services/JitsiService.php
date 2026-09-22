@@ -144,8 +144,8 @@ class JitsiService
             'domain' => $this->domain,
             'roomName' => $fullRoomName,
             'configOverwrite' => [
-                'startWithAudioMuted' => false,
-                'startWithVideoMuted' => false,
+                'startWithAudioMuted' => true,
+                'startWithVideoMuted' => true,
                 'enableWelcomePage' => false,
                 'prejoinPageEnabled' => false,
                 'disableDeepLinking' => true,
@@ -157,8 +157,8 @@ class JitsiService
                 'enableNoisyMicDetection' => false,
                 'requireDisplayName' => false,
                 'enableInsecureRoomNameWarning' => false,
-                // Desactivar pantalla de bienvenida y prejoin
-                'disableInitialGUMRequest' => false,
+                // Deshabilitar petición inicial de permisos para evitar errores de navegador
+                'disableInitialGUMRequest' => true,
                 'startScreenSharing' => false,
                 'startSilent' => false,
                 // IMPORTANTE: Deshabilitar autenticación y lobby para salas públicas
