@@ -455,38 +455,27 @@ document.addEventListener('alpine:init', () => {
             width: '100%',
             height: '100%',
             parentNode: document.querySelector('#jitsi-meet-container'),
-            configOverwrite: {
-                ...config.configOverwrite,
-                // Opciones adicionales para compatibilidad con Chrome
-                disableRtx: false,
-                enableLayerSuspension: true,
-                testing: {
-                    disableE2EE: false,
-                },
-            },
-            interfaceConfigOverwrite: {
-                ...config.interfaceConfigOverwrite,
-                // Forzar compatibilidad y deshabilitar input de nombre
-                ENFORCE_NOTIFICATION_AUTO_DISMISS_TIMEOUT: 15000,
-                DISABLE_JOIN_LEAVE_NOTIFICATIONS: false,
-                // Ocultar botones de autenticación para salas públicas
-                TOOLBAR_BUTTONS: config.interfaceConfigOverwrite?.TOOLBAR_BUTTONS || [
-                    'microphone', 'camera', 'closedcaptions', 'desktop',
-                    'fullscreen', 'fodeviceselection', 'hangup', 'chat',
-                    'settings', 'videoquality', 'filmstrip', 'stats', 'tileview'
-                ],
-            },
+            configOverwrite: config.configOverwrite || {},
+            interfaceConfigOverwrite: config.interfaceConfigOverwrite || {},
             userInfo: {
                 displayName: displayName,
                 email: userInfo.email || ''
             },
         };
 
-        // Solo agregar JWT si está configurado (para servidores privados)
+        // Solo agregar JWT si está configurado y estamos en 8x8.vc
         // Para meet.jit.si público, NO usar JWT
-        if (config.jwt) {
+        if (config.jwt && domain === '8x8.vc') {
             options.jwt = config.jwt;
         }
+
+        console.log('Jitsi configuration:', {
+            domain,
+            roomName: config.roomName,
+            hasJWT: !!options.jwt,
+            configOverwrite: options.configOverwrite,
+            interfaceConfigOverwrite: options.interfaceConfigOverwrite
+        });
 
         try {
             // Verificar que JitsiMeetExternalAPI esté disponible

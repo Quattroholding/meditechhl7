@@ -134,14 +134,20 @@ class JitsiService
     {
         $roomName = $appointment->virtual_room_id ?? $this->generateRoomName($appointment);
 
-        // For JaaS, prepend the tenant to the room name if not already present
+        // Use public meet.jit.si for better compatibility, unless 8x8.vc credentials are fully configured
+        $domain = $this->domain;
         $fullRoomName = $roomName;
-        if ($this->domain === '8x8.vc' && $this->appId && strpos($roomName, $this->appId) === false) {
+
+        // Only use 8x8.vc if we have complete credentials
+        if ($domain === '8x8.vc' && $this->appId && strpos($roomName, $this->appId) === false) {
             $fullRoomName = $this->appId.'/'.$roomName;
+        } else if ($domain === '8x8.vc' && (! $this->appId || ! $this->appSecret)) {
+            // Fall back to public Jitsi if 8x8.vc credentials are incomplete
+            $domain = 'meet.jit.si';
         }
 
         $config = [
-            'domain' => $this->domain,
+            'domain' => $domain,
             'roomName' => $fullRoomName,
             'configOverwrite' => [
                 'startWithAudioMuted' => true,
@@ -151,53 +157,31 @@ class JitsiService
                 'disableDeepLinking' => true,
                 'enableClosePage' => false,
                 'defaultLanguage' => 'es',
-                'resolution' => 720,
-                // Desactivar verificaciones que causan problemas de compatibilidad
-                'enableNoAudioDetection' => false,
-                'enableNoisyMicDetection' => false,
-                'requireDisplayName' => false,
-                'enableInsecureRoomNameWarning' => false,
                 // Deshabilitar petición inicial de permisos para evitar errores de navegador
                 'disableInitialGUMRequest' => true,
                 'startScreenSharing' => false,
-                'startSilent' => false,
-                // IMPORTANTE: Deshabilitar autenticación y lobby para salas públicas
+                // Configuración simple para máxima compatibilidad
+                'requireDisplayName' => false,
+                'enableInsecureRoomNameWarning' => false,
+                'enableNoAudioDetection' => false,
+                'enableNoisyMicDetection' => false,
                 'enableLobbyChat' => false,
                 'disableInviteFunctions' => true,
                 // Desactivar P2P para mejor compatibilidad
                 'p2p' => [
                     'enabled' => false,
                 ],
-                'constraints' => [
-                    'video' => [
-                        'height' => ['ideal' => 720, 'max' => 720, 'min' => 240],
-                        'width' => ['ideal' => 1280, 'max' => 1280, 'min' => 320],
-                    ],
-                ],
             ],
             'interfaceConfigOverwrite' => [
                 'TOOLBAR_BUTTONS' => [
                     'microphone',
                     'camera',
-                    'closedcaptions',
                     'desktop',
                     'fullscreen',
-                    'fodeviceselection',
                     'hangup',
-                    'chat',
                     'settings',
-                    'videoquality',
-                    'filmstrip',
-                    'stats',
-                    'tileview',
                 ],
-                'SHOW_JITSI_WATERMARK' => false,
-                'SHOW_WATERMARK_FOR_GUESTS' => false,
-                'SHOW_BRAND_WATERMARK' => false,
-                'BRAND_WATERMARK_LINK' => '',
                 'SHOW_POWERED_BY' => false,
-                'HIDE_INVITE_MORE_HEADER' => true,
-                'MOBILE_APP_PROMO' => false,
                 'APP_NAME' => 'Meditech2',
                 'PROVIDER_NAME' => 'Meditech2',
             ],
@@ -207,9 +191,9 @@ class JitsiService
             ],
         ];
 
-        // Add JWT token ONLY if explicitly configured (not for public meet.jit.si)
-        // For public Jitsi servers, JWT causes authentication issues
-        if ($this->isAuthenticationEnabled()) {
+        // Add JWT token ONLY if using 8x8.vc with complete credentials
+        // For public meet.jit.si, JWT causes authentication issues and should not be used
+        if ($domain === '8x8.vc' && $this->isAuthenticationEnabled()) {
             $token = $this->generateToken($roomName, $userInfo);
             if ($token) {
                 $config['jwt'] = $token;
