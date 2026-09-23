@@ -37,17 +37,23 @@
                         @livewire('dashboard.accounting.active-subscriptions-card')
                     </x-dashboard-tile>
                     <!-- SECOND ROW -->
-                    <x-dashboard-tile position="a2:i2" :refresh-interval-in-seconds="120">
+                    <x-dashboard-tile position="a2:f2" :refresh-interval-in-seconds="120">
                         @livewire('dashboard.accounting.revenue-chart')
                     </x-dashboard-tile>
+                    <x-dashboard-tile position="g2:i2" :refresh-interval-in-seconds="120">
+                        @livewire('dashboard.accounting.tax-amount-card')
+                    </x-dashboard-tile>
                     <x-dashboard-tile position="j2:l2" :refresh-interval-in-seconds="120">
-                        @livewire('dashboard.accounting.payment-methods-chart')
+                        @livewire('dashboard.accounting.net-utility-card')
                     </x-dashboard-tile>
                     <!-- THIRD ROW -->
-                    <x-dashboard-tile position="a3:l3" :refresh-interval-in-seconds="120">
+                    <x-dashboard-tile position="a3:f3" :refresh-interval-in-seconds="120">
+                        @livewire('dashboard.accounting.payment-methods-chart')
+                    </x-dashboard-tile>
+                    <x-dashboard-tile position="g3:l3" :refresh-interval-in-seconds="120">
                         @livewire('dashboard.accounting.invoice-status-chart')
                     </x-dashboard-tile>
-                    <!-- FOUR ROW -->
+                    <!-- FOURTH ROW -->
                     <x-dashboard-tile position="a4:l4" :refresh-interval-in-seconds="120">
                         @livewire('dashboard.accounting.pending-payments-table')
                     </x-dashboard-tile>
