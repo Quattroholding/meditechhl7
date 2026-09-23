@@ -2,15 +2,18 @@
 
 namespace App\Livewire\Dashboard\Accounting;
 
-use App\Enums\PaymentStatus;
-use App\Models\ClientInvoicePayment;
+use App\Models\ClientInvoice;
 use Livewire\Component;
 
 class RevenueChart extends Component
 {
     public $months = [];
 
-    public $revenues = [];
+    public $totalRevenues = [];
+
+    public $netUtilities = [];
+
+    public $taxAmounts = [];
 
     public function mount()
     {
@@ -24,14 +27,32 @@ class RevenueChart extends Component
             $date = now()->subMonths($i);
             $monthName = $date->locale('es')->format('M Y');
 
-            $revenue = ClientInvoicePayment::query()
-                ->where('status', PaymentStatus::COMPLETED)
-                ->whereYear('payment_date', $date->year)
-                ->whereMonth('payment_date', $date->month)
-                ->sum('amount');
+            // Ingreso total (suma de totales de facturas pagadas)
+            $totalRevenue = ClientInvoice::query()
+                ->where('status', 'paid')
+                ->whereYear('paid_at', $date->year)
+                ->whereMonth('paid_at', $date->month)
+                ->sum('total');
+
+            // Utilidad neta (subtotal - descuentos de facturas pagadas)
+            $netUtility = ClientInvoice::query()
+                ->where('status', 'paid')
+                ->whereYear('paid_at', $date->year)
+                ->whereMonth('paid_at', $date->month)
+                ->selectRaw('SUM(subtotal - discount_amount) as net_utility')
+                ->value('net_utility') ?? 0;
+
+            // Monto de impuestos (suma de tax_amount de facturas pagadas)
+            $taxAmount = ClientInvoice::query()
+                ->where('status', 'paid')
+                ->whereYear('paid_at', $date->year)
+                ->whereMonth('paid_at', $date->month)
+                ->sum('tax_amount');
 
             $this->months[] = $monthName;
-            $this->revenues[] = $revenue;
+            $this->totalRevenues[] = $totalRevenue;
+            $this->netUtilities[] = $netUtility;
+            $this->taxAmounts[] = $taxAmount;
         }
     }
 
