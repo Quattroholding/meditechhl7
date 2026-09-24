@@ -43,6 +43,32 @@ Your task is to analyze a medical transcription and systematically populate an e
 
 You MUST respond with ONLY valid JSON. Do NOT include any markdown, explanations, or text outside of the JSON structure.
 
+## Transcription Error Correction
+
+Before processing, apply these common corrections to handle Whisper transcription errors:
+
+1. **Medication Names**:
+   - "metamorfina" → "Metformina"
+   - "losartan" → "Losartán"
+   - "atorvastatin" → "Atorvastatina"
+   - If dosage is mentioned (e.g., "50mg cada 12 horas") but medication name is unclear, infer from clinical context (e.g., hypertension with 50mg → Losartán)
+
+2. **Blood Pressure Format**:
+   - "138.88" → "138/88"
+   - "150 por 95" → "150/95"
+   - Always normalize to "systolic/diastolic" format
+
+3. **Medical Terms**:
+   - "glucosilaba" → "glicosilada"
+   - "pobreza" → "obesa"
+   - "milito-tipo" → "mellitus tipo"
+   - "hemocultivo" → "hemocultivo" (if already correct)
+
+4. **Medication Inference**:
+   - If "50mg cada 12 horas" is mentioned with hypertension → likely Losartán 50mg
+   - If "1000mg 2 veces al día" is mentioned with diabetes → likely Metformina 1000mg
+   - Search for medications using the corrected names
+
 ## Processing Guidelines
 
 ### SUBJECTIVE (S)
@@ -63,7 +89,10 @@ You MUST respond with ONLY valid JSON. Do NOT include any markdown, explanations
 ### PLAN (P)
 - Extract medications prescribed with dosage, frequency, and duration
 - Identify laboratory tests, imaging studies, and procedures ordered
-- Use the CPT search tool to map services to proper codes
+- Use the CPT search tool to map services to proper codes with correct service_type:
+  - **laboratory**: Blood tests, lab panels (hemograma, glucosa, BNP, etc.)
+  - **images**: X-rays, ultrasounds, echocardiograms, CT scans, MRI (radiografía, ecocardiograma, etc.)
+  - **procedure**: Surgeries, interventions, consultations
 - Include clinical reasoning for each plan item
 
 ## Tool Usage
@@ -193,6 +222,42 @@ Example tool call structure:
 - Always call create_encounter_data for EACH section (subjective, objective, assessment, plan) separately
 - Multi-tenancy: All data operations automatically respect the current user's client context
 - Be thorough but efficient - extract all clinically relevant information
+
+## Medication Handling - Intelligent Inference
+
+When a medication is mentioned but the name is unclear or incomplete:
+
+1. **Use Clinical Context**:
+   - Condition: Hypertension + Dosage: "50mg twice daily" → Search for "Losartán 50mg"
+   - Condition: Diabetes + Dosage: "1000mg twice daily" → Search for "Metformina 1000mg"
+   - Condition: Heart failure + Dosage: "40mg daily" → Search for "Furosemida 40mg"
+
+2. **Always Search First**: Call search_medications with the corrected/inferred medication name
+   - Include dosage in the search query (e.g., "Losartán 50mg")
+   - If exact match not found, try partial searches
+
+3. **Create Records Anyway**: Even if medication not found in database:
+   - Set medication_name to the corrected/inferred name
+   - Leave medication_id empty
+   - Include complete dosage_text: "50 mg cada 12 horas"
+
+## Service Request Handling - Classify Correctly
+
+When a service is mentioned (laboratory test, imaging study, procedure):
+
+1. **Identify Service Type**:
+   - Keywords for **laboratory**: hemograma, panel, glucosa, BNP, hemocultivo, análisis
+   - Keywords for **images**: radiografía, ecocardiograma, tomografía, ultrasound, resonancia, CT, MRI, X-ray
+   - Keywords for **procedure**: cirugía, biopsia, cateterismo, endoscopia, consulta
+
+2. **Search with Type Filter**: Call search_cpt_codes with the correct service_type
+   - Example: search_cpt_codes(query="radiografía de tórax", type="images")
+   - Example: search_cpt_codes(query="BNP", type="laboratory")
+
+3. **Always Search**: Even if service name seems simple
+   - Search for exact term (e.g., "ecocardiograma", "radiografía de tórax")
+   - The system has aliases for common medical terms
+
 - DO NOT ADD ANY TEXT OR MARKDOWN OUTSIDE THE JSON RESPONSE
 EOT;
     }

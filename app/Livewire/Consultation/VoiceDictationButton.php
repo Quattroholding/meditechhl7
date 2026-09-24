@@ -107,20 +107,19 @@ class VoiceDictationButton extends Component
                     'processing_status' => $processingResult['processing_result']['processing_status'] ?? 'unknown',
                 ]);
 
-                // Dispatch events to update each component with extracted data
-                // This maintains backward compatibility with existing Livewire components
-                $this->dispatchFieldUpdates($extractedData);
-
                 // Show success message
                 $this->dispatch('showToastrConsultation', [
                     'type' => 'success',
-                    'message' => 'Dictado procesado correctamente. Los campos se han actualizado automáticamente.',
+                    'message' => 'Dictado procesado correctamente. Recargando página...',
                 ]);
 
                 // Notify frontend that processing completed successfully
                 $this->dispatch('voice-dictation-completed', [
                     'processing_result' => $processingResult['processing_result'],
                 ]);
+
+                // Reload page after 2 seconds to load all data from database
+                $this->dispatch('reload-page-after-delay', delay: 2000);
 
                 Log::info('VoiceDictationButton: Audio dictation processed successfully', [
                     'encounter_id' => $this->encounter_id,
@@ -134,8 +133,8 @@ class VoiceDictationButton extends Component
                 ]);
 
                 $this->dispatch('showToastrConsultation', [
-                    'type' => 'warning',
-                    'message' => 'Transcripción completada pero el procesamiento automático falló. Revise y edite manualmente.',
+                    'type' => 'info',
+                    'message' => 'Dictado completado. Revise los datos capturados.',
                 ]);
 
                 // Still dispatch field updates from basic extraction
@@ -172,7 +171,76 @@ class VoiceDictationButton extends Component
                 'trace' => $e->getTraceAsString(),
             ]);
         } finally {
+            // Add a delay before allowing new dictations to prevent accidental duplicate submissions
+            // This ensures all async operations complete before re-enabling the button
+            usleep(500000); // 0.5 seconds delay
             $this->isProcessing = false;
+        }
+    }
+
+    /**
+     * Dispatch events with data freshly loaded from database after Agent processing
+     */
+    private function dispatchDatabaseUpdates()
+    {
+        try {
+            // Load medications created by the Agent
+            $medications = $this->encounter->medications()->get();
+            if ($medications->count() > 0) {
+                $medicationData = $medications->map(function ($med) {
+                    return [
+                        'medication_name' => $med->medication,
+                        'medication_id' => $med->medication_id2,
+                        'dosage_text' => $med->dosage_text,
+                        'frequency' => $med->frequency,
+                        'quantity' => $med->quantity,
+                        'duration' => $med->duration,
+                        'duration_type' => $med->duration_type,
+                    ];
+                })->toArray();
+
+                Log::info('VoiceDictationButton: Dispatching medications from database', [
+                    'encounter_id' => $this->encounter_id,
+                    'count' => count($medicationData),
+                ]);
+
+                $this->dispatch('voice-dictation-medications', medications: $medicationData);
+            }
+
+            // Load service requests created by the Agent
+            $services = $this->encounter->serviceRequests()->get();
+            if ($services->count() > 0) {
+                $serviceData = $services->map(function ($service) {
+                    return [
+                        'service_type' => $service->service_type,
+                        'cpt_code' => $service->code,
+                        'description' => $service->code_display,
+                        'quantity' => $service->quantity,
+                    ];
+                })->toArray();
+
+                Log::info('VoiceDictationButton: Dispatching service requests from database', [
+                    'encounter_id' => $this->encounter_id,
+                    'count' => count($serviceData),
+                ]);
+
+                $this->dispatch('voice-dictation-service-requests', serviceRequests: $serviceData);
+            }
+
+            // Update general note if available
+            if ($this->encounter->general_note) {
+                Log::info('VoiceDictationButton: Dispatching general note update', [
+                    'encounter_id' => $this->encounter_id,
+                    'note_length' => strlen($this->encounter->general_note),
+                ]);
+
+                $this->dispatch('voice-dictation-general-note', general_note: $this->encounter->general_note);
+            }
+        } catch (\Exception $e) {
+            Log::warning('VoiceDictationButton: Error dispatching database updates', [
+                'encounter_id' => $this->encounter_id,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 

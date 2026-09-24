@@ -114,11 +114,25 @@ function voiceDictation(livewireComponent) {
             });
 
             Livewire.on('voice-dictation-completed', () => {
-                this.isProcessing = false;
+                // Add a 1-second delay before allowing new recording to prevent accidental duplicates
+                setTimeout(() => {
+                    this.isProcessing = false;
+                }, 1000);
             });
 
             Livewire.on('voice-dictation-failed', () => {
-                this.isProcessing = false;
+                // Add a 500ms delay before allowing retry
+                setTimeout(() => {
+                    this.isProcessing = false;
+                }, 500);
+            });
+
+            // Listen for page reload event with delay
+            Livewire.on('reload-page-after-delay', (data) => {
+                const delay = data.delay || 2000;
+                setTimeout(() => {
+                    window.location.reload();
+                }, delay);
             });
         },
 

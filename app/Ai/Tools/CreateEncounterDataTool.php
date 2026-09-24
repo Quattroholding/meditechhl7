@@ -326,13 +326,23 @@ class CreateEncounterDataTool implements Tool
         if (isset($data['medications']) && is_array($data['medications'])) {
             foreach ($data['medications'] as $med) {
                 try {
+                    // Combine dosage_text with frequency if both exist
+                    $fullDosageText = $med['dosage_text'] ?? null;
+                    if ($fullDosageText && ! empty($med['frequency'])) {
+                        // Normalize frequency to lowercase for better readability
+                        $frequency = strtolower(trim($med['frequency']));
+                        $fullDosageText = trim($fullDosageText).' '.$frequency;
+                    } elseif (! $fullDosageText && ! empty($med['frequency'])) {
+                        $fullDosageText = trim($med['frequency']);
+                    }
+
                     MedicationRequest::create([
                         'encounter_id' => $encounter->id,
                         'patient_id' => $encounter->patient_id,
                         'practitioner_id' => $encounter->practitioner_id,
                         'medication_id2' => $med['medication_id'] ?? null,
                         'medication' => $med['medication_name'] ?? null,
-                        'dosage_text' => $med['dosage_text'] ?? null,
+                        'dosage_text' => $fullDosageText,
                         'dosage_instruction' => $med['dosage_instruction'] ?? null,
                         'frequency' => $med['frequency'] ?? null,
                         'quantity' => $med['quantity'] ?? null,

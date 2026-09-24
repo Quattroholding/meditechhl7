@@ -45,11 +45,13 @@ class SearchCptTool implements Tool
 
         try {
             $qb = DB::table('cpt_codes')
-                ->where('description', 'like', "%{$query}%")
-                ->orWhere('description_es', 'like', "%{$query}%")
-                ->orWhere('code', 'like', "%{$query}%")
-                ->orWhere('alias', 'like', "%{$query}%")
-                ->where('active', '=', true);
+                ->where('active', '=', true)
+                ->where(function ($q) use ($query) {
+                    $q->where('description', 'like', "%{$query}%")
+                        ->orWhere('description_es', 'like', "%{$query}%")
+                        ->orWhere('code', 'like', "%{$query}%")
+                        ->orWhere('alias', 'like', "%{$query}%");
+                });
 
             if ($type) {
                 $qb->where('type', '=', $type);

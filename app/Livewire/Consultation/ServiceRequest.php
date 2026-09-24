@@ -106,6 +106,77 @@ class ServiceRequest extends Component
         }
     }
 
+    #[On('voice-dictation-service-requests')]
+    public function updateFromVoice($serviceRequests)
+    {
+        Log::info('ServiceRequest: updateFromVoice called', [
+            'encounter_id' => $this->encounter_id,
+            'section_id' => $this->section_id,
+            'is_array' => is_array($serviceRequests),
+            'count' => is_array($serviceRequests) ? count($serviceRequests) : 0,
+        ]);
+
+        if (! is_array($serviceRequests)) {
+            Log::warning('ServiceRequest: serviceRequests parameter is not an array', [
+                'encounter_id' => $this->encounter_id,
+                'type' => gettype($serviceRequests),
+            ]);
+
+            return;
+        }
+
+        // Filter by section type (laboratory=6, images=7, procedure=8)
+        $filteredServices = array_filter($serviceRequests, function ($service) {
+            if ($this->section_id == 6) {
+                return $service['service_type'] === 'laboratory';
+            } elseif ($this->section_id == 7) {
+                return $service['service_type'] === 'images';
+            } elseif ($this->section_id == 8) {
+                return $service['service_type'] === 'procedure';
+            }
+
+            return true;
+        });
+
+        Log::info('ServiceRequest: Processing service requests from voice', [
+            'total' => count($serviceRequests),
+            'filtered' => count($filteredServices),
+        ]);
+
+        // Add each service request
+        foreach ($filteredServices as $service) {
+            try {
+                $cptCode = $service['cpt_code'] ?? null;
+                if (! $cptCode) {
+                    Log::warning('ServiceRequest: No CPT code provided', ['service' => $service]);
+
+                    continue;
+                }
+
+                // Find the CPT code ID in the database
+                $cpt = CptCode::where('code', $cptCode)->first();
+                if (! $cpt) {
+                    Log::warning('ServiceRequest: CPT code not found in database', [
+                        'cpt_code' => $cptCode,
+                    ]);
+
+                    continue;
+                }
+
+                // Create the service request using the CptCode ID
+                $this->selectOption($cpt->id);
+            } catch (\Exception $e) {
+                Log::warning('ServiceRequest: Error adding service from voice', [
+                    'error' => $e->getMessage(),
+                    'service' => $service,
+                ]);
+            }
+        }
+
+        // Refresh the component to show newly added services
+        $this->loadSelectedLists();
+    }
+
     #[On('selectOption')]
     public function selectOption($option)
     {

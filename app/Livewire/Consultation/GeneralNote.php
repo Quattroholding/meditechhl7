@@ -5,6 +5,7 @@ namespace App\Livewire\Consultation;
 use App\Models\Encounter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class GeneralNote extends Component
@@ -23,7 +24,20 @@ class GeneralNote extends Component
     {
         $this->encounter = Encounter::find($this->encounter_id);
         $this->general_note = $this->encounter->general_note;
+    }
 
+    #[On('voice-dictation-general-note')]
+    public function updateFromVoice($general_note)
+    {
+        Log::info('GeneralNote: updateFromVoice called', [
+            'encounter_id' => $this->encounter_id,
+            'note_length' => strlen($general_note ?? ''),
+        ]);
+
+        if (! empty($general_note)) {
+            $this->general_note = $general_note;
+            $this->save();
+        }
     }
 
     public function render()

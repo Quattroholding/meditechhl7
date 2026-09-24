@@ -31,7 +31,16 @@ class EncounterProcessingService
 
             // Verify user has access to this encounter via client scoping
             $userClient = Auth::user()?->getCurrentClient();
-            if (! $userClient || $encounter->patient->client_id !== $userClient->id) {
+            if (! $userClient) {
+                throw new AuthorizationException('User does not have a current client context');
+            }
+
+            // Check if patient belongs to user's current client
+            $patientHasAccess = $encounter->patient->clients()
+                ->where('client_id', $userClient->id)
+                ->exists();
+
+            if (! $patientHasAccess) {
                 throw new AuthorizationException('User does not have access to this encounter');
             }
 
