@@ -4,6 +4,7 @@ namespace App\Livewire\Consultation;
 
 use App\Models\Encounter;
 use App\Services\ClaudeService;
+use App\Services\EncounterProcessingService;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
@@ -61,7 +62,7 @@ class VoiceDictationButton extends Component
                 'audio_size' => strlen($audioBase64),
             ]);
 
-            // Call ClaudeService to process the audio
+            // Step 1: Call ClaudeService to transcribe audio (OpenAI Whisper)
             $claudeService = app(ClaudeService::class);
             $extractedData = $claudeService->processMedicalDictation(
                 $audioBase64,
@@ -92,22 +93,55 @@ class VoiceDictationButton extends Component
                 ]);
             }
 
-            // Dispatch events to update each component with extracted data
-            $this->dispatchFieldUpdates($extractedData);
+            // Step 2: Process transcription with EncounterProcessingAgent
+            // The agent autonomously uses tools to search for codes and populate SOAP sections
+            $processingService = app(EncounterProcessingService::class);
+            $processingResult = $processingService->processVoiceTranscription(
+                $this->encounter_id,
+                $this->transcription ?? ''
+            );
 
-            // Show success message
-            $this->dispatch('showToastrConsultation', [
-                'type' => 'success',
-                'message' => 'Dictado procesado correctamente. Los campos se han actualizado automáticamente.',
-            ]);
+            if ($processingResult['success']) {
+                Log::info('VoiceDictationButton: EncounterProcessingAgent completed successfully', [
+                    'encounter_id' => $this->encounter_id,
+                    'processing_status' => $processingResult['processing_result']['processing_status'] ?? 'unknown',
+                ]);
 
-            // Notify frontend that processing completed successfully
-            $this->dispatch('voice-dictation-completed');
+                // Dispatch events to update each component with extracted data
+                // This maintains backward compatibility with existing Livewire components
+                $this->dispatchFieldUpdates($extractedData);
 
-            Log::info('VoiceDictationButton: Audio dictation processed successfully', [
-                'encounter_id' => $this->encounter_id,
-                'has_transcription' => ! empty($this->transcription),
-            ]);
+                // Show success message
+                $this->dispatch('showToastrConsultation', [
+                    'type' => 'success',
+                    'message' => 'Dictado procesado correctamente. Los campos se han actualizado automáticamente.',
+                ]);
+
+                // Notify frontend that processing completed successfully
+                $this->dispatch('voice-dictation-completed', [
+                    'processing_result' => $processingResult['processing_result'],
+                ]);
+
+                Log::info('VoiceDictationButton: Audio dictation processed successfully', [
+                    'encounter_id' => $this->encounter_id,
+                    'has_transcription' => ! empty($this->transcription),
+                ]);
+            } else {
+                // Processing failed but transcription was successful
+                Log::warning('VoiceDictationButton: EncounterProcessingAgent failed', [
+                    'encounter_id' => $this->encounter_id,
+                    'error' => $processingResult['message'] ?? 'Unknown error',
+                ]);
+
+                $this->dispatch('showToastrConsultation', [
+                    'type' => 'warning',
+                    'message' => 'Transcripción completada pero el procesamiento automático falló. Revise y edite manualmente.',
+                ]);
+
+                // Still dispatch field updates from basic extraction
+                $this->dispatchFieldUpdates($extractedData);
+                $this->dispatch('voice-dictation-completed');
+            }
         } catch (\InvalidArgumentException $e) {
             $this->errorMessage = $e->getMessage();
             $this->dispatch('showToastrConsultation', [
