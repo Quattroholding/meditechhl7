@@ -571,6 +571,8 @@ EOT;
                 'has_present_illness' => isset($normalizedData['present_illness']),
                 'vital_signs_count' => count($normalizedData['vital_signs'] ?? []),
                 'physical_exam_count' => count($normalizedData['physical_exam'] ?? []),
+                'diagnostics_count' => count($normalizedData['diagnostics'] ?? []),
+                'has_general_notes' => isset($normalizedData['general_notes']),
             ]);
 
             return $normalizedData;
@@ -597,12 +599,15 @@ Identifica y extrae:
 2. Enfermedad actual (síntomas, duración, severidad)
 3. Signos vitales mencionados
 4. Hallazgos del examen físico
+5. Diagnósticos clínicos (con patologías específicas mencionadas)
+6. Notas generales y hallazgos adicionales
 
 IMPORTANTE:
 - Responde ÚNICAMENTE con JSON válido, sin markdown ni texto adicional
 - Usa terminología médica precisa en español
 - Si no detectas información para un campo, omítelo del JSON
 - Para signos vitales, usa códigos LOINC estándar
+- Para diagnósticos, extrae las patologías y condiciones clínicas mencionadas en lenguaje natural
 
 CRÍTICO - SIGNOS VITALES:
 - SOLO extrae signos vitales con valores NUMÉRICOS explícitos
@@ -661,7 +666,13 @@ SCHEMA JSON DE RESPUESTA:
   },
   "physical_exam": {
     "codigo_loinc": "hallazgo textual"
-  }
+  },
+  "diagnostics": [
+    "diagnóstico 1 mencionado en el dictado",
+    "diagnóstico 2 mencionado en el dictado",
+    "diagnóstico 3 mencionado en el dictado"
+  ],
+  "general_notes": "Notas generales, hallazgos adicionales y observaciones clínicas relevantes"
 }
 
 CÓDIGOS LOINC COMUNES PARA EXAMEN FÍSICO:
@@ -680,6 +691,13 @@ CÓDIGOS LOINC COMUNES PARA EXAMEN FÍSICO:
 - 11394-4: Examen de extremidades
 - 11395-1: Examen neurológico
 - 11396-9: Examen de piel
+
+CRÍTICO - DIAGNÓSTICOS:
+- Extrae TODAS las condiciones clínicas, patologías y diagnósticos mencionados en el dictado
+- Usa lenguaje natural (no necesitas códigos ICD-10, el sistema los asignará)
+- Ejemplos: "hipertensión arterial", "diabetes mellitus tipo 2", "infección de vías urinarias", "bronquitis aguda"
+- Si se menciona más de una condición, incluye todas en el array
+- Si no hay diagnósticos explícitos, omite el campo del JSON
 
 RESPONDE SOLO CON EL JSON (sin ```json ni markdown):
 EOT;
@@ -730,6 +748,18 @@ EOT;
             $normalized['physical_exam'] = array_filter($data['physical_exam'], function ($value) {
                 return ! empty($value);
             });
+        }
+
+        // Diagnostics (list of conditions/diagnoses mentioned)
+        if (isset($data['diagnostics']) && is_array($data['diagnostics'])) {
+            $normalized['diagnostics'] = array_filter($data['diagnostics'], function ($value) {
+                return ! empty($value);
+            });
+        }
+
+        // General notes
+        if (isset($data['general_notes']) && ! empty($data['general_notes'])) {
+            $normalized['general_notes'] = trim($data['general_notes']);
         }
 
         return $normalized;

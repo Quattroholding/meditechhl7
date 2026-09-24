@@ -141,8 +141,15 @@ class PresentIllness extends Component
             'severity' => $presentIllness->severity,
         ]);
 
+        // Refresh the encounter to get the latest present illness data
+        $this->encounter->refresh();
+        $this->present_illness = $this->encounter->presentIllnesses;
+
         // Reload for display
         $this->loadPressentIllness();
+
+        // Dispatch event to update UI
+        $this->dispatch('$refresh');
     }
 
     /**

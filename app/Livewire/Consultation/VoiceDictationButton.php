@@ -29,7 +29,7 @@ class VoiceDictationButton extends Component
             ->findOrFail($this->encounter_id);
 
         // Check if voice dictation is enabled for the current client
-        $client = auth()->user()?->client;
+        $client = auth()->user()?->getCurrentClient();
         $this->voiceDictationEnabled = $client && $client->voice_dictation_enabled;
     }
 
@@ -39,7 +39,7 @@ class VoiceDictationButton extends Component
     public function processAudioDictation(string $audioBase64, string $mimeType)
     {
         // Check if voice dictation is enabled for the current client
-        $client = auth()->user()->client;
+        $client = auth()->user()->getCurrentClient();
         if (! $client || ! $client->voice_dictation_enabled) {
             $this->errorMessage = 'El dictado por voz no está habilitado';
             $this->dispatch('showToastrConsultation', [
@@ -72,14 +72,23 @@ class VoiceDictationButton extends Component
             // Store transcription for display
             $this->transcription = $extractedData['transcription'] ?? null;
 
-            // Save transcription to encounter general_note
+            // Save transcription and general notes to encounter
+            $notes = [];
             if ($this->transcription) {
-                $this->encounter->general_note = $this->transcription;
+                $notes[] = "**Transcripción del Dictado:**\n{$this->transcription}";
+            }
+            if (isset($extractedData['general_notes']) && ! empty($extractedData['general_notes'])) {
+                $notes[] = "**Notas Generales:**\n{$extractedData['general_notes']}";
+            }
+
+            if (! empty($notes)) {
+                $this->encounter->general_note = implode("\n\n---\n\n", $notes);
                 $this->encounter->save();
 
-                Log::info('VoiceDictationButton: Transcription saved to general_note', [
+                Log::info('VoiceDictationButton: Notes saved to general_note', [
                     'encounter_id' => $this->encounter_id,
-                    'transcription_length' => strlen($this->transcription),
+                    'transcription_length' => strlen($this->transcription ?? ''),
+                    'general_notes_length' => strlen($extractedData['general_notes'] ?? ''),
                 ]);
             }
 
@@ -176,10 +185,16 @@ class VoiceDictationButton extends Component
 
         // Dispatch diagnostics (if any)
         if (isset($extractedData['diagnostics']) && ! empty($extractedData['diagnostics'])) {
-            $this->dispatch('voice-dictation-diagnostics', [
+            Log::info('VoiceDictationButton: About to dispatch diagnostics', [
+                'count' => count($extractedData['diagnostics']),
                 'diagnostics' => $extractedData['diagnostics'],
             ]);
-            Log::debug('Dispatched voice-dictation-diagnostics event', ['count' => count($extractedData['diagnostics'])]);
+
+            $this->dispatch('voice-dictation-diagnostics',
+                diagnostics: $extractedData['diagnostics']
+            );
+
+            Log::info('VoiceDictationButton: Diagnostics event dispatched');
         }
 
         // Dispatch medications (if any)

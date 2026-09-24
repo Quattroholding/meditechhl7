@@ -587,6 +587,111 @@ class Diagnostics extends Component
         $this->dispatch('$refresh');
     }
 
+    /**
+     * Listen for voice dictation diagnostics and automatically add them
+     */
+    #[On('voice-dictation-diagnostics')]
+    public function handleVoiceDictationDiagnostics($diagnostics)
+    {
+        if (empty($diagnostics)) {
+            Log::warning('Diagnostics: Empty diagnostics array received', [
+                'encounter_id' => $this->encounter_id,
+            ]);
+
+            return;
+        }
+
+        Log::info('Diagnostics: Processing voice dictation diagnostics', [
+            'encounter_id' => $this->encounter_id,
+            'diagnostics_count' => count($diagnostics),
+            'diagnostics' => $diagnostics,
+        ]);
+
+        // Process each diagnostic mentioned in the dictation
+        foreach ($diagnostics as $diagnosticText) {
+            if (empty($diagnosticText)) {
+                continue;
+            }
+
+            try {
+                // Search for matching ICD-10 code using the diagnostic text
+                $icd10Code = Icd10Code::where('active', true)
+                    ->where(function ($query) use ($diagnosticText) {
+                        $query->whereRaw('description_es LIKE ?', ["%{$diagnosticText}%"])
+                            ->orWhereRaw('description LIKE ?', ["%{$diagnosticText}%"]);
+                    })
+                    ->orderByRaw('CASE WHEN description_es LIKE ? THEN 0 ELSE 1 END, code ASC', ["%{$diagnosticText}%"])
+                    ->first();
+
+                if ($icd10Code) {
+                    // Check if this diagnostic already exists for this encounter
+                    $existingDiagnosis = $this->encounter->diagnoses()
+                        ->whereHas('condition', function ($q) use ($icd10Code) {
+                            $q->where('code', $icd10Code->code);
+                        })->first();
+
+                    if (! $existingDiagnosis) {
+                        // Create or get the condition
+                        $condition = Condition::wherePatientId($this->encounter->patient_id)
+                            ->whereCode($icd10Code->code)
+                            ->first();
+
+                        if (! $condition) {
+                            $condition = Condition::create([
+                                'fhir_id' => 'condition-'.Str::uuid(),
+                                'patient_id' => $this->encounter->patient_id,
+                                'practitioner_id' => $this->encounter->practitioner_id,
+                                'encounter_id' => $this->encounter->id,
+                                'identifier' => 'DX-'.strtoupper(Str::random(7)),
+                                'clinical_status' => 'active',
+                                'verification_status' => 'confirmed',
+                                'code' => $icd10Code->code,
+                                'severity' => 'moderate',
+                                'onset_info' => $icd10Code->description_es,
+                                'onset_date' => now()->format('Y-m-d H:i'),
+                                'recorded_date' => now()->format('Y-m-d H:i'),
+                            ]);
+                        }
+
+                        // Add to encounter
+                        $this->encounter->diagnoses()->create([
+                            'encounter_id' => $this->encounter->id,
+                            'condition_id' => $condition->id,
+                            'rank' => 1,
+                            'use' => 'principal',
+                        ]);
+
+                        Log::info('Diagnostics: Added voice dictation diagnostic', [
+                            'encounter_id' => $this->encounter_id,
+                            'icd10_code' => $icd10Code->code,
+                            'diagnostic_text' => $diagnosticText,
+                        ]);
+                    }
+                } else {
+                    Log::warning('Diagnostics: No matching ICD-10 code found for diagnostic', [
+                        'encounter_id' => $this->encounter_id,
+                        'diagnostic_text' => $diagnosticText,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Diagnostics: Error processing voice dictation diagnostic', [
+                    'encounter_id' => $this->encounter_id,
+                    'diagnostic_text' => $diagnosticText,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        // Reload the diagnostic list
+        $this->loadSelectedLists();
+
+        // Show success message
+        $this->dispatch('showToastrConsultation', [
+            'type' => 'success',
+            'message' => 'Diagnósticos de dictado de voz agregados automáticamente.',
+        ]);
+    }
+
     public function render()
     {
         return view('livewire.consultation.diagnostics');

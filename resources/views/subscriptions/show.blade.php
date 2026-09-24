@@ -114,7 +114,7 @@
                         <div class="card bg-primary text-white mb-3">
                             <div class="card-body">
                                 <h5 class="card-title text-white">Total Mensual</h5>
-                                <h2 class="text-white">${{ number_format($subscription->calculateCurrentPrice(), 2) }}</h2>
+                                <h2 class="text-white">${{ number_format($subscription->calculateCurrentPrice(), 2) }} + itbms</h2>
                                 <small>{{ ucfirst($subscription->package->billing_period->value) }}</small>
                             </div>
                         </div>
