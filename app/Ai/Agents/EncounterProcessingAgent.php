@@ -8,6 +8,7 @@ use App\Ai\Tools\SearchCptTool;
 use App\Ai\Tools\SearchIcd10Tool;
 use App\Ai\Tools\SearchMedicationTool;
 use App\Models\Encounter;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Attributes\Model;
 use Laravel\Ai\Attributes\Provider;
@@ -228,9 +229,16 @@ EOT;
                 'patient_id' => $encounter->patient_id,
             ]);
 
-            // Call Claude with the transcription
+            // Load patient context
+            $patient = $encounter->patient;
+            $patientContext = $this->buildPatientContext($patient);
+
+            // Call Claude with the transcription and patient context
             $prompt = <<<EOT
 ENCOUNTER ID: {$this->encounterId}
+
+PATIENT CONTEXT:
+{$patientContext}
 
 Process this medical transcription and extract SOAP documentation:
 
@@ -271,6 +279,75 @@ EOT;
                 'timestamp' => now()->toIso8601String(),
             ];
         }
+    }
+
+    /**
+     * Build patient context to provide to Claude for better decision-making.
+     */
+    private function buildPatientContext($patient): string
+    {
+        $lines = [];
+
+        // Basic demographics
+        $lines[] = "- Name: {$patient->name}";
+        if ($patient->birth_date) {
+            try {
+                $birthDate = is_string($patient->birth_date)
+                    ? Carbon::parse($patient->birth_date)
+                    : $patient->birth_date;
+                $age = $birthDate->diffInYears(now());
+                $lines[] = "- Age: {$age} years";
+            } catch (\Exception $e) {
+                Log::warning('Failed to parse birth_date', ['error' => $e->getMessage()]);
+            }
+        }
+        if ($patient->gender) {
+            $lines[] = "- Gender: {$patient->gender}";
+        }
+        if ($patient->blood_type) {
+            $lines[] = "- Blood Type: {$patient->blood_type}";
+        }
+
+        // Active conditions
+        $activeConditions = $patient->conditions()
+            ->where('clinical_status', '=', 'active')
+            ->limit(10)
+            ->pluck('code')
+            ->toArray();
+
+        if (! empty($activeConditions)) {
+            $conditionsList = implode(', ', $activeConditions);
+            $lines[] = "- Active Conditions: {$conditionsList}";
+        }
+
+        // Current medications
+        $currentMeds = $patient->medicationRequests()
+            ->whereIn('status', ['draft', 'active', 'on-hold'])
+            ->limit(10)
+            ->pluck('medication')
+            ->toArray();
+
+        if (! empty($currentMeds)) {
+            $medsList = implode(', ', array_filter($currentMeds));
+            if ($medsList) {
+                $lines[] = "- Current Medications: {$medsList}";
+            }
+        }
+
+        // Allergies
+        $allergies = $patient->allergies()
+            ->limit(10)
+            ->pluck('description')
+            ->toArray();
+
+        if (! empty($allergies)) {
+            $allergiesList = implode(', ', array_filter($allergies));
+            if ($allergiesList) {
+                $lines[] = "- Allergies: {$allergiesList}";
+            }
+        }
+
+        return implode("\n", $lines);
     }
 
     /**
