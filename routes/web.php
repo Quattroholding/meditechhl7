@@ -203,6 +203,30 @@ Route::get('prescriptions/{id}/pdf/download', [RecepyPrescriptionController::cla
 
 /**
  * ============================================================================
+ * JITSI BRANDING
+ * ============================================================================
+ */
+Route::get('/api/jitsi-branding', function () {
+    $accept = request()->header('Accept', 'application/json');
+
+    if (str_contains($accept, 'text/html')) {
+        return response()->file(public_path('branding/sami-branding.html'), [
+            'Content-Type' => 'text/html; charset=utf-8',
+        ]);
+    }
+
+    return response()->json([
+        'logoClickUrl' => url('/'),
+        'logoImageUrl' => asset('assets/img/logo.png'),
+        'logoTitle' => 'SAMI',
+        'appName' => 'SAMI Telemedicina',
+        'brandWatermarkLink' => '',
+        'hideWatermark' => true,
+    ]);
+})->name('jitsi.branding');
+
+/**
+ * ============================================================================
  * VIRTUAL CONSULTATION (Public with token)
  * ============================================================================
  */

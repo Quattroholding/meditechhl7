@@ -52,6 +52,14 @@ class CreateEncounterDataTool implements Tool
                 ]);
             }
 
+            // Ensure data is always an array
+            if (is_string($data)) {
+                $decoded = json_decode($data, true);
+                $data = is_array($decoded) ? $decoded : [];
+            } elseif (! is_array($data)) {
+                $data = (array) $data;
+            }
+
             $encounter = Encounter::findOrFail($encounterId);
 
             $created = [];

@@ -33,15 +33,35 @@ class CptCodeAliasSeeder extends Seeder
             '81000' => 'análisis orina',
             '87040' => 'cultivo sangre',
             '80500' => 'hemocultivo',
+            '82951' => 'prueba tolerancia glucosa',
+
+            // Thyroid Tests
+            '84436' => 'T4 total',
+            '84439' => 'T4 libre',
+            '84443' => 'TSH',
+            '84480' => 'T3 total',
+            '84481' => 'T3 libre',
+
+            // Urine Tests
+            '84156' => 'proteína orina',
+            '82044' => 'microalbúmina orina',
 
             // Imaging
             '71020' => 'radiografía tórax',
             '71021' => 'radiografía pecho',
             '93307' => 'ecocardiograma',
             '76700' => 'ecografía abdominal',
+            '76705' => 'ecografía abdominal limitada',
+            '76775' => 'ecografía renal',
+            '76778' => 'ecografía trasplante renal',
             '73610' => 'radiografía cadera',
             '93000' => 'EKG',
             '93005' => 'interpretación EKG',
+
+            // Obstetric Ultrasound
+            '76805' => 'ecografía obstétrica',
+            '76811' => 'ecografía obstétrica detallada',
+            '76816' => 'ecografía seguimiento embarazo',
         ];
 
         $updated = 0;

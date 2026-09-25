@@ -102,7 +102,7 @@
                                         <span class="cell-content" title="{{ $appointment->service_type }}">{{ Str::limit($appointment->service_type, 20) }}</span>
                                     </td>
                                     <td data-column="branch" data-priority="6" data-label="{{__('appointment.branch')}}">
-                                        <span class="cell-content">{{ $appointment->consultingRoom->branch->name }}</span>
+                                        <span class="cell-content">@if($appointment->consultation_type=='presencial'){{ $appointment->consultingRoom->branch->name }} @else Virtual @endif</span>
                                     </td>
                                     <td data-column="consulting_room" data-priority="7" data-label="{{__('appointment.consultorio')}}">
                                         <span class="cell-content" title="{{ $appointment->consultingRoom->name }}">{{ Str::limit($appointment->consultingRoom->name, 15) }}</span>

@@ -80,4 +80,6 @@ return [
     'all day' => 'todo el día',
     'otro' => 'otro',
     'urinary system' => 'sistema urinario',
+    'sistema renal' => 'sistema renal',
+    'crónico' => 'crónico',
 ];
