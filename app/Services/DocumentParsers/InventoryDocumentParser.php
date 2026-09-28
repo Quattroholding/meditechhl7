@@ -39,11 +39,23 @@ class InventoryDocumentParser extends BaseDocumentParser
             $this->addError('Error procesando PDF: '.$e->getMessage());
         }
 
+        // Calculate totals
+        $subtotal = 0.0;
+        $totalTax = 0.0;
+        foreach ($this->items as $item) {
+            $lineTotal = ((float) ($item['quantity'] ?? 0)) * ((float) ($item['unit_cost'] ?? 0));
+            $subtotal += $lineTotal;
+            $totalTax += (float) ($item['tax'] ?? 0);
+        }
+
         // Return result with metadata
         return $this->getResultWithMetadata($googleAIResponse, [
             'detected_format' => $this->detectedFormat,
             'batch_info' => $this->batchInfo,
             'additional_fields' => $this->additionalFields,
+            'subtotal' => $subtotal,
+            'total_tax' => $totalTax,
+            'total' => $subtotal + $totalTax,
         ]);
     }
 
@@ -178,6 +190,7 @@ class InventoryDocumentParser extends BaseDocumentParser
                 }
 
                 // Map numeric values to fields
+                // Impaduel format: cantidad, valor_unitario, descuento_unitario, monto, itbms, valor_item
                 if (count($numericValues) >= 1) {
                     $rowData['quantity'] = $numericValues[0];
                 }
@@ -185,11 +198,24 @@ class InventoryDocumentParser extends BaseDocumentParser
                     $rowData['unit_cost'] = $numericValues[1];
                 }
                 if (count($numericValues) >= 3) {
-                    // Store discount for additional_fields
+                    // Store discount per unit for additional_fields
                     $this->additionalFields['descuentos'] = $this->additionalFields['descuentos'] ?? [];
                     $this->additionalFields['descuentos'][] = [
                         'item_index' => $itemIndex,
-                        'descuento' => $numericValues[2],
+                        'descuento_unitario' => $numericValues[2],
+                    ];
+                }
+                // numericValues[3] = monto (line total) - not needed, we calculate it
+                // numericValues[4] = ITBMS (tax per item)
+                if (count($numericValues) >= 5) {
+                    $rowData['tax'] = $numericValues[4];
+                }
+                // numericValues[5] = valor_item (final value) - we could store this as well
+                if (count($numericValues) >= 6) {
+                    $this->additionalFields['valores_item'] = $this->additionalFields['valores_item'] ?? [];
+                    $this->additionalFields['valores_item'][] = [
+                        'item_index' => $itemIndex,
+                        'valor_item' => $numericValues[5],
                     ];
                 }
 
@@ -652,6 +678,14 @@ class InventoryDocumentParser extends BaseDocumentParser
         // Add optional fields
         if (! empty($rowData['unit'] ?? null)) {
             $item['unit'] = trim($rowData['unit']);
+        }
+
+        // Add tax if present
+        if (! empty($rowData['tax'] ?? null)) {
+            $tax = $this->validateNumericField($rowData['tax'], 'Impuesto', $rowIndex, false);
+            if ($tax !== null) {
+                $item['tax'] = $tax;
+            }
         }
 
         $this->items[] = $item;
