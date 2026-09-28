@@ -120,8 +120,8 @@ class InventoryDocumentParser extends BaseDocumentParser
                 continue;
             }
 
-            // Look for SKU - Product Name pattern
-            if ($this->isProductCodeLine($line) && strpos($line, '-') !== false) {
+            // Look for SKU - Product Name pattern (e.g., "001-470242 - WELLBUTRIN XL TAB LIB")
+            if ($this->containsSKUAndName($line)) {
                 $rowData = [];
 
                 // Extract SKU and initial name
@@ -135,7 +135,7 @@ class InventoryDocumentParser extends BaseDocumentParser
                     $checkLine = $lines[$nameStart];
 
                     // Stop at numeric line or if next product is found
-                    if ($this->isNumericLine($checkLine) || (strpos($checkLine, '-') !== false && $this->isProductCodeLine($checkLine))) {
+                    if ($this->isNumericLine($checkLine) || $this->containsSKUAndName($checkLine)) {
                         break;
                     }
 
@@ -162,7 +162,7 @@ class InventoryDocumentParser extends BaseDocumentParser
                     $nextLine = $lines[$i + 1];
 
                     // Stop if it's a batch info line or new product
-                    if ($this->isBatchInfoLine($nextLine) || (strpos($nextLine, '-') !== false && $this->isProductCodeLine($nextLine))) {
+                    if ($this->isBatchInfoLine($nextLine) || $this->containsSKUAndName($nextLine)) {
                         break;
                     }
 
