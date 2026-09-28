@@ -98,6 +98,9 @@ class ParseDocumentJob implements ShouldQueue
                 'extracted_data' => json_encode([
                     'items' => $parseResult['items'],
                     'confidence' => $parseResult['confidence'],
+                    'subtotal' => $parseResult['subtotal'] ?? 0,
+                    'total_tax' => $parseResult['total_tax'] ?? 0,
+                    'total' => $parseResult['total'] ?? 0,
                 ]),
                 'confidence_score' => $parseResult['confidence'],
                 'detected_format' => $parseResult['detected_format'] ?? 'standard',
