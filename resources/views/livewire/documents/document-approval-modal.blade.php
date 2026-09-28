@@ -78,7 +78,7 @@
                                     <th class="px-3 py-2 text-left">Nombre</th>
                                     <th class="px-3 py-2 text-right">Cantidad</th>
                                     <th class="px-3 py-2 text-right">Costo Unit.</th>
-                                    <th class="px-3 py-2 text-right">Desc. Unit.</th>
+                                    <th class="px-3 py-2 text-right">Desc</th>
                                     <th class="px-3 py-2 text-right">Impuesto</th>
                                     <th class="px-3 py-2 text-right">Total</th>
                                     <th class="px-3 py-2 text-center">Acciones</th>

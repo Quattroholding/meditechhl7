@@ -1,0 +1,8 @@
+{
+  "logoClickUrl": "https://sami.com",
+  "logoImageUrl": "{{ logo_url }}",
+  "logoTitle": "SAMI",
+  "appName": "SAMI Telemedicina",
+  "brandWatermarkLink": "",
+  "hideWatermark": true
+}

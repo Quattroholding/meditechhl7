@@ -21,7 +21,7 @@ class DocumentUploadPolicy
     public function view(User $user, DocumentUpload $documentUpload): bool
     {
         // Admins can view all documents
-        if ($user->hasRole('admin') || $user->hasRole('super-admin')) {
+        if ($user->hasRole('admin')) {
             return true;
         }
 

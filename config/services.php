@@ -143,4 +143,16 @@ return [
         'key_id' => env('JITSI_KEY_ID'),
     ],
 
+    'google' => [
+        'document_ai' => [
+            'enabled' => env('GOOGLE_DOCUMENT_AI_ENABLED', false),
+            'project_id' => env('GOOGLE_DOCUMENT_AI_PROJECT_ID'),
+            'location' => env('GOOGLE_DOCUMENT_AI_LOCATION', 'us-east1'),
+            'processor_id' => env('GOOGLE_DOCUMENT_AI_PROCESSOR_ID'),
+            'credentials_path' => env('GOOGLE_APPLICATION_CREDENTIALS'),
+            'timeout' => env('GOOGLE_DOCUMENT_AI_TIMEOUT', 120),
+            'max_file_size' => env('GOOGLE_DOCUMENT_AI_MAX_FILE_SIZE', 10 * 1024 * 1024), // 10MB
+        ],
+    ],
+
 ];

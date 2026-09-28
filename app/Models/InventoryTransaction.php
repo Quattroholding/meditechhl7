@@ -16,12 +16,12 @@ class InventoryTransaction extends Model
 
     protected $fillable = [
         'transaction_type', 'transaction_date', 'inventory_item_id', 'quantity_change',
-        'unit_of_measure', 'quantity_before', 'quantity_after', 'from_location_client_id',
-        'from_location_branch_id', 'from_location_practitioner_id', 'from_location_consulting_room_id',
-        'to_location_client_id', 'to_location_branch_id', 'to_location_practitioner_id',
-        'to_location_consulting_room_id', 'lot_number', 'serial_number', 'expiration_date',
-        'unit_cost', 'total_cost', 'supply_request_id', 'supply_delivery_id', 'charge_item_id',
-        'patient_id', 'encounter_id', 'performed_by_user_id', 'authorized_by_user_id',
+        'unit_of_measure', 'unit_type', 'quantity_before', 'quantity_after',
+        'from_location_client_id', 'from_location_branch_id', 'from_location_practitioner_id',
+        'from_location_consulting_room_id', 'to_location_client_id', 'to_location_branch_id',
+        'to_location_practitioner_id', 'to_location_consulting_room_id', 'lot_number', 'serial_number',
+        'expiration_date', 'unit_cost', 'total_cost', 'supply_request_id', 'supply_delivery_id',
+        'charge_item_id', 'patient_id', 'encounter_id', 'performed_by_user_id', 'authorized_by_user_id',
         'reason', 'notes', 'client_id',
     ];
 

@@ -19,7 +19,7 @@ class SupplyDelivery extends BaseModel
 
     protected $fillable = [
         'fhir_id', 'identifier', 'status', 'based_on_supply_request_id',
-        'inventory_item_id', 'supplied_quantity', 'unit_of_measure', 'lot_number',
+        'inventory_item_id', 'supplied_quantity', 'unit_of_measure', 'unit_type', 'lot_number',
         'serial_number', 'expiration_date', 'patient_id', 'encounter_id',
         'practitioner_id', 'occurrence_datetime', 'client_id', 'branch_id',
         'practitioner_inventory_id',

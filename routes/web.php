@@ -300,3 +300,8 @@ Route::get('/test-email', function () {
  */
 Route::get('/verificar-incapacidad/{verificationHash}', [MedicalLeaveVerificationController::class, 'verify'])
     ->name('medical-leave.verify');
+
+/**
+ * Document Management Routes
+ */
+require __DIR__.'/web/documents.php';

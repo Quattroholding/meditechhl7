@@ -15,8 +15,8 @@ class InventoryReport extends BaseModel
     protected $fillable = [
         'fhir_id', 'inventory_item_id', 'status', 'client_id', 'branch_id',
         'practitioner_id', 'consulting_room_id', 'quantity_on_hand',
-        'quantity_reserved', 'lot_number', 'serial_number', 'expiration_date',
-        'reported_datetime', 'reported_by_practitioner_id',
+        'quantity_reserved', 'internal_units_on_hand', 'lot_number', 'serial_number',
+        'expiration_date', 'reported_datetime', 'reported_by_practitioner_id',
     ];
 
     protected function casts(): array
@@ -24,6 +24,7 @@ class InventoryReport extends BaseModel
         return [
             'quantity_on_hand' => 'decimal:2',
             'quantity_reserved' => 'decimal:2',
+            'internal_units_on_hand' => 'decimal:2',
             'expiration_date' => 'date',
             'reported_datetime' => 'datetime',
         ];

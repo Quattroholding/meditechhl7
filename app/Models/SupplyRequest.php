@@ -17,9 +17,9 @@ class SupplyRequest extends BaseModel
 
     protected $fillable = [
         'fhir_id', 'identifier', 'status', 'intent', 'priority', 'inventory_item_id',
-        'quantity', 'unit_of_measure', 'patient_id', 'encounter_id', 'practitioner_id',
-        'is_billable', 'is_free', 'custom_price', 'reason_code', 'reason_reference',
-        'occurrence_datetime', 'client_id', 'branch_id', 'consulting_room_id',
+        'quantity', 'unit_of_measure', 'unit_type', 'patient_id', 'encounter_id',
+        'practitioner_id', 'is_billable', 'is_free', 'custom_price', 'reason_code',
+        'reason_reference', 'occurrence_datetime', 'client_id', 'branch_id', 'consulting_room_id',
     ];
 
     protected function casts(): array

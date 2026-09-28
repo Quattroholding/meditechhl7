@@ -1,0 +1,937 @@
+╔════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                        MEDITECH2 - ARQUITECTURA COMPLETA                                       ║
+║            Sistema Integral de Gestión Sanitaria Multi-Tenant Healthcare Platform             ║
+║                    Laravel 13 | PHP 8.3 | React 18 | Livewire 4 | MySQL                       ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+ NIVEL 1: PRESENTACIÓN - INTERFACES DE USUARIO
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                      NAVEGADOR WEB / MOBILE                                    │
+└─────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                              ↓
+        ┌─────────────────────────────────────┼─────────────────────────────────────┐
+        │                                     │                                     │
+        ↓                                     ↓                                     ↓
+  ┌──────────────┐                   ┌──────────────┐                   ┌──────────────┐
+  │  React 18    │                   │  Livewire 4  │                   │  Bootstrap 5 │
+  │  Components  │                   │  Components  │                   │   Legacy UI  │
+  ├──────────────┤                   ├──────────────┤                   ├──────────────┤
+  │ • Dashboard  │                   │ • Pacientes  │                   │ • Formularios│
+  │ • Analytics  │                   │ • Citas      │                   │ • Tablas     │
+  │ • Reportes   │                   │ • Consultas  │                   │ • Widgets    │
+  │ • Gráficos   │                   │ • Real-time  │                   │ • Modales    │
+  └──────────────┘                   └──────────────┘                   └──────────────┘
+        ↓                                     ↓                                     ↓
+        └─────────────────────────────────────┼─────────────────────────────────────┘
+                                              │
+                        ┌─ Styling ──────┬────┴─────────┬────────────────────┐
+                        │                │              │                    │
+                        ↓                ↓              ↓                    ↓
+                   ┌─────────┐    ┌─────────────┐  ┌─────────┐       ┌──────────┐
+                   │Tailwind │    │ Alpine.js   │  │  jQuery │       │Zoom SDK  │
+                   │CSS 4.0  │    │ (x-directives)    │Legacy │       │6.2.0    │
+                   │Utility  │    │ Interactivity │  │Support │       │Meeting   │
+                   │Classes  │    │Lightweight  │  │        │       │Embed     │
+                   └─────────┘    └─────────────┘  └─────────┘       └──────────┘
+                        │                │              │                    │
+                        └─────────────────┼──────────────┴────────────────────┘
+                                          │
+                                    HTTP/WebSocket
+                                    REST API / JSON-RPC
+                                          │
+            ┌─────────────────────────────┼─────────────────────────────┐
+            │                             │                             │
+            ↓                             ↓                             ↓
+      [Localhost:8000]            [WebSocket Server]           [External APIs]
+      Laravel Octane              Pusher/Reverb                Zoom, Microsoft, etc
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+ NIVEL 2: APLICACIÓN - LÓGICA DE NEGOCIO (LARAVEL 13)
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                       LARAVEL APPLICATION KERNEL (PHP 8.3)                                     │
+├─────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                 │
+│  REQUEST LIFECYCLE:                                                                             │
+│  ┌────────┐ → ┌──────────┐ → ┌────────┐ → ┌──────────┐ → ┌──────────┐ → ┌──────────┐         │
+│  │ Router │   │Middleware│   │Controller   │Service  │   │ Eloquent │   │Response  │         │
+│  └────────┘   └──────────┘   └────────┘   └──────────┘   └──────────┘   └──────────┘         │
+│       │            │              │            │              │              │                 │
+│       └────────────┴──────────────┴────────────┴──────────────┴──────────────┘                 │
+│                                                                                                 │
+│  ┌─── HTTP CONTROLLERS ─────────────────────────────────────────────────────────┐              │
+│  │ • Auth/AuthController              • Dashboard/DashboardController           │              │
+│  │ • Patient/PatientController        • Appointment/AppointmentController       │              │
+│  │ • Practitioner/PractitionerController  • Consultation/ConsultationController │              │
+│  │ • ZoomOAuthController              • ZoomWebhookController                   │              │
+│  │ • Microsoft/CalendarController     • Twilio/NotificationController           │              │
+│  └───────────────────────────────────────────────────────────────────────────────┘              │
+│                                                                                                 │
+│  ┌─── MODELS & ELOQUENT ORM ─────────────────────────────────────────────────────┐             │
+│  │                                                                                 │             │
+│  │  Base: BaseModel (Auditing)                                                    │             │
+│  │  ├─ User                 ├─ Appointment          ├─ PractitionerZoomProfile  │             │
+│  │  ├─ Patient              ├─ Encounter            ├─ ZoomWebhook              │             │
+│  │  ├─ Practitioner         ├─ MedicalHistory       ├─ FileAttachment           │             │
+│  │  ├─ Client (Tenant)      ├─ MedicationRequest    ├─ UserLog                  │             │
+│  │  ├─ ConsultingRoom       ├─ Diagnosis            ├─ AuditLog                 │             │
+│  │  └─ Branch               └─ VitalSigns           └─ StatusHistoryLog         │             │
+│  │                                                                                 │             │
+│  │  Global Scopes (Auto-Filter):                                                  │             │
+│  │  • PatientScope: WHERE client_id = Auth::user()->client_id                    │             │
+│  │  • PractitionerScope: WHERE client_id = Auth::user()->client_id               │             │
+│  │  • AppointmentScope: WHERE client_id IN (user's clients)                      │             │
+│  └───────────────────────────────────────────────────────────────────────────────┘             │
+│                                                                                                 │
+│  ┌─── SERVICES (Business Logic) ────────────────────────────────────────────────┐              │
+│  │ • ZoomService         → Manejo de reuniones, OAuth, webhooks                  │              │
+│  │ • MicrosoftGraphService → Sincronización de calendarios                       │              │
+│  │ • TwilioService       → SMS, WhatsApp, notificaciones                         │              │
+│  │ • FileService         → AWS S3, Dropbox, almacenamiento de archivos          │              │
+│  │ • PusherService       → Broadcasting, canales privados/presencia             │              │
+│  │ • AppointmentService  → Lógica de citas, disponibilidad, cancelaciones       │              │
+│  │ • ConsultationService → Documentación clínica, FHIR mapping                  │              │
+│  └──────────────────────────────────────────────────────────────────────────────┘              │
+│                                                                                                 │
+│  ┌─── MIDDLEWARE & POLICIES ────────────────────────────────────────────────────┐              │
+│  │ • Authenticate (Fortify)      → Validar usuario autenticado                   │              │
+│  │ • ThrottleRequests            → Rate limiting (login, API)                    │              │
+│  │ • VerifyCsrfToken             → CSRF protection en formularios               │              │
+│  │ • TrustProxies                → Configuración de proxies                      │              │
+│  │ • Policies (Authorization)    → admin, doctor, paciente, asistente           │              │
+│  │ • MultiTenantMiddleware       → Validar acceso a cliente                      │              │
+│  └──────────────────────────────────────────────────────────────────────────────┘              │
+│                                                                                                 │
+│  ┌─── EVENTS & LISTENERS (Decoupling) ──────────────────────────────────────────┐             │
+│  │ • AppointmentCreated → Enviar email, SMS, crear reunión Zoom                 │             │
+│  │ • AppointmentStarted → Broadcast a clientes, registrar en auditoría          │             │
+│  │ • ConsultationCompleted → Procesar grabación, generar factura                │             │
+│  │ • UserLoggedIn → Registrar login, auditoría                                  │             │
+│  │ • RecordingProcessed → Notificar a médico y paciente                         │             │
+│  └──────────────────────────────────────────────────────────────────────────────┘              │
+│                                                                                                 │
+│  ┌─── QUEUE JOBS (Async Processing) ──────────────────────────────────────────┐               │
+│  │ • SendAppointmentNotificationJob      → Email + SMS                          │               │
+│  │ • CreateZoomMeetingJob               → API call a Zoom                        │               │
+│  │ • DownloadZoomRecordingJob           → Descargar a S3                        │               │
+│  │ • GenerateReportJob                  → PDF, gráficos                         │               │
+│  │ • SyncMicrosoftCalendarJob           → Sincronizar eventos                   │               │
+│  │ • ProcessZoomWebhookJob              → Webhook processing con retry          │               │
+│  └───────────────────────────────────────────────────────────────────────────────┘              │
+│                                                                                                 │
+│  ┌─── SCHEDULED COMMANDS (Cron) ──────────────────────────────────────────────┐               │
+│  │ • SendAppointmentReminders (cada 5 min)                                       │               │
+│  │ • RefreshZoomTokens (cada 55 min)                                            │               │
+│  │ • SyncMicrosoftCalendars (cada hora)                                         │               │
+│  │ • CleanupExpiredSessions (diariamente)                                       │               │
+│  │ • GenerateDailyReports (cada mañana)                                         │               │
+│  └───────────────────────────────────────────────────────────────────────────────┘              │
+│                                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                              │
+                    ┌─────────────────────────┼─────────────────────────┐
+                    │                         │                         │
+                    ↓                         ↓                         ↓
+              [Database]                [Cache]                    [Queue]
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+ NIVEL 3: PERSISTENCIA - ALMACENAMIENTO DE DATOS
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+┌────────────────────────────────┐  ┌──────────────────────────────┐  ┌──────────────────────┐
+│        MySQL DATABASE          │  │       REDIS CACHE/QUEUE      │  │   AWS S3 STORAGE     │
+│                                │  │                              │  │                      │
+│ Multi-Tenant Isolation:        │  │ Session Store                │  │ Documentos clínicos  │
+│ • client_id en TODAS tablas    │  │ Query Results                │  │ Grabaciones Zoom     │
+│ • Global Scopes filtra auto    │  │ Rate Limiting Counters       │  │ Avatares de usuarios │
+│ • Foreign keys maintain        │  │ Job Queue (Redis driver)     │  │ Backups              │
+│   referential integrity        │  │ Real-time Channels (Pusher)  │  │                      │
+│                                │  │ Broadcasting Cache           │  │ Presigned URLs:      │
+│ Tablas Principales:            │  │                              │  │ • 24h expiration     │
+│ ├─ users                       │  │ Port: 6379                   │  │ • Por-usuario auth   │
+│ ├─ patients                    │  │ Max Memory: Configurable     │  │                      │
+│ ├─ practitioners               │  │ Eviction: LRU                │  │ Failover:            │
+│ ├─ appointments                │  │ Persistence: AOF/RDB         │  │ • Dropbox alternativo│
+│ ├─ encounters                  │  │                              │  │ • Replicación        │
+│ ├─ medical_histories           │  │ # Redis Commands:            │  │                      │
+│ ├─ medication_requests         │  │ redis-cli MONITOR            │  │ Region: us-east-1    │
+│ ├─ practitioner_zoom_profiles  │  │ redis-cli INFO               │  │ Versioning: Enabled  │
+│ ├─ zoom_webhooks               │  │ redis-cli FLUSHDB            │  │ Encryption: AES-256  │
+│ ├─ audit_logs                  │  │                              │  │                      │
+│ ├─ user_logs                   │  │                              │  │ Tagging:             │
+│ ├─ status_history_logs         │  │                              │  │ • patient_id         │
+│ ├─ clients                     │  │                              │  │ • practitioner_id    │
+│ ├─ consulting_rooms            │  │                              │  │ • appointment_id     │
+│ ├─ branches                    │  │                              │  │                      │
+│ ├─ roles                       │  │                              │  │ CloudFront CDN:      │
+│ ├─ permissions                 │  │                              │  │ • TTL: 1 day         │
+│ └─ file_attachments (polymorp) │  │                              │  │ • HTTPS only         │
+│                                │  │                              │  │ • Compress enabled   │
+│ Indexing:                      │  │                              │  │                      │
+│ • Composite: (client_id, id)   │  │                              │  └──────────────────────┘
+│ • Search: (name, email)        │  │                              │
+│ • Timestamps: (created_at)     │  │                              │
+│ • UNIQUE: email per tenant     │  │                              │
+│                                │  │                              │
+│ Backup Strategy:               │  │                              │
+│ • Nightly backup to S3         │  │                              │
+│ • Point-in-time recovery (7d)  │  │                              │
+│ • Cross-region replication     │  │                              │
+│ • Encrypted at rest (AES-256)  │  │                              │
+│                                │  │                              │
+│ InnoDB:                        │  │                              │
+│ • Transactions (ACID)          │  │                              │
+│ • Row-level locking            │  │                              │
+│ • Foreign keys enabled         │  │                              │
+│ • Crash recovery              │  │                              │
+└────────────────────────────────┘  └──────────────────────────────┘  └──────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+ NIVEL 4: SERVIDOR DE APLICACIÓN - LARAVEL OCTANE
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                     LARAVEL OCTANE SERVER (Long-Running PHP Worker)                            │
+├─────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                 │
+│  ┌──────────────────────────────────────────────────────────────────────────────────────────┐  │
+│  │ BOOTSTRAP (Ejecutado UNA sola vez al iniciar servidor)                                  │  │
+│  │ • Cargar Laravel application container                                                  │  │
+│  │ • Compilar rutas y caché de configuración                                              │  │
+│  │ • Inicializar service providers                                                        │  │
+│  │ • Establecer conexión a base de datos (persistent)                                     │  │
+│  │ • Conectar a Redis, Pusher, etc.                                                       │  │
+│  └──────────────────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                                 │
+│  ┌──────────────────────────────────────────────────────────────────────────────────────────┐  │
+│  │ WORKER POOL (Manejo de múltiples requests concurrentes)                                │  │
+│  │                                                                                          │  │
+│  │  ┌─────────────────────────┐                                                           │  │
+│  │  │ Worker 1 (PID: 1001)    │  ┌─────────────────────────┐                             │  │
+│  │  │                         │  │ Worker 2 (PID: 1002)    │  ┌─────────────────────────┐ │  │
+│  │  │ Request 1 → Response 1  │  │                         │  │ Worker N (PID: 100N)    │ │  │
+│  │  │ (0.5s)                  │  │ Request 2 → Response 2  │  │                         │ │  │
+│  │  │                         │  │ (0.3s)                  │  │ Request N → Response N  │ │  │
+│  │  │ [Idle/Processing]       │  │                         │  │ (0.8s)                  │ │  │
+│  │  │                         │  │ [Idle/Processing]       │  │                         │ │  │
+│  │  └─────────────────────────┘  └─────────────────────────┘  │ [Idle/Processing]       │ │  │
+│  │                                                              └─────────────────────────┘ │  │
+│  │  # Workers = CPU cores (configurable)                                                   │  │
+│  │  # Concurrent requests = # Workers (Swoole permite > cores)                             │  │
+│  │  Request routing: Load balancer (kernel handles)                                       │  │
+│  │                                                                                          │  │
+│  └──────────────────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                                 │
+│  ┌──────────────────────────────────────────────────────────────────────────────────────────┐  │
+│  │ MEMORY MANAGEMENT                                                                       │  │
+│  │                                                                                          │  │
+│  │ Per-Worker Memory:                                                                      │  │
+│  │ • Application kernel: ~20-50 MB (shared)                                               │  │
+│  │ • Per-request state: ~1-5 MB (scoped, cleaned up)                                      │  │
+│  │ • Database connections: Persistent (reused across requests)                            │  │
+│  │ • Cache connections: Persistent (reused)                                               │  │
+│  │                                                                                          │  │
+│  │ Cleanup After Each Request:                                                             │  │
+│  │ • Reset singletons                                                                     │  │
+│  │ • Clear request context                                                                │  │
+│  │ • Commit/rollback DB transactions                                                      │  │
+│  │ • Flush temporary data                                                                 │  │
+│  │                                                                                          │  │
+│  │ ⚠️  CRITICAL: Never store request data in static properties!                            │  │
+│  │     Static data persists across requests → potential data leaks                         │  │
+│  │                                                                                          │  │
+│  └──────────────────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                                 │
+│  ┌──────────────────────────────────────────────────────────────────────────────────────────┐  │
+│  │ SERVER DRIVERS (Seleccionable)                                                          │  │
+│  │                                                                                          │  │
+│  │ 🔥 SWOOLE (Recomendado - Más rápido)                                                   │  │
+│  │   ├─ PHP Extension nativa                                                              │  │
+│  │   ├─ Soporte verdadero de corrutinas                                                   │  │
+│  │   ├─ Mejor rendimiento (10-100x)                                                       │  │
+│  │   ├─ Requiere: pecl install swoole                                                     │  │
+│  │   └─ Puertos: 8000 (HTTP), 6001 (WebSocket)                                            │  │
+│  │                                                                                          │  │
+│  │ 🛣️  ROADRUNNER (Portable - Recomendado en Docker)                                       │  │
+│  │   ├─ Daemon escrito en Go                                                              │  │
+│  │   ├─ No requiere PHP extension                                                         │  │
+│  │   ├─ Excelente para Kubernetes                                                         │  │
+│  │   ├─ Requiere: rr serve                                                                │  │
+│  │   └─ Puertos: 8000 (HTTP), 6001 (WebSocket)                                            │  │
+│  │                                                                                          │
+│  │ 🥐 FRANKENPHP (Moderno - PHP integrado)                                                │  │
+│  │   ├─ Integración PHP moderna                                                           │  │
+│  │   ├─ Desarrollo en PHP puro                                                            │  │
+│  │   ├─ Caddy integrado (HTTPS automático)                                                │  │
+│  │   ├─ Requiere: frankenphp serve                                                        │  │
+│  │   └─ Puertos: 443 (HTTPS automático)                                                   │  │
+│  │                                                                                          │  │
+│  └──────────────────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                              │
+                    ┌─────────────────────────┼─────────────────────────┐
+                    │                         │                         │
+                    ↓                         ↓                         ↓
+            [Nginx Proxy]           [WebSocket Upgrade]        [External Services]
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+ NIVEL 5: SERVICIOS EXTERNOS E INTEGRACIONES
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────┐  ┌──────────────────────────┐  ┌──────────────────────────┐
+│      🔷 ZOOM CLOUD       │  │ 📘 MICROSOFT GRAPH API   │  │    📱 TWILIO             │
+├──────────────────────────┤  ├──────────────────────────┤  ├──────────────────────────┤
+│                          │  │                          │  │                          │
+│ OAuth 2.0 Flow:          │  │ OAuth 2.0 Flow:          │  │ REST API (Basic Auth):   │
+│ ┌──────────────────────┐ │  │ ┌──────────────────────┐ │  │ ┌──────────────────────┐ │
+│ │ GET /oauth/authorize │ │  │ │ GET /oauth/authorize │ │  │ │ POST /Messages/       │ │
+│ │ +code → POST /token  │ │  │ │ +code → POST /token  │ │  │ │ POST /Services/..    │ │
+│ │                      │ │  │ │                      │ │  │ │                      │ │
+│ │ Tokens guardados en: │ │  │ │ Tokens guardados en: │ │  │ │ Suscripción de API:  │
+│ │ practitioner_zoom    │ │  │ │ user profile / DB    │ │  │ │ • Account Sid        │
+│ │ _profiles table      │ │  │ │                      │ │  │ │ • Auth Token         │
+│ └──────────────────────┘ │  │ └──────────────────────┘ │  │ └──────────────────────┘
+│                          │  │                          │  │                          │
+│ REST API Endpoints:      │  │ REST API Endpoints:      │  │ Funcionalidades:         │
+│ • POST /v2/meetings      │  │ • GET /me/calendar       │  │ • SMS Notifications      │
+│ • PUT /v2/meetings/{id}  │  │ • POST /me/events        │  │ • WhatsApp Messages      │
+│ • GET /v2/users/me       │  │ • GET /me/calendars      │  │ • Voice Calls (futuro)   │
+│ • GET /v2/meetings/{id}  │  │ • PATCH /events/{id}     │  │                          │
+│ • DELETE /v2/meetings    │  │ • DELETE /events/{id}    │  │ Rate Limits:             │
+│                          │  │                          │  │ • 1 req/sec per number   │
+│ Webhooks Soportados:     │  │ Integration Pattern:     │  │ • Max 50k msgs/month     │
+│ • meeting.started        │  │ • Sync calendars 2-way   │  │ • Max 5 concurrent       │
+│ • meeting.ended          │  │ • Push event updates     │  │                          │
+│ • recording.completed    │  │ • Create Zoom links      │  │ Job: SendNotification    │
+│ • participant_joined     │  │                          │  │ Queue: notifications     │
+│ • participant_left       │  │ Permissions:             │  │ Retry: exponential       │
+│                          │  │ • Calendars.ReadWrite    │  │                          │
+│ Refresh Token:           │  │ • Calendars.ReadWrite.All │  │                          │
+│ • Válido 15 días         │  │ • User.Read              │  │                          │
+│ • Scheduled refresh      │  │ • User.Read.All (admin)  │  │                          │
+│ • Auto-renew antes exp.  │  │                          │  │                          │
+│                          │  │                          │  │                          │
+└──────────────────────────┘  └──────────────────────────┘  └──────────────────────────┘
+
+┌──────────────────────────┐  ┌──────────────────────────┐  ┌──────────────────────────┐
+│    ☁️  AWS S3 + SES      │  │   🗂️  DROPBOX API        │  │    📊 PUSHER CHANNELS    │
+├──────────────────────────┤  ├──────────────────────────┤  ├──────────────────────────┤
+│                          │  │                          │  │                          │
+│ S3 Bucket Structure:     │  │ OAuth 2.0 Flow:          │  │ Real-time Broadcasting:  │
+│ meditech2-{region}/      │  │ • Generate access token  │  │ ┌──────────────────────┐ │
+│ ├─ patients/{id}/*       │  │ • Refresh token (90d)    │  │ │ Pusher SDK (PHP 7.3) │ │
+│ ├─ recordings/{id}/*     │  │ • API endpoint base      │  │ │ Version: 7.3.0       │ │
+│ ├─ documents/{id}/*      │  │                          │  │ │                      │ │
+│ ├─ avatars/{user}/*      │  │ REST API Endpoints:      │  │ │ Channels:            │
+│ └─ backups/daily/*       │  │ • POST /files/upload     │  │ │ • private-user.X     │ │
+│                          │  │ • GET /files/download    │  │ │ • private-apt.X      │ │
+│ SES Configuration:       │  │ • POST /sharing/add_      │  │ │ • presence-doctors   │ │
+│ • Verified domain        │  │   file_member            │  │ │ • alerts             │ │
+│ • DKIM + SPF records     │  │ • GET /sharing/list      │  │ │                      │ │
+│ • Bounce/Complaint rate  │  │                          │  │ │ Events:              │ │
+│ • Max 14d msg retention  │  │ Integration:             │  │ │ • AppointmentCreated │ │
+│                          │  │ • Backup de datos        │  │ │ • ConsultationStart  │ │
+│ Job: SendEmailJob        │  │ • Failover si S3 falla   │  │ │ • RecordingReady     │ │
+│ • Plantillas Blade       │  │ • Versioning habilitado  │  │ │ • StatusChanged      │ │
+│ • Attachments de DB      │  │                          │  │ │                      │ │
+│ • Encrypted at rest      │  │ Encryption:              │  │ │ Client:              │ │
+│ • Retry automático       │  │ • AES-256 at rest        │  │ │ • laravel-echo 2.4.0 │ │
+│                          │  │ • TLS in transit         │  │ │ • pusher-js 8.6.0    │ │
+│                          │  │                          │  │ │                      │ │
+│                          │  │                          │  │ │ Auth:                │ │
+│                          │  │                          │  │ │ • app_id / app_key   │ │
+│                          │  │                          │  │ │ • app_secret (server)│ │
+│                          │  │                          │  │                      │ │
+│                          │  │                          │  │ Max Connections:     │ │
+│                          │  │                          │  │ • Plan Sandboxed      │ │
+│                          │  │                          │  │ • 100 concurrent      │ │
+│                          │  │                          │  │ • Upgrade si necesita │ │
+│                          │  │                          │  │                      │ │
+└──────────────────────────┘  └──────────────────────────┘  └──────────────────────────┘
+
+┌──────────────────────────┐  ┌──────────────────────────┐  ┌──────────────────────────┐
+│  🤖 ANTHROPIC CLAUDE     │  │   📊 NIGHTWATCH          │  │ 🌐 LARAVEL REVERB       │
+├──────────────────────────┤  ├──────────────────────────┤  ├──────────────────────────┤
+│                          │  │                          │  │                          │
+│ AI Capabilities:         │  │ Monitoring & Logging:    │  │ WebSocket Server:        │
+│ • Resúmenes clínicos     │  │ • Exception tracking     │  │ • Local alternative      │
+│ • Análisis de textos     │  │ • Performance metrics    │  │   a Pusher              │
+│ • Asistencia diagnóstica │  │ • Deployment tracking    │  │ • Broadcasting nativo    │
+│ • Procesamiento docs     │  │ • Custom events          │  │ • Connection multiplexed │
+│                          │  │                          │  │                          │
+│ SDK Integration:         │  │ Version: 1.28.7          │  │ Integration with Octane: │
+│ • anthropic-ai/sdk       │  │                          │  │ • Pusher fallback        │
+│   (0.41.0)               │  │ Features:                │  │ • Automatic reconnect    │
+│ • laravel/ai (0.10.3)    │  │ • Real-time dashboard    │  │ • Channel persistence    │
+│                          │  │ • Slack notifications    │  │                          │
+│ API Key Auth:            │  │ • Webhooks               │  │ Configuration:           │
+│ • Store en .env          │  │ • Multiple environments  │  │ • REVERB_APP_ID          │
+│ • Rate limiting: depends │  │                          │  │ • REVERB_APP_KEY         │
+│ • Token usage tracking   │  │ Application ID:          │  │ • Ports: 8080/443        │
+│                          │  │ • Suscripción de API     │  │                          │
+│                          │  │ • Dashboard en           │  │ Security:                │
+│                          │  │   nightwatch.laravel.com │  │ • Private channels auth  │
+│                          │  │                          │  │ • Presence verification  │
+│                          │  │                          │  │ • Rate limiting built-in │
+│                          │  │                          │  │                          │
+└──────────────────────────┘  └──────────────────────────┘  └──────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+ NIVEL 6: FLUJO COMPLETO - CONSULTA MÉDICA CON ZOOM
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ TIMELINE DE UNA CONSULTA MÉDICA                                                                │
+└─────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+FASE 1: PROGRAMACIÓN (T-24 horas)
+╔═════════════════════════════════════════════════════════════════════════════════════════════╗
+║ 1. Paciente reserva cita                                                                  ║
+║    POST /appointments                                                                      ║
+║    └─> Crear Appointment (status=SCHEDULED)                                               ║
+║        ├─ user_id (paciente)                                                              ║
+║        ├─ practitioner_id (médico)                                                        ║
+║        ├─ appointment_date                                                                ║
+║        ├─ appointment_time                                                                ║
+║        ├─ consulting_room_id                                                              ║
+║        └─ client_id (multi-tenant isolation)                                              ║
+║                                                                                            ║
+║ 2. Evento AppointmentCreated disparado                                                    ║
+║    └─> Listeners ejecutados:                                                              ║
+║        ├─ CreateZoomMeetingListener (Job)                                                 ║
+║        ├─ SendNotificationListener (Queue)                                                ║
+║        └─ BroadcastAppointmentListener (Pusher)                                           ║
+║                                                                                            ║
+║ 3. CreateZoomMeetingJob (en Queue)                                                        ║
+║    └─> Obtener access_token de practitioner_zoom_profiles                                 ║
+║        POST https://zoom.us/v2/meetings                                                   ║
+║        {                                                                                  ║
+║          "topic": "Consulta - Juan Pérez",                                               ║
+║          "type": 2,                                                                       ║
+║          "start_time": "2026-09-05T10:00:00Z",                                           ║
+║          "duration": 30,                                                                  ║
+║          "password": "secure_pass_123",                                                   ║
+║          "settings": {                                                                    ║
+║            "join_before_host": false,                                                    ║
+║            "waiting_room": true,                                                         ║
+║            "recording": "local"                                                          ║
+║          }                                                                                ║
+║        }                                                                                  ║
+║        └─> Respuesta: meeting_id, start_url, join_url                                    ║
+║            └─> UPDATE Appointment con zoom_meeting_id                                    ║
+║                                                                                            ║
+║ 4. SendNotificationJob (en Queue)                                                         ║
+║    ├─ Email (AWS SES):                                                                    ║
+║    │  └─ "Tu cita está programada para..."                                              ║
+║    │     Incluir: Zoom link, hora, médico                                                ║
+║    │                                                                                      ║
+║    ├─ SMS (Twilio):                                                                      ║
+║    │  └─ "Consulta confirma: [URL Zoom] a las 10:00"                                    ║
+║    │                                                                                      ║
+║    └─ Calendario (Microsoft Graph):                                                      ║
+║       └─ POST /me/events                                                                  ║
+║          Crear evento en Outlook del médico + paciente                                   ║
+║                                                                                            ║
+║ 5. BroadcastAppointmentListener (Pusher)                                                 ║
+║    └─ Emit evento: "AppointmentCreated"                                                  ║
+║       Channel: private-user.{paciente_id}.appointments                                   ║
+║       Frontend recibe update en tiempo real                                              ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════╝
+
+FASE 2: PRE-CONSULTA (T-15 minutos)
+╔═════════════════════════════════════════════════════════════════════════════════════════════╗
+║ 6. SendAppointmentReminders Command (ejecución automática cada 5 min)                      ║
+║    └─> Buscar appointments con scheduled_date en próximos 15 minutos                       ║
+║        ├─ SMS Recordatorio (Twilio)                                                       ║
+║        │  "Tu consulta comienza en 15 min: [Zoom link]"                                  ║
+║        │                                                                                   ║
+║        ├─ Email recordatorio                                                              ║
+║        │                                                                                   ║
+║        └─ Pusher broadcast:                                                               ║
+║           Event: "AppointmentStartingIn"                                                  ║
+║           Payload: {appointment_id, remaining_minutes}                                    ║
+║           → Frontend muestra modal de recordatorio                                        ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════╝
+
+FASE 3: INICIO DE CONSULTA (T=0)
+╔═════════════════════════════════════════════════════════════════════════════════════════════╗
+║ 7. Médico accede a /appointments/{id}                                                     ║
+║    └─> Click en "Iniciar Zoom"                                                            ║
+║        └─ Redirect a zoom_start_url (médico puede controlar reunión)                      ║
+║           Zoom Meeting SDK carga interfaz                                                 ║
+║           └─ UPDATE Appointment: status = IN_PROGRESS                                     ║
+║                                                                                            ║
+║ 8. WEBHOOK: meeting.started (enviado por Zoom)                                            ║
+║    POST /api/webhooks/zoom                                                                ║
+║    Payload:                                                                               ║
+║    {                                                                                      ║
+║      "event": "meeting.started",                                                         ║
+║      "payload": {                                                                        ║
+║        "object": {                                                                       ║
+║          "id": "92123456789",                                                            ║
+║          "uuid": "zoom-uuid-12345",                                                      ║
+║          "host_id": "zoom_user_id",                                                      ║
+║          "topic": "Consulta - Juan Pérez",                                               ║
+║          "user_name": "Dr. Smith",                                                       ║
+║          "start_time": "2026-09-05T10:00:00Z",                                          ║
+║          "duration": 0                                                                   ║
+║        }                                                                                 ║
+║      }                                                                                   ║
+║    }                                                                                      ║
+║    ├─> Validar firma HMAC-SHA256                                                         ║
+║    ├─> Guardar en zoom_webhooks table                                                    ║
+║    ├─> UPDATE Appointment:                                                               ║
+║    │   └─ status = IN_PROGRESS                                                           ║
+║    │   └─ zoom_started_at = NOW()                                                        ║
+║    └─> Evento: ConsultationStarted                                                       ║
+║        └─ Notificación a paciente (Pusher)                                               ║
+║                                                                                            ║
+║ 9. Durante la llamada:                                                                    ║
+║    ├─ Zoom graba automáticamente (recording: local)                                       ║
+║    ├─ Sistema registra participantes                                                      ║
+║    ├─ Metrics: duración actual, calidad de audio/video                                    ║
+║    └─ Evento cada 1 min: heartbeat enviado a DB                                           ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════╝
+
+FASE 4: FINALIZACIÓN (T+30 minutos)
+╔═════════════════════════════════════════════════════════════════════════════════════════════╗
+║ 10. WEBHOOK: meeting.ended (enviado por Zoom)                                             ║
+║     POST /api/webhooks/zoom                                                               ║
+║     Payload:                                                                              ║
+║     {                                                                                     ║
+║       "event": "meeting.ended",                                                          ║
+║       "payload": {                                                                       ║
+║         "object": {                                                                      ║
+║           "id": "92123456789",                                                           ║
+║           "uuid": "zoom-uuid-12345",                                                     ║
+║           "end_time": "2026-09-05T10:30:00Z"                                            ║
+║         }                                                                                ║
+║       }                                                                                  ║
+║     }                                                                                     ║
+║     └─> ProcessZoomWebhookJob (queue)                                                    ║
+║         ├─ UPDATE Appointment:                                                           ║
+║         │   ├─ status = COMPLETED                                                        ║
+║         │   ├─ zoom_ended_at = NOW()                                                     ║
+║         │   └─ zoom_duration_minutes = 30                                                ║
+║         └─> Evento: ConsultationEnded                                                    ║
+║             └─ Notificación a ambos                                                      ║
+║                                                                                            ║
+║ 11. WEBHOOK: recording.completed (cuando Zoom termina de procesar)                        ║
+║     POST /api/webhooks/zoom                                                               ║
+║     Payload:                                                                              ║
+║     {                                                                                     ║
+║       "event": "recording.completed",                                                    ║
+║       "payload": {                                                                       ║
+║         "object": {                                                                      ║
+║           "id": "recording_id",                                                          ║
+║           "uuid": "meeting-uuid-12345",                                                  ║
+║           "recording_files": [                                                          ║
+║             {                                                                            ║
+║               "id": "file_id",                                                           ║
+║               "recording_type": "shared_screen_with_speaker_video",                      ║
+║               "download_url": "https://zoom.us/recording/download/...",                 ║
+║               "file_size": 157286400,                                                    ║
+║               "play_url": "https://zoom.us/rec/play/..."                                ║
+║             }                                                                            ║
+║           ]                                                                              ║
+║         }                                                                                ║
+║       }                                                                                  ║
+║     }                                                                                     ║
+║     └─> DownloadZoomRecordingJob (queue)                                                 ║
+║         ├─ GET {download_url} con access_token → Stream a AWS S3                        ║
+║         ├─ Generar presigned URL (24h expiration)                                        ║
+║         ├─ UPDATE Appointment:                                                           ║
+║         │   ├─ zoom_recording_url = presigned_url                                        ║
+║         │   ├─ zoom_recording_size = 157286400                                           ║
+║         │   └─ recording_processed_at = NOW()                                            ║
+║         └─ Evento: RecordingReady                                                        ║
+║             └─ Notificación a médico y paciente                                          ║
+║                                                                                            ║
+║ 12. Médico crea Encounter (Nota Clínica):                                                 ║
+║     POST /consultations                                                                   ║
+║     {                                                                                     ║
+║       "appointment_id": "...",                                                           ║
+║       "diagnosis": "Hipertensión",                                                       ║
+║       "clinical_notes": "Paciente presenta...",                                          ║
+║       "vital_signs": {                                                                   ║
+║         "blood_pressure": "140/90",                                                      ║
+║         "heart_rate": 85,                                                                ║
+║         "temperature": 37.5                                                              ║
+║       },                                                                                 ║
+║       "prescriptions": [                                                                 ║
+║         {                                                                                ║
+║           "medication": "Lisinopril",                                                    ║
+║           "dosage": "10mg",                                                              ║
+║           "frequency": "once daily"                                                      ║
+║         }                                                                                ║
+║       ]                                                                                  ║
+║     }                                                                                     ║
+║     └─> Crear Encounter model                                                            ║
+║         └─ FHIR mapping: Encounter + MedicationRequest                                   ║
+║             └─ Compliance: HIPAA, HL7, FHIR compatible                                   ║
+║                                                                                            ║
+║ 13. Auditoría Completa Registrada:                                                       ║
+║     ├─ audit_logs: Todos los cambios CRUD                                                ║
+║     ├─ user_logs: Actividades del usuario                                               ║
+║     ├─ status_history_logs: Estado transitions                                           ║
+║     └─ zoom_webhooks: Todos los webhooks procesados                                       ║
+║                                                                                            ║
+║ 14. Notificación Final:                                                                   ║
+║     Paciente recibe:                                                                      ║
+║     ├─ Email: "Tu consulta ha finalizado"                                               ║
+║     ├─ Link a grabación (presigned URL, 24h válida)                                      ║
+║     ├─ Recomendaciones del médico                                                        ║
+║     └─ Próxima cita sugerida                                                             ║
+║                                                                                            ║
+║     Médico recibe:                                                                        ║
+║     ├─ Notificación: "Grabación lista para descargar"                                   ║
+║     ├─ Link a grabación                                                                  ║
+║     └─ Opciones: Descargar, compartir, archivar                                         ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+ MATRIZ DE RESPONSABILIDADES
+═════════════════════════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────┬──────────────────────────────────────────────────────────────────┐
+│ COMPONENTE              │ RESPONSABILIDAD                                                  │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Frontend (React/        │ • Renderizar UI responsiva                                       │
+│ Livewire)               │ • Validación client-side                                         │
+│                         │ • Comunicación con backend (HTTP + WebSocket)                   │
+│                         │ • Estado local y global (context/Redux)                         │
+│                         │ • Manejo de errores y loading states                            │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Controllers             │ • Parsear y validar requests                                    │
+│                         │ • Ejecutar lógica de negocio vía Services                       │
+│                         │ • Retornar responses (JSON, HTML, redirect)                     │
+│                         │ • Manejo de errores y excepciones                               │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Services                │ • Encapsular lógica compleja de negocio                         │
+│                         │ • Integraciones con APIs externas                              │
+│                         │ • Operaciones multi-modelo                                      │
+│                         │ • Manejo de transacciones                                       │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Models                  │ • Mapear tablas a objetos PHP                                   │
+│                         │ • Definir relaciones (1:1, 1:N, N:N)                            │
+│                         │ • Scopes locales y globales                                     │
+│                         │ • Casts (JSON, dates, custom)                                  │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Middleware              │ • Autenticación (verificar token)                               │
+│                         │ • Autorización (verificar permisos)                             │
+│                         │ • Rate limiting                                                │
+│                         │ • Logging y monitoreo                                          │
+│                         │ • CORS, CSRF protection                                        │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Jobs (Queue)            │ • Procesamiento asincrónico de tareas pesadas                    │
+│                         │ • Reintentos automáticos con backoff exponencial               │
+│                         │ • Manejo de fallos y dead-lettering                             │
+│                         │ • Logging de progreso                                          │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Events                  │ • Desacoplamiento entre componentes                             │
+│                         │ • Broadcasting a múltiples listeners                           │
+│                         │ • Notificaciones en tiempo real                                │
+│                         │ • Historial de eventos                                         │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Database                │ • Almacenar datos persistentes                                  │
+│                         │ • Mantener integridad referencial (FKs)                        │
+│                         │ • Ejecutar queries optimizadas                                 │
+│                         │ • Transacciones ACID                                           │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Cache (Redis)           │ • Cachear queries frecuentes                                    │
+│                         │ • Almacenar sesiones                                           │
+│                         │ • Rate limiting counters                                       │
+│                         │ • Real-time channels (Pusher)                                  │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Zoom API                │ • Crear y gestionar reuniones                                   │
+│                         │ • Grabar sesiones                                              │
+│                         │ • Webhook validations                                          │
+│                         │ • Descarga de grabaciones                                      │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Microsoft Graph         │ • Sincronización de calendarios                                 │
+│                         │ • Crear eventos de Outlook                                    │
+│                         │ • Gestionar disponibilidad                                      │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Twilio                  │ • Enviar SMS                                                    │
+│                         │ • Enviar mensajes WhatsApp                                     │
+│                         │ • Gestionar notificaciones                                      │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ AWS S3                  │ • Almacenar documentos y grabaciones                            │
+│                         │ • Servir archivos mediante CDN (CloudFront)                    │
+│                         │ • Mantener integridad y seguridad de datos                     │
+├─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+│ Laravel Octane          │ • Ejecutar aplicación con long-running processes               │
+│                         │ • Gestionar worker pool                                        │
+│                         │ • Mantener estado persistente entre requests                   │
+└─────────────────────────┴──────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+ SEGURIDAD & COMPLIANCE
+═════════════════════════════════════════════════════════════════════════════════════════════════════
+
+ESTÁNDARES REGULATORIOS:
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ HIPAA (Health Insurance Portability and Accountability Act - USA)                  │
+│ • Proteger información médica protegida (PHI)                                      │
+│ • Encryption at rest y in transit (AES-256, TLS 1.2+)                             │
+│ • Auditoría de acceso (quién, qué, cuándo)                                        │
+│ • Notificación de brechas en 60 días                                              │
+│ • Cumplimiento: Meditech2 implementado ✓                                          │
+│                                                                                     │
+│ GDPR (General Data Protection Regulation - EU)                                    │
+│ • Consentimiento explícito para procesar datos                                    │
+│ • Derecho al olvido ("ser olvidado")                                              │
+│ • Data portability                                                                │
+│ • Privacy by design                                                               │
+│ • Cumplimiento: Meditech2 implementado ✓                                          │
+│                                                                                     │
+│ FHIR (Fast Healthcare Interoperability Resources - OHF)                           │
+│ • Estándar de datos sanitarios interoperables                                     │
+│ • Modelos: Patient, Practitioner, Appointment, Encounter, Condition               │
+│ • Cumplimiento: Meditech2 implementado ✓                                          │
+│                                                                                     │
+│ ISO/IEC 27001 (Information Security Management)                                   │
+│ • Protección de activos de información                                            │
+│ • Control de acceso basado en roles                                               │
+│ • Gestión de riesgos de seguridad                                                 │
+│ • Cumplimiento: Meditech2 implementado ✓                                          │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+MECANISMOS DE SEGURIDAD IMPLEMENTADOS:
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ 1. AUTENTICACIÓN                                                                    │
+│    ├─ Email/Password (Laravel Fortify)                                             │
+│    ├─ Email Verification                                                           │
+│    ├─ Two-Factor Authentication (2FA/TOTP)                                         │
+│    ├─ Passkeys (WebAuthn)                                                          │
+│    └─ Session timeout automático (30-60 min)                                       │
+│                                                                                     │
+│ 2. AUTORIZACIÓN                                                                    │
+│    ├─ Spatie Permission (RBAC)                                                     │
+│    ├─ Roles: admin, doctor, paciente, asistente                                   │
+│    ├─ Policies para modelos (Model-level authorization)                           │
+│    ├─ Global Scopes para isolation por cliente                                    │
+│    └─ Permission checks en controllers y modelos                                  │
+│                                                                                     │
+│ 3. ENCRIPTACIÓN                                                                    │
+│    ├─ DB Encryption (Laravel Crypt - AES-256-CBC)                                 │
+│    │  └─ Tokens OAuth, sensibles datos encriptados                                │
+│    ├─ TLS 1.2+ en tránsito                                                        │
+│    ├─ AWS S3 KMS encryption                                                       │
+│    ├─ Password hashing: bcrypt (rounds=12)                                        │
+│    └─ API keys no loggueados                                                      │
+│                                                                                     │
+│ 4. VALIDACIÓN & SANITIZACIÓN                                                      │
+│    ├─ Server-side validation (Form Requests)                                      │
+│    ├─ Input sanitization (Blade escaping)                                         │
+│    ├─ CSRF tokens en formularios                                                  │
+│    ├─ XSS protection (Content Security Policy)                                    │
+│    └─ SQL injection prevention (Eloquent ORM)                                     │
+│                                                                                     │
+│ 5. AUDITORÍA & LOGGING                                                            │
+│    ├─ audit_logs: Cada cambio CRUD con timestamp y user_id                        │
+│    ├─ user_logs: Actividades de usuario (login, logout, acciones)                 │
+│    ├─ status_history_logs: Transiciones de estado                                 │
+│    ├─ zoom_webhooks: Todos los webhooks procesados                                │
+│    ├─ Request logging (incoming + outgoing)                                       │
+│    └─ Error logging (excepciones + stack traces)                                  │
+│                                                                                     │
+│ 6. MULTI-TENANCY ISOLATION                                                        │
+│    ├─ Global Scopes filtran automáticamente por client_id                         │
+│    ├─ Datos de un tenant NUNCA accesibles por otro                                │
+│    ├─ UNIQUE constraint: email per client (no global)                             │
+│    ├─ Database-level constraints enforced                                         │
+│    └─ Testing: Each test uses separate in-memory DB                               │
+│                                                                                     │
+│ 7. RATE LIMITING                                                                  │
+│    ├─ Login: 5 attempts per minute                                                │
+│    ├─ Password reset: 3 attempts per hour                                         │
+│    ├─ API: Configurable por endpoint                                              │
+│    ├─ Implemented via Redis                                                       │
+│    └─ Throttle response: 429 Too Many Requests                                    │
+│                                                                                     │
+│ 8. WEBHOOK SECURITY (Zoom)                                                        │
+│    ├─ HMAC-SHA256 signature validation                                            │
+│    ├─ Timestamp verification (within 5 minutes)                                   │
+│    ├─ Idempotency checking                                                        │
+│    ├─ Error handling con retry logic                                              │
+│    └─ Webhook logging para audit trail                                            │
+│                                                                                     │
+│ 9. OAUTH 2.0 FLOWS                                                                │
+│    ├─ Authorization Code flow (Zoom, Microsoft)                                   │
+│    ├─ State parameter para CSRF protection                                        │
+│    ├─ Tokens stored encrypted en DB                                               │
+│    ├─ Refresh token rotation                                                      │
+│    ├─ Scope limitation (meeting:write, user:read, etc.)                          │
+│    └─ Token expiration handling                                                   │
+│                                                                                     │
+│ 10. INFRASTRUCTURE SECURITY                                                       │
+│     ├─ Nginx reverse proxy with SSL/TLS                                           │
+│     ├─ .env variables para secrets (no en código)                                  │
+│     ├─ Database firewall (private subnet)                                         │
+│     ├─ Redis firewall (private subnet)                                            │
+│     ├─ S3 bucket policies (private + versioning)                                  │
+│     ├─ CloudFront distribution (no direct S3 access)                              │
+│     └─ DDoS protection via Cloudflare/AWS Shield                                  │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+ DEPLOYMENT OPTIONS
+═════════════════════════════════════════════════════════════════════════════════════════════════════
+
+OPCIÓN 1: LARAVEL CLOUD (Recomendado para SaaS)
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ Ventajas:                                                                           │
+│ • Deploy con un click desde Forge                                                  │
+│ • Scaling automático                                                               │
+│ • MySQL + Redis managed                                                            │
+│ • SSL/Backups/CDN incluidos                                                        │
+│ • Soporte 24/7 del equipo de Laravel                                              │
+│                                                                                     │
+│ Flujo:                                                                              │
+│ 1. Push a GitHub/GitLab                                                            │
+│ 2. Cloud Dashboard → Deploy                                                        │
+│ 3. Ambiente automático configurado                                                 │
+│ 4. Certificado SSL automático                                                      │
+│                                                                                     │
+│ Costos: $99-499/mes según recursos                                                 │
+│                                                                                     │
+│ Servicios Incluidos:                                                                │
+│ • Web servers (Octane with Swoole)                                                │
+│ • MySQL 8.0+                                                                       │
+│ • Redis 6.0+                                                                       │
+│ • S3-compatible storage                                                            │
+│ • CDN via Cloudflare                                                               │
+│ • Monitoring & alerts                                                              │
+│ • Zero-downtime deployments                                                        │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+OPCIÓN 2: DOCKER + KUBERNETES (Escalabilidad máxima)
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ Arquitetura:                                                                        │
+│                                                                                     │
+│ ┌─────────────────────────────────────────────────────────────────┐               │
+│ │ Kubernetes Cluster (AWS EKS, GKE, AKS)                         │               │
+│ │                                                                 │               │
+│ │ ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │               │
+│ │ │ Octane Pod  │  │ Octane Pod  │  │ Octane Pod  │            │               │
+│ │ │ (Replica 1) │  │ (Replica 2) │  │ (Replica N) │            │               │
+│ │ └─────────────┘  └─────────────┘  └─────────────┘            │               │
+│ │        ↑                 ↑                 ↑                   │               │
+│ │        │        Service Load Balancer     │                   │               │
+│ │        └─────────────────┬─────────────────┘                   │               │
+│ │                          │                                     │               │
+│ │ ┌─────────────────────────────────────────────────────────┐  │               │
+│ │ │ StatefulSet: MySQL Pod + PersistentVolume              │  │               │
+│ │ └─────────────────────────────────────────────────────────┘  │               │
+│ │                                                                 │               │
+│ │ ┌─────────────────────────────────────────────────────────┐  │               │
+│ │ │ StatefulSet: Redis Pod + PersistentVolume              │  │               │
+│ │ └─────────────────────────────────────────────────────────┘  │               │
+│ │                                                                 │               │
+│ │ ┌─────────────────────────────────────────────────────────┐  │               │
+│ │ │ Deployment: Queue Worker Pods (ReplicaSet)             │  │               │
+│ │ └─────────────────────────────────────────────────────────┘  │               │
+│ │                                                                 │               │
+│ └─────────────────────────────────────────────────────────────────┘               │
+│                                                                                     │
+│ CI/CD Pipeline:                                                                    │
+│ Git Push → GitHub Actions                                                         │
+│           → Build Docker Image                                                    │
+│           → Push to ECR/Docker Hub                                                │
+│           → Trigger Deployment                                                    │
+│           → Rolling update (zero downtime)                                        │
+│                                                                                     │
+│ Scaling:                                                                           │
+│ • Horizontal Pod Autoscaler (CPU > 80%)                                           │
+│ • Vertical Pod Autoscaler (memory requests)                                       │
+│ • Scheduled scaling (nighttime reduction)                                         │
+│                                                                                     │
+│ Costos: $200-2000+/mes (según tamaño cluster)                                     │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+OPCIÓN 3: VPS TRADICIONAL (DigitalOcean, Linode, AWS EC2)
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ Stack:                                                                              │
+│                                                                                     │
+│ VM (Ubuntu 22.04 LTS)                                                              │
+│ ├─ PHP 8.3 (via Ondrej PPA)                                                       │
+│ ├─ Laravel Octane (Swoole/RoadRunner)                                              │
+│ ├─ Nginx reverse proxy                                                             │
+│ │  └─ SSL via Certbot (Let's Encrypt)                                             │
+│ ├─ MySQL 8.0 (standalone o RDS)                                                   │
+│ ├─ Redis 6.0 (standalone o ElastiCache)                                           │
+│ ├─ Supervisor (process management)                                                │
+│ ├─ Monit/New Relic (monitoring)                                                   │
+│ └─ Cron (scheduled tasks)                                                         │
+│                                                                                     │
+│ Nginx Config:                                                                      │
+│ ┌─────────────────────────────────────────┐                                       │
+│ │ server {                                │                                       │
+│ │   listen 443 ssl http2;                │                                       │
+│ │   server_name meditech2.com;           │                                       │
+│ │                                         │                                       │
+│ │   ssl_certificate /etc/letsencrypt/... │                                       │
+│ │   ssl_certificate_key /etc/letsencrypt │                                       │
+│ │                                         │                                       │
+│ │   location / {                         │                                       │
+│ │     proxy_pass http://127.0.0.1:8000; │                                       │
+│ │     proxy_set_header Host $host;       │                                       │
+│ │     proxy_set_header X-Real-IP ...;    │                                       │
+│ │   }                                     │                                       │
+│ │ }                                       │                                       │
+│ └─────────────────────────────────────────┘                                       │
+│                                                                                     │
+│ Systemd Services:                                                                  │
+│ • octane.service (PHP app server)                                                 │
+│ • redis.service                                                                   │
+│ • mysql.service                                                                   │
+│ • queue-worker.service (jobs)                                                     │
+│ • laravel-scheduler.service (cron)                                                │
+│                                                                                     │
+│ Backup Strategy:                                                                   │
+│ • Automated DB snapshots (daily to S3)                                            │
+│ • Files backup via Duplicity                                                      │
+│ • Point-in-time recovery possible                                                │
+│                                                                                     │
+│ Costos: $50-500/mes (según tamaño VM)                                             │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+ CONCLUSIÓN
+═════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Meditech2 es una plataforma enterprise-grade completamente funcional que:
+
+✓ Implementa Laravel 13 + PHP 8.3 + React 18 + Livewire 4
+✓ Soporta multi-tenancy con aislamiento automático
+✓ Integra Zoom, Microsoft Graph, Twilio, AWS, Dropbox
+✓ Proporciona HIPAA/GDPR/FHIR compliance
+✓ Ofrece auditoría completa y logging detallado
+✓ Utiliza Laravel Octane para escalabilidad (10-100x rendimiento)
+✓ Implementa seguridad de grado empresarial (OAuth, HMAC, encryption)
+✓ Soporta deployment en Laravel Cloud, Kubernetes o VPS
+
+La arquitectura está lista para producción y puede servir desde clínicas pequeñas
+hasta hospitales grandes con múltiples sedes y especialidades.
+
+═════════════════════════════════════════════════════════════════════════════════════════════════════

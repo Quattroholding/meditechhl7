@@ -22,6 +22,7 @@ class InventoryItem extends BaseModel
         'unit_of_measure', 'requires_prescription', 'track_by_lot',
         'track_by_serial', 'expiration_tracking', 'reorder_point',
         'reorder_quantity', 'characteristic', 'client_id',
+        'track_internal_content', 'internal_unit', 'internal_units_per_presentation',
     ];
 
     protected function casts(): array
@@ -39,6 +40,8 @@ class InventoryItem extends BaseModel
             'track_by_lot' => 'boolean',
             'track_by_serial' => 'boolean',
             'expiration_tracking' => 'boolean',
+            'track_internal_content' => 'boolean',
+            'internal_units_per_presentation' => 'decimal:2',
         ];
     }
 
