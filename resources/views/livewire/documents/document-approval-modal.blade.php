@@ -78,6 +78,7 @@
                                     <th class="px-3 py-2 text-left">Nombre</th>
                                     <th class="px-3 py-2 text-right">Cantidad</th>
                                     <th class="px-3 py-2 text-right">Costo Unit.</th>
+                                    <th class="px-3 py-2 text-right">Desc. Unit.</th>
                                     <th class="px-3 py-2 text-right">Impuesto</th>
                                     <th class="px-3 py-2 text-right">Total</th>
                                     <th class="px-3 py-2 text-center">Acciones</th>
@@ -132,6 +133,17 @@
                                         <td class="px-3 py-2 text-right">
                                             <input
                                                 type="number"
+                                                value="{{ $item['discount'] ?? 0 }}"
+                                                wire:change="updateItemField({{ $index }}, 'discount', $event.target.value)"
+                                                class="w-20 px-2 py-1 border border-gray-300 rounded text-xs text-right focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                                step="0.01"
+                                                min="0"
+                                                placeholder="0.00"
+                                            />
+                                        </td>
+                                        <td class="px-3 py-2 text-right">
+                                            <input
+                                                type="number"
                                                 value="{{ $item['tax'] ?? 0 }}"
                                                 wire:change="updateItemField({{ $index }}, 'tax', $event.target.value)"
                                                 class="w-20 px-2 py-1 border border-gray-300 rounded text-xs text-right focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -154,7 +166,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="px-3 py-4 text-center text-gray-500 text-sm">
+                                        <td colspan="9" class="px-3 py-4 text-center text-gray-500 text-sm">
                                             No hay items
                                         </td>
                                     </tr>
@@ -238,7 +250,7 @@
                         <button
                             type="button"
                             wire:click="approve"
-                            class="btn btn-success pull-right"
+                            class="btn btn-primary pull-right"
                         >
                             Aprobar
                         </button>

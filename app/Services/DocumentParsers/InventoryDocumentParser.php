@@ -43,7 +43,10 @@ class InventoryDocumentParser extends BaseDocumentParser
         $subtotal = 0.0;
         $totalTax = 0.0;
         foreach ($this->items as $item) {
-            $lineTotal = ((float) ($item['quantity'] ?? 0)) * ((float) ($item['unit_cost'] ?? 0));
+            $quantity = (float) ($item['quantity'] ?? 0);
+            $unitCost = (float) ($item['unit_cost'] ?? 0);
+            $discount = (float) ($item['discount'] ?? 0);
+            $lineTotal = ($quantity * $unitCost) - $discount;
             $subtotal += $lineTotal;
             $totalTax += (float) ($item['tax'] ?? 0);
         }
@@ -198,19 +201,15 @@ class InventoryDocumentParser extends BaseDocumentParser
                     $rowData['unit_cost'] = $numericValues[1];
                 }
                 if (count($numericValues) >= 3) {
-                    // Store discount per unit for additional_fields
-                    $this->additionalFields['descuentos'] = $this->additionalFields['descuentos'] ?? [];
-                    $this->additionalFields['descuentos'][] = [
-                        'item_index' => $itemIndex,
-                        'descuento_unitario' => $numericValues[2],
-                    ];
+                    // Store discount per unit
+                    $rowData['discount'] = $numericValues[2];
                 }
                 // numericValues[3] = monto (line total) - not needed, we calculate it
                 // numericValues[4] = ITBMS (tax per item)
                 if (count($numericValues) >= 5) {
                     $rowData['tax'] = $numericValues[4];
                 }
-                // numericValues[5] = valor_item (final value) - we could store this as well
+                // numericValues[5] = valor_item (final value) - store for reference
                 if (count($numericValues) >= 6) {
                     $this->additionalFields['valores_item'] = $this->additionalFields['valores_item'] ?? [];
                     $this->additionalFields['valores_item'][] = [
@@ -678,6 +677,14 @@ class InventoryDocumentParser extends BaseDocumentParser
         // Add optional fields
         if (! empty($rowData['unit'] ?? null)) {
             $item['unit'] = trim($rowData['unit']);
+        }
+
+        // Add discount if present
+        if (! empty($rowData['discount'] ?? null)) {
+            $discount = $this->validateNumericField($rowData['discount'], 'Descuento', $rowIndex, false);
+            if ($discount !== null) {
+                $item['discount'] = $discount;
+            }
         }
 
         // Add tax if present

@@ -98,9 +98,11 @@ class DocumentApprovalModal extends Component
         foreach ($items as $index => $item) {
             $quantity = (float) ($item['quantity'] ?? 0);
             $unitCost = (float) ($item['unit_cost'] ?? 0);
+            $discount = (float) ($item['discount'] ?? 0);
             $tax = (float) ($item['tax'] ?? 0);
 
-            $itemTotal = $quantity * $unitCost;
+            // Total = (quantity * unit_cost) - discount
+            $itemTotal = ($quantity * $unitCost) - $discount;
             $this->itemTotals[$index] = $itemTotal;
             $this->subtotal += $itemTotal;
             $this->totalTax += $tax;
@@ -156,6 +158,7 @@ class DocumentApprovalModal extends Component
                 'name' => '',
                 'quantity' => 1,
                 'unit_cost' => 0.0,
+                'discount' => 0.0,
                 'tax' => 0.0,
                 'unit' => 'und',
             ];
