@@ -56,19 +56,20 @@
                         </div>
                         <span class="text-sm font-medium text-gray-700">{{ round($confidenceScore * 100) }}%</span>
                     </div>
+                </div>
+            </div>
 
-                    <div class="mb-3 flex gap-2">
-                        <button
-                            wire:click="addItem"
-                            class="px-3 py-2 bg-green-600 text-white text-xs rounded hover:bg-green-700"
-                        >
-                            + Agregar Línea
-                        </button>
-                    </div>
+            <div class="grid grid-cols-12 lg:grid-cols-1 gap-1 p-6">
 
-                    <div class="overflow-x-auto border border-gray-200 rounded-lg">
-                        <table class="w-full text-sm">
-                            <thead class="bg-gray-50 border-b border-gray-200">
+                    <!-- Items Table -->
+                    <div>
+                        <div class="mb-3 flex gap-2">
+                            <button wire:click="addItem" class="btn btn-success">+ Agregar Línea</button>
+                        </div>
+
+                        <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50 border-b border-gray-200">
                                 <tr>
                                     <th class="px-3 py-2 text-left">
                                         <input type="checkbox" class="rounded" wire:model="selectedItems" />
@@ -76,11 +77,13 @@
                                     <th class="px-3 py-2 text-left">SKU</th>
                                     <th class="px-3 py-2 text-left">Nombre</th>
                                     <th class="px-3 py-2 text-right">Cantidad</th>
-                                    <th class="px-3 py-2 text-right">Costo</th>
+                                    <th class="px-3 py-2 text-right">Costo Unit.</th>
+                                    <th class="px-3 py-2 text-right">Impuesto</th>
+                                    <th class="px-3 py-2 text-right">Total</th>
                                     <th class="px-3 py-2 text-center">Acciones</th>
                                 </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
                                 @forelse ($items as $index => $item)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-3 py-2">
@@ -126,6 +129,19 @@
                                                 min="0"
                                             />
                                         </td>
+                                        <td class="px-3 py-2 text-right">
+                                            <input
+                                                type="number"
+                                                value="{{ $item['tax'] ?? 0 }}"
+                                                wire:change="updateItemField({{ $index }}, 'tax', $event.target.value)"
+                                                class="w-20 px-2 py-1 border border-gray-300 rounded text-xs text-right focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                                step="0.01"
+                                                min="0"
+                                            />
+                                        </td>
+                                        <td class="px-3 py-2 text-right font-semibold">
+                                            {{ number_format($itemTotals[$index] ?? 0, 2, '.', ',') }}
+                                        </td>
                                         <td class="px-3 py-2 text-center">
                                             <button
                                                 wire:click="removeItem({{ $index }})"
@@ -138,16 +154,34 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-3 py-4 text-center text-gray-500 text-sm">
+                                        <td colspan="8" class="px-3 py-4 text-center text-gray-500 text-sm">
                                             No hay items
                                         </td>
                                     </tr>
                                 @endforelse
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Totals Summary -->
+                        <div class="mt-4 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                            <div class="grid grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-600">Subtotal</p>
+                                    <p class="text-lg font-semibold text-gray-900">{{ number_format($subtotal, 2, '.', ',') }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600">Impuesto Total</p>
+                                    <p class="text-lg font-semibold text-gray-900">{{ number_format($totalTax, 2, '.', ',') }}</p>
+                                </div>
+                                <div class="border-l border-gray-300 pl-4">
+                                    <p class="text-gray-600">Total Factura</p>
+                                    <p class="text-lg font-semibold text-blue-600">{{ number_format($totalInvoice, 2, '.', ',') }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
             <!-- Notes -->
             <div class="border-t border-gray-200 px-6 py-4">

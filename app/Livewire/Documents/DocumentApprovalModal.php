@@ -29,6 +29,14 @@ class DocumentApprovalModal extends Component
 
     public bool $isRejecting = false;
 
+    public array $itemTotals = []; // Calculated totals per item
+
+    public float $subtotal = 0.0;
+
+    public float $totalTax = 0.0;
+
+    public float $totalInvoice = 0.0;
+
     #[On('openApprovalModal')]
     public function open(int $documentId): void
     {
@@ -59,6 +67,9 @@ class DocumentApprovalModal extends Component
             $items = $extractedData['items'] ?? [];
             $this->selectedItems = array_fill(0, count($items), true);
 
+            // Calculate totals
+            $this->calculateTotals($items);
+
             $this->showModal = true;
 
         } catch (\Exception $e) {
@@ -73,6 +84,50 @@ class DocumentApprovalModal extends Component
     public function updateItemField(int $itemIndex, string $field, mixed $value): void
     {
         $this->editedItems[$itemIndex][$field] = $value;
+
+        // Recalculate totals when any field is edited
+        $this->recalculateTotalsAfterEdit();
+    }
+
+    private function calculateTotals(array $items): void
+    {
+        $this->itemTotals = [];
+        $this->subtotal = 0.0;
+        $this->totalTax = 0.0;
+
+        foreach ($items as $index => $item) {
+            $quantity = (float) ($item['quantity'] ?? 0);
+            $unitCost = (float) ($item['unit_cost'] ?? 0);
+            $tax = (float) ($item['tax'] ?? 0);
+
+            $itemTotal = $quantity * $unitCost;
+            $this->itemTotals[$index] = $itemTotal;
+            $this->subtotal += $itemTotal;
+            $this->totalTax += $tax;
+        }
+
+        $this->totalInvoice = $this->subtotal + $this->totalTax;
+    }
+
+    private function recalculateTotalsAfterEdit(): void
+    {
+        // Get current items
+        $extractedData = $this->document->parseResult->extracted_data;
+        if (is_string($extractedData)) {
+            $extractedData = json_decode($extractedData, true);
+        }
+
+        $items = $extractedData['items'] ?? [];
+
+        // Apply any edits
+        foreach ($items as $index => &$item) {
+            if (isset($this->editedItems[$index])) {
+                $item = array_merge($item, $this->editedItems[$index]);
+            }
+        }
+
+        // Recalculate
+        $this->calculateTotals($items);
     }
 
     public function toggleItemSelection(int $itemIndex): void
@@ -101,6 +156,7 @@ class DocumentApprovalModal extends Component
                 'name' => '',
                 'quantity' => 1,
                 'unit_cost' => 0.0,
+                'tax' => 0.0,
                 'unit' => 'und',
             ];
 
@@ -109,6 +165,9 @@ class DocumentApprovalModal extends Component
                 'extracted_data' => json_encode([
                     'items' => $items,
                     'confidence' => $extractedData['confidence'] ?? 0.9,
+                    'subtotal' => $extractedData['subtotal'] ?? 0,
+                    'total_tax' => $extractedData['total_tax'] ?? 0,
+                    'total' => $extractedData['total'] ?? 0,
                 ]),
                 'manually_edited' => true,
                 'edited_by_user_id' => auth()->id(),
@@ -118,9 +177,7 @@ class DocumentApprovalModal extends Component
             // Refresh modal
             $this->document = DocumentUpload::findOrFail($this->documentUploadId);
             $this->editedItems = [];
-
-            // Reopen modal to refresh
-            $this->open($this->documentUploadId);
+            $this->calculateTotals($items);
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error al agregar item: '.$e->getMessage());
@@ -153,6 +210,9 @@ class DocumentApprovalModal extends Component
                 'extracted_data' => json_encode([
                     'items' => $items,
                     'confidence' => $extractedData['confidence'] ?? 0.9,
+                    'subtotal' => $extractedData['subtotal'] ?? 0,
+                    'total_tax' => $extractedData['total_tax'] ?? 0,
+                    'total' => $extractedData['total'] ?? 0,
                 ]),
                 'manually_edited' => true,
                 'edited_by_user_id' => auth()->id(),
@@ -162,9 +222,7 @@ class DocumentApprovalModal extends Component
             // Refresh modal
             $this->document = DocumentUpload::findOrFail($this->documentUploadId);
             $this->editedItems = [];
-
-            // Reopen modal to refresh
-            $this->open($this->documentUploadId);
+            $this->calculateTotals($items);
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error al eliminar item: '.$e->getMessage());
@@ -205,11 +263,14 @@ class DocumentApprovalModal extends Component
                 }
             }
 
-            // Update parse result
+            // Update parse result with totals
             $this->document->parseResult->update([
                 'extracted_data' => json_encode([
                     'items' => $filteredItems,
                     'confidence' => $extractedData['confidence'] ?? 0.9,
+                    'subtotal' => $this->subtotal,
+                    'total_tax' => $this->totalTax,
+                    'total' => $this->totalInvoice,
                 ]),
                 'manually_edited' => ! empty($this->editedItems),
                 'edited_by_user_id' => auth()->id(),
@@ -321,6 +382,10 @@ class DocumentApprovalModal extends Component
             'validationMessages' => $validationMessages,
             'confidenceScore' => $parseResult?->confidence_score ?? 0,
             'pdfUrl' => $pdfUrl,
+            'itemTotals' => $this->itemTotals,
+            'subtotal' => $this->subtotal,
+            'totalTax' => $this->totalTax,
+            'totalInvoice' => $this->totalInvoice,
         ]);
     }
 }
