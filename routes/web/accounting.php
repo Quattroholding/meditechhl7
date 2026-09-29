@@ -42,6 +42,8 @@ Route::group(['prefix' => 'accounts', 'middleware' => ['auth', 'verified', 'firs
 
         Route::get('/{invoice_id}/download', [InvoiceController::class, 'download'])->name('invoice.download');
 
+        Route::delete('/{invoice_id}', [InvoiceController::class, 'delete'])->name('invoice.delete');
+
     });
 
     // ============================================================================

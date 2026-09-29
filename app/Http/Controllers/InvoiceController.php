@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SupplyReturnReason;
 use App\Models\ClientPreference;
 use App\Models\Invoice;
+use App\Models\SupplyDelivery;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
@@ -110,6 +112,66 @@ class InvoiceController extends Controller
 
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al generar la factura: '.$e->getMessage());
+
+            return back();
+        }
+    }
+
+    public function delete(Request $request, $invoice_id)
+    {
+        try {
+            $invoice = Invoice::with(['lineItems.chargeItem'])->findOrFail($invoice_id);
+
+            // Verify user has permission to delete
+            // Check if invoice has payments - don't allow deletion if it does
+            if ($invoice->payments()->exists()) {
+                session()->flash('message.error', 'No se puede eliminar una factura que tiene pagos registrados.');
+
+                return back();
+            }
+
+            $invoiceIdentifier = $invoice->identifier;
+
+            // Procesar devoluciones de inventario para suministros
+            foreach ($invoice->lineItems as $lineItem) {
+                if ($lineItem->chargeItem && isset($lineItem->chargeItem->supporting_information['supply_delivery_id'])) {
+                    $supplyDeliveryId = $lineItem->chargeItem->supporting_information['supply_delivery_id'];
+                    $supplyDelivery = SupplyDelivery::find($supplyDeliveryId);
+
+                    if ($supplyDelivery) {
+                        // Create return to restore inventory
+                        try {
+                            $supplyDelivery->returnSupply(
+                                quantityToReturn: $supplyDelivery->supplied_quantity,
+                                reason: SupplyReturnReason::INVOICE_CANCELLED,
+                                notes: "Factura {$invoiceIdentifier} fue eliminada"
+                            );
+                        } catch (\Exception $returnError) {
+                            \Log::warning('Error al devolver suministro al eliminar factura', [
+                                'supply_delivery_id' => $supplyDeliveryId,
+                                'invoice_id' => $invoice_id,
+                                'error' => $returnError->getMessage(),
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            // Delete invoice (including line items due to cascade)
+            $invoice->delete();
+
+            session()->flash('message.success', "Factura {$invoiceIdentifier} eliminada correctamente. El inventario ha sido devuelto.");
+
+            return redirect(route('invoice.index'));
+
+        } catch (\Exception $e) {
+            \Log::error('Error al eliminar factura', [
+                'invoice_id' => $invoice_id,
+                'user_id' => auth()->id(),
+                'error' => $e->getMessage(),
+            ]);
+
+            session()->flash('message.error', 'Error al eliminar la factura: '.$e->getMessage());
 
             return back();
         }

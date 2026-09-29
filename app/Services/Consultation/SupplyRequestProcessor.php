@@ -73,10 +73,19 @@ class SupplyRequestProcessor
             );
         }
 
-        if ($inventoryReport->quantity_available < $supplyRequest->quantity) {
+        // Validate based on unit type (internal or presentation)
+        if ($supplyRequest->unit_type === 'internal') {
+            // For internal units, validate against internal_units_on_hand
+            $availableStock = (float) ($inventoryReport->internal_units_on_hand ?? 0);
+        } else {
+            // For presentations, validate against quantity_available
+            $availableStock = (float) $inventoryReport->quantity_available;
+        }
+
+        if ($availableStock < $supplyRequest->quantity) {
             throw new \Exception(
                 "Stock insuficiente para {$supplyRequest->inventoryItem->name}. ".
-                "Disponible: {$inventoryReport->quantity_available}, ".
+                "Disponible: {$availableStock}, ".
                 "Solicitado: {$supplyRequest->quantity}"
             );
         }
@@ -101,10 +110,24 @@ class SupplyRequestProcessor
         ]);
 
         // 4. Deducir stock
-        $quantityBefore = $inventoryReport->quantity_on_hand;
-        $inventoryReport->decrement('quantity_on_hand', $supplyRequest->quantity);
-        $inventoryReport->refresh();
-        $quantityAfter = $inventoryReport->quantity_on_hand;
+        if ($supplyRequest->unit_type === 'internal') {
+            // For internal units, decrement internal_units_on_hand
+            $quantityBefore = $inventoryReport->internal_units_on_hand;
+            $inventoryReport->decrement('internal_units_on_hand', $supplyRequest->quantity);
+
+            // Also decrement presentations proportionally
+            $presentationsToDeduct = $supplyRequest->quantity / $supplyRequest->inventoryItem->internal_units_per_presentation;
+            $inventoryReport->decrement('quantity_on_hand', $presentationsToDeduct);
+
+            $inventoryReport->refresh();
+            $quantityAfter = $inventoryReport->internal_units_on_hand;
+        } else {
+            // For presentations, decrement quantity_on_hand
+            $quantityBefore = $inventoryReport->quantity_on_hand;
+            $inventoryReport->decrement('quantity_on_hand', $supplyRequest->quantity);
+            $inventoryReport->refresh();
+            $quantityAfter = $inventoryReport->quantity_on_hand;
+        }
 
         // 5. Registrar transacción
         InventoryTransaction::create([
@@ -130,7 +153,18 @@ class SupplyRequestProcessor
         // 6. Crear ChargeItem si es cobrable
         if ($supplyRequest->is_billable && ! $supplyRequest->is_free) {
             $item = $supplyRequest->inventoryItem;
-            $unitPrice = $supplyRequest->custom_price ?? $item->base_price;
+
+            // Calculate unit price based on tracking type
+            if ($supplyRequest->custom_price) {
+                // If custom price is set, use it directly
+                $unitPrice = $supplyRequest->custom_price;
+            } elseif ($supplyRequest->unit_type === 'internal' && $item->internal_units_per_presentation) {
+                // If internal units, divide base_price by conversion factor
+                $unitPrice = $item->base_price / $item->internal_units_per_presentation;
+            } else {
+                // Otherwise use base_price as is
+                $unitPrice = $item->base_price;
+            }
 
             ChargeItem::create([
                 'status' => ChargeItemStatus::BILLABLE,

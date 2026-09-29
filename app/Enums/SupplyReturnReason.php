@@ -10,6 +10,7 @@ enum SupplyReturnReason: string
     case PATIENT_REFUSED = 'patient_refused';
     case EXPIRED = 'expired';
     case DAMAGED = 'damaged';
+    case INVOICE_CANCELLED = 'invoice_cancelled';
     case OTHER = 'other';
 
     public function label(): string
@@ -21,6 +22,7 @@ enum SupplyReturnReason: string
             self::PATIENT_REFUSED => 'Paciente Rechazó',
             self::EXPIRED => 'Vencido',
             self::DAMAGED => 'Dañado',
+            self::INVOICE_CANCELLED => 'Factura Cancelada',
             self::OTHER => 'Otro',
         };
     }

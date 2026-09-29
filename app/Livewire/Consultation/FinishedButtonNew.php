@@ -311,9 +311,23 @@ class FinishedButtonNew extends Component
                 branchId: $branchId
             );
 
-            if (! $inventoryReport || $inventoryReport->quantity_available < $supply->quantity) {
-                $available = $inventoryReport ? $inventoryReport->quantity_available : 0;
-                $issues[] = "{$supply->inventoryItem->name} (".__('consultation.finished_button.insufficient_stock', ['available' => $available, 'requested' => $supply->quantity]).')';
+            if (! $inventoryReport) {
+                $issues[] = "{$supply->inventoryItem->name} (".__('consultation.finished_button.insufficient_stock', ['available' => 0, 'requested' => $supply->quantity]).')';
+
+                continue;
+            }
+
+            // Validate based on unit type (internal or presentation)
+            if ($supply->unit_type === 'internal') {
+                // For internal units, validate against internal_units_on_hand
+                $availableStock = (float) ($inventoryReport->internal_units_on_hand ?? 0);
+            } else {
+                // For presentations, validate against quantity_available
+                $availableStock = (float) $inventoryReport->quantity_available;
+            }
+
+            if ($availableStock < $supply->quantity) {
+                $issues[] = "{$supply->inventoryItem->name} (".__('consultation.finished_button.insufficient_stock', ['available' => $availableStock, 'requested' => $supply->quantity]).')';
             }
         }
 

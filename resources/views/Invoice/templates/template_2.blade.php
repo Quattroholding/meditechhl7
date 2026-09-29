@@ -202,7 +202,7 @@ body {
             <td class="cyan">{{$item->sequence}}</td>
             <td class="cyan">{{ $code }}</td>
             <td class="cyan">{{ $description }}</td>
-            <td class="right cyan">${{ number_format($item->line_total_gross, 2) }}</td>
+            <td class="right cyan">${{ number_format($item->unit_price, 2) }}</td>
             <td class="right cyan">{{$item->quantity}}</td>
             <td class="right cyan">${{ number_format($item->line_total_gross, 2) }}</td>
         </tr>

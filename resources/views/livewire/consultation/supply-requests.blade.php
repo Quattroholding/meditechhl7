@@ -169,7 +169,7 @@
                                     <x-input-label for="quantity_{{ $supply->id }}" value="Cantidad" />
                                     <x-text-input
                                         type="number"
-                                        wire:model.blur="quantities.{{ $supply->id }}"
+                                        wire:model.live.debounce.500ms="quantities.{{ $supply->id }}"
                                         class="block mt-1 w-full"
                                         min="1"
                                         step="0.01"
@@ -190,7 +190,7 @@
                                     <x-input-label for="customPrice_{{ $supply->id }}" value="Precio personalizado (opcional)" />
                                     <x-text-input
                                         type="number"
-                                        wire:model.blur="customPrices.{{ $supply->id }}"
+                                        wire:model.live.debounce.500ms="customPrices.{{ $supply->id }}"
                                         class="block mt-1 w-full"
                                         min="0"
                                         step="0.01"

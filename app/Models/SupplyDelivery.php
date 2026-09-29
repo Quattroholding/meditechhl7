@@ -178,8 +178,18 @@ class SupplyDelivery extends BaseModel
 
             $quantityBefore = $inventoryReport->quantity_on_hand;
 
-            // Restore stock
-            $inventoryReport->increment('quantity_on_hand', $quantityToReturn);
+            // Restore stock based on tracking type
+            if ($this->inventoryItem->track_internal_content) {
+                // For internal units, restore both internal_units_on_hand and quantity_on_hand proportionally
+                $presentationsToRestore = $quantityToReturn / $this->inventoryItem->internal_units_per_presentation;
+                $inventoryReport->increment('internal_units_on_hand', $quantityToReturn);
+                $inventoryReport->increment('quantity_on_hand', $presentationsToRestore);
+                $quantityAfter = $quantityBefore + $presentationsToRestore;
+            } else {
+                // For presentations, restore quantity_on_hand directly
+                $inventoryReport->increment('quantity_on_hand', $quantityToReturn);
+                $quantityAfter = $quantityBefore + $quantityToReturn;
+            }
 
             // Create RETURN inventory transaction
             InventoryTransaction::create([
@@ -189,7 +199,7 @@ class SupplyDelivery extends BaseModel
                 'quantity_change' => $quantityToReturn,
                 'unit_of_measure' => $this->inventoryItem->unit_of_measure->value, // Use InventoryItem's valid enum value
                 'quantity_before' => $quantityBefore,
-                'quantity_after' => $quantityBefore + $quantityToReturn,
+                'quantity_after' => $quantityAfter,
                 'patient_id' => $this->patient_id,
                 'encounter_id' => $this->encounter_id,
                 'supply_request_id' => $this->based_on_supply_request_id,

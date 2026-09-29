@@ -253,6 +253,7 @@ class SupplyRequests extends Component
             // Update both database and local state
             $supplyRequest->update(['quantity' => (float) $value]);
             $this->quantities[$id] = (float) $value;
+
         }
     }
 

@@ -260,21 +260,16 @@
          * Cerrar modal al hacer clic fuera (solo si es el overlay, no el contenido)
          */
         window.onclick = function(event) {
-            // Solo cerrar si se hace clic EXACTAMENTE en el overlay, no en el contenido
-            if (event.target === event.currentTarget ||
-                (event.target.classList && event.target.classList.contains('consultation-modal-overlay'))) {
+            // No cerrar si el clic fue dentro del modal-content
+            if (event.target.closest('.consultation-modal-content')) {
+                return;
+            }
 
-                // Verificar que no sea un clic dentro del modal-content
-                const isClickInContent = event.target.closest('.consultation-modal-content');
-                if (isClickInContent) {
-                    return; // No cerrar si fue dentro del contenido
-                }
-
-                if (event.target.classList.contains('consultation-modal-overlay')) {
-                    const sectionId = event.target.getAttribute('data-section-id');
-                    if (sectionId) {
-                        closeSectionModal(sectionId);
-                    }
+            // Cerrar solo si el clic fue directamente en el overlay
+            if (event.target.classList && event.target.classList.contains('consultation-modal-overlay')) {
+                const sectionId = event.target.getAttribute('data-section-id');
+                if (sectionId) {
+                    closeSectionModal(sectionId);
                 }
             }
         }

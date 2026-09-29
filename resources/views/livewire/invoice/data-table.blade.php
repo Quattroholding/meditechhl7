@@ -109,6 +109,11 @@
                                                 <a href="{{ route('invoice.download', $invoice->id) }}" target="_blank" class="btn btn-secondary btn-sm" title="{{ __('invoice.download_pdf') }}">
                                                     <i class="fas fa-download me-2"></i>
                                                 </a>
+                                                @if(!$invoice->payments()->exists())
+                                                    <button type="button" class="btn btn-danger btn-sm" wire:click="deleteInvoice({{ $invoice->id }})" onclick="return confirm('¿Estás seguro de que deseas eliminar esta factura?')" title="Eliminar factura">
+                                                        <i class="fas fa-trash me-2"></i>
+                                                    </button>
+                                                @endif
                                         </div>
                                         {{--}}<div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle"

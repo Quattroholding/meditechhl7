@@ -220,7 +220,7 @@
                 <td class="center light blue">{{$item->sequence}}</td>
                 <td class="blue">{{ $code }}</td>
                 <td class="light blue">{{ $description }}</td>
-                <td class="right blue">${{ number_format($item->line_total_gross, 2) }}</td>
+                <td class="right blue">${{ number_format($item->unit_price, 2) }}</td>
                 <td class="center light blue">{{$item->quantity}}</td>
                 <td class="right blue">${{ number_format($item->line_total_gross, 2) }}</td>
             </tr>

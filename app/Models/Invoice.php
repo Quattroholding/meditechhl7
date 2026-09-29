@@ -218,7 +218,10 @@ class Invoice extends BaseModel
     public function generateInvoiceNumber(): string
     {
         $prefix = 'INV-'.now()->format('Y-');
-        $lastInvoice = static::withoutGlobalScope(InvoiceScope::class)->where('invoice_number', 'like', $prefix.'%')
+        // Include soft-deleted invoices to find the highest number ever generated
+        $lastInvoice = static::withoutGlobalScope(InvoiceScope::class)
+            ->withTrashed()  // Include deleted invoices
+            ->where('invoice_number', 'like', $prefix.'%')
             ->orderBy('invoice_number', 'desc')
             ->first();
 

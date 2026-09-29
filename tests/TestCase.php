@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Database\Seeders\MedicalSpecialitySeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -15,6 +16,9 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         // Ejecutar seeders después de cada reset de BD
-        $this->seed(RolePermissionSeeder::class);
+        $this->seed([
+            RolePermissionSeeder::class,
+            MedicalSpecialitySeeder::class,
+        ]);
     }
 }
