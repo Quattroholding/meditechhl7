@@ -149,15 +149,21 @@ class StockManagement extends Component
         $inventoryReport = $this->getOrCreateInventoryReport();
 
         $quantityBefore = $inventoryReport->quantity_on_hand;
+        $internalUnitsBefore = $inventoryReport->internal_units_on_hand ?? 0;
 
-        // Calculate actual quantity to add based on unit type
-        $quantityToAdd = $this->quantity;
-        if ($this->unit_type === 'internal' && $this->internalUnitsPerPresentation) {
-            // Receiving internal units: multiply presentations by factor
-            $quantityToAdd = $this->quantity * $this->internalUnitsPerPresentation;
+        // Calculate quantities based on unit type
+        $quantityToAddPresentations = $this->quantity;
+        $quantityToAddInternalUnits = $this->quantity;
+
+        if ($this->unit_type === 'internal' && $this->selectedItem->internal_units_per_presentation) {
+            // User entered internal units, convert to presentations
+            $quantityToAddPresentations = $this->quantity / $this->selectedItem->internal_units_per_presentation;
+            $quantityToAddInternalUnits = $this->quantity;
         }
 
-        $inventoryReport->increment('quantity_on_hand', $quantityToAdd);
+        // Update both fields
+        $inventoryReport->increment('quantity_on_hand', $quantityToAddPresentations);
+        $inventoryReport->increment('internal_units_on_hand', $quantityToAddInternalUnits);
         $inventoryReport->refresh();
 
         if ($this->lotNumber) {
@@ -172,7 +178,7 @@ class StockManagement extends Component
             'transaction_type' => InventoryTransactionType::PURCHASE,
             'transaction_date' => now(),
             'inventory_item_id' => $this->selectedItemId,
-            'quantity_change' => $quantityToAdd,
+            'quantity_change' => $quantityToAddPresentations,
             'unit_of_measure' => $this->selectedItem->unit_of_measure,
             'unit_type' => $this->unit_type,
             'quantity_before' => $quantityBefore,
@@ -183,11 +189,11 @@ class StockManagement extends Component
             'lot_number' => $this->lotNumber,
             'expiration_date' => $this->expirationDate,
             'unit_cost' => $this->unitCost,
-            'total_cost' => $this->unitCost ? ($this->unitCost * $this->quantity) : null,
+            'total_cost' => $this->unitCost ? ($this->unitCost * $quantityToAddPresentations) : null,
             'performed_by_user_id' => auth()->id(),
             'reason' => 'Recepción de stock',
-            'notes' => $this->unit_type === 'internal' && $this->internalUnitsPerPresentation
-                ? "{$this->quantity} presentaciones × {$this->internalUnitsPerPresentation} = {$quantityToAdd} unidades internas"
+            'notes' => $this->unit_type === 'internal' && $this->selectedItem->internal_units_per_presentation
+                ? "{$this->quantity} unidades internas ÷ {$this->selectedItem->internal_units_per_presentation} = {$quantityToAddPresentations} presentaciones"
                 : null,
             'client_id' => auth()->user()->clients()->first()->id,
         ]);
@@ -202,9 +208,22 @@ class StockManagement extends Component
         }
 
         $quantityBefore = $inventoryReport->quantity_on_hand;
-        $difference = $this->quantity - $quantityBefore;
+        $internalUnitsBeforeBefore = $inventoryReport->internal_units_on_hand ?? 0;
 
-        $inventoryReport->quantity_on_hand = $this->quantity;
+        // Calculate quantity in presentations
+        $quantityAfter = $this->quantity;
+        $internalUnitsAfter = $this->quantity;
+
+        if ($this->unit_type === 'internal' && $this->selectedItem->internal_units_per_presentation) {
+            // User entered internal units, need to convert to presentations
+            $quantityAfter = $this->quantity / $this->selectedItem->internal_units_per_presentation;
+            $internalUnitsAfter = $this->quantity;
+        }
+
+        $difference = $quantityAfter - $quantityBefore;
+
+        $inventoryReport->quantity_on_hand = $quantityAfter;
+        $inventoryReport->internal_units_on_hand = $internalUnitsAfter;
         $inventoryReport->save();
 
         InventoryTransaction::create([
@@ -215,12 +234,15 @@ class StockManagement extends Component
             'unit_of_measure' => $this->selectedItem->unit_of_measure,
             'unit_type' => $this->unit_type,
             'quantity_before' => $quantityBefore,
-            'quantity_after' => $this->quantity,
+            'quantity_after' => $quantityAfter,
             'to_location_client_id' => auth()->user()->clients()->first()->id,
             'to_location_branch_id' => $this->locationType === 'branch' ? $this->locationId : null,
             'to_location_practitioner_id' => $this->locationType === 'practitioner' ? $this->locationId : null,
             'performed_by_user_id' => auth()->id(),
             'reason' => $this->reason,
+            'notes' => $this->unit_type === 'internal' && $this->selectedItem->internal_units_per_presentation
+                ? "{$this->quantity} unidades internas ÷ {$this->selectedItem->internal_units_per_presentation} = {$quantityAfter} presentaciones"
+                : null,
             'client_id' => auth()->user()->clients()->first()->id,
         ]);
     }
