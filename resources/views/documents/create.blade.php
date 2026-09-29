@@ -1,6 +1,4 @@
-<?php $page = 'documents'; ?>
-@extends('layout.mainlayout')
-@section('content')
+<x-app-layout>
 <div class="page-wrapper">
     <div class="content">
         <!-- Page Header -->
@@ -16,14 +14,16 @@
 
         @include('partials.message')
 
-        <!-- Upload Form -->
+        <!-- /Page Header -->
         <div class="row">
-            <div class="col-md-8 offset-md-2">
+            <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Subir Documento (Factura, Comprobante, etc.)</h4>
-                    </div>
                     <div class="card-body">
+                        <div class="col-12">
+                            <div class="form-heading">
+                                <h4>Subir Documento (Factura, Comprobante, etc.)</h4>
+                            </div>
+                        </div>
                         @livewire('documents.document-upload-form')
                     </div>
                 </div>
@@ -31,4 +31,4 @@
         </div>
     </div>
 </div>
-@endsection
+</x-app-layout>

@@ -198,7 +198,7 @@ class RolePermissionSeeder extends Seeder
 
             // Documents management (invoices, receipts, etc.)
             ['name' => 'documents.view', 'description' => 'Ver lista de documentos subidos', 'module' => 'documentos'],
-            ['name' => 'documents.upload', 'description' => 'Subir nuevos documentos (facturas, comprobantes)', 'module' => 'documentos'],
+            ['name' => 'documents.create', 'description' => 'Subir nuevos documentos (facturas, comprobantes)', 'module' => 'documentos'],
             ['name' => 'documents.approve', 'description' => 'Aprobar o rechazar documentos', 'module' => 'documentos'],
             ['name' => 'documents.download', 'description' => 'Descargar documentos', 'module' => 'documentos'],
 
@@ -303,7 +303,7 @@ class RolePermissionSeeder extends Seeder
             'suscriptions.payments.settings',
             'surveys.view',
             /*'documents.view',
-            'documents.upload',
+            'documents.create',
             'documents.approve',
             'documents.download',*/
         ]);
@@ -404,7 +404,7 @@ class RolePermissionSeeder extends Seeder
             'inventory.manage_stock',
             'inventory.view_reports',
             'documents.view',
-            'documents.upload',
+            'documents.create',
             'documents.approve',
             'documents.download',
         ]);
@@ -535,7 +535,7 @@ class RolePermissionSeeder extends Seeder
         $contabilidadClientRole->givePermissionTo([
             'dashboard.accounting',
             'documents.view',
-            'documents.upload',
+            'documents.create',
             'documents.approve',
             'documents.download',
             'inventory.view',

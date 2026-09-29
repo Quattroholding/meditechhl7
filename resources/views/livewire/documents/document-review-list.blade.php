@@ -4,7 +4,7 @@
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header', ['show_create' => true])
+                    @component('components.table-header', ['show_create' => auth()->user()->can('documents.create')])
                         @slot('filters')
                             <div class="d-flex flex-wrap gap-2">
                                 <div class="input-block local-forms mb-0">
@@ -15,6 +15,7 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                {{--}}
                                 <div class="input-block local-forms mb-0">
                                     <label>{{ __('Buscar') }}</label>
                                     <input
@@ -24,13 +25,14 @@
                                         class="form-control"
                                     />
                                 </div>
+                                {{--}}
                             </div>
                         @endslot
                         @slot('title')
-                            Gestión de Documentos
+
                         @endslot
                         @slot('li_1')
-                            {{ route('documents.index') }}
+                            {{ route('documents.create') }}
                         @endslot
                     @endcomponent
                     <!-- /Table Header -->
@@ -41,6 +43,9 @@
                         <table class="table border-0 custom-table comman-table mb-0 responsive-table">
                             <thead>
                                 <tr>
+                                    <th data-column="id" data-priority="0">
+                                        <x-table-sort-button title="ID" columnName="id" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                                    </th>
                                     <th data-column="archivo" data-priority="1">
                                         <x-table-sort-button title="Archivo" columnName="original_filename" :sortField="$sortField" :sortDirection="$sortDirection"/>
                                     </th>
@@ -67,6 +72,11 @@
                             <tbody>
                                 @forelse ($documents as $document)
                                     <tr class="table-row" data-row-id="{{ $document->id }}">
+                                        <td data-column="id" data-priority="0" data-label="Id">
+                                            <span class="cell-content">
+                                                {{ $document->id }}
+                                            </span>
+                                        </td>
                                         <td data-column="archivo" data-priority="1" data-label="Archivo">
                                             <span class="cell-content">
                                                 <i class="fa fa-file-pdf text-danger me-2"></i>
@@ -130,7 +140,15 @@
                                             </span>
                                         </td>
                                         <td data-column="fecha" data-priority="6" data-label="Fecha">
-                                            <span class="cell-content">{{ $document->created_at->format('d-m-Y H:i') }}</span>
+                                            <span class="cell-content">
+                                                @php
+                                                    $createdAt = $document->created_at;
+                                                    if (is_string($createdAt)) {
+                                                        $createdAt = \Carbon\Carbon::parse($createdAt);
+                                                    }
+                                                @endphp
+                                                {{ $createdAt->format('d-m-Y H:i') }}
+                                            </span>
                                         </td>
                                         <td data-column="acciones" data-priority="7" data-label="Acciones" class="text-end">
                                             <div class="btn-group btn-group-sm">
@@ -140,7 +158,7 @@
                                                     </a>
                                                 @elseif ($document->status->value === 'approved' || $document->status->value === 'processing' || $document->status->value === 'processed')
                                                     <a href="{{ route('documents.detail', $document) }}" class="btn btn-success btn-sm" title="Ver detalles">
-                                                        <i class="fa-solid fa-check"></i>
+                                                        <i class="fa-solid fa-eye"></i>
                                                     </a>
                                                 @elseif ($document->status->value === 'parsing')
                                                     <span class="text-info">

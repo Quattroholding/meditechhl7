@@ -1,6 +1,4 @@
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <h2 class="text-xl font-semibold text-gray-900 mb-6">Subir Documento</h2>
-
+<div class="">
     @if ($successMessage)
         <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
             <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -75,11 +73,11 @@
                 <span class="text-red-600 text-sm block mt-1">{{ $message }}</span>
             @enderror
         </div>
-
+        <div class="flex items-center justify-end mt-4">
         <!-- Submit Button -->
         <button
             type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            class="btn btn-primary me-2"
             wire:loading.attr="disabled"
         >
             <span wire:loading.remove>Subir Documento</span>
@@ -91,5 +89,7 @@
                 Subiendo...
             </span>
         </button>
+        <a class="btn btn-secondary me-2" href="{{ route('patient.index') }}">  {{ __('button.cancel') }}</a>
+        </div>
     </form>
 </div>
