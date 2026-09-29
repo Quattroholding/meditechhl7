@@ -1,4 +1,4 @@
-<div>
+<div wire:poll.2s="checkApprovalStatus">
     <div class="grid grid-cols-12 gap-6 mb-6">
         <!-- PDF Preview -->
         <div class="col-span-12 lg:col-span-6">
@@ -100,7 +100,7 @@
         </div>
         <div class="card-body">
             <div class="mb-3">
-                <button wire:click="addItem" class="btn btn-success">
+                <button wire:click="addItem" class="btn btn-success" @disabled($isApproving)>
                     <i class="feather icon-plus"></i> Agregar Línea
                 </button>
             </div>
@@ -130,6 +130,7 @@
                                     type="checkbox"
                                     wire:model="selectedItems.{{ $index }}"
                                     class="form-check-input"
+                                    @disabled($isApproving)
                                 />
                             </td>
                             <td>
@@ -138,6 +139,7 @@
                                     value="{{ $item['sku'] ?? '' }}"
                                     wire:change="updateItemField({{ $index }}, 'sku', $event.target.value)"
                                     class="form-control form-control-sm"
+                                    @disabled($isApproving)
                                 />
                             </td>
                             <td>
@@ -147,6 +149,7 @@
                                     wire:change="updateItemField({{ $index }}, 'name', $event.target.value)"
                                     class="form-control form-control-sm"
                                     placeholder="Nombre"
+                                    @disabled($isApproving)
                                 />
                             </td>
                             <td class="text-right">
@@ -156,6 +159,7 @@
                                     wire:change="updateItemField({{ $index }}, 'quantity', $event.target.value)"
                                     class="form-control form-control-sm text-right"
                                     min="0"
+                                    @disabled($isApproving)
                                 />
                             </td>
                             <td class="text-right">
@@ -166,6 +170,7 @@
                                     class="form-control form-control-sm text-right"
                                     step="0.01"
                                     min="0"
+                                    @disabled($isApproving)
                                 />
                             </td>
                             <td class="text-right">
@@ -177,6 +182,7 @@
                                     step="0.01"
                                     min="0"
                                     placeholder="0.00"
+                                    @disabled($isApproving)
                                 />
                             </td>
                             <td class="text-right">
@@ -187,12 +193,14 @@
                                     class="form-control form-control-sm text-right"
                                     step="0.01"
                                     min="0"
+                                    @disabled($isApproving)
                                 />
                             </td>
                             <td>
                                 <select
                                     wire:change="updateItemField({{ $index }}, 'unit_type', $event.target.value)"
                                     class="form-control form-control-sm"
+                                    @disabled($isApproving)
                                 >
                                     <option value="presentation" @selected(($item['unit_type'] ?? 'internal') === 'presentation')>
                                         Presentación
@@ -212,6 +220,7 @@
                                     step="0.01"
                                     min="0.01"
                                     placeholder="1"
+                                    @disabled($isApproving)
                                 />
                             </td>
                             <td class="text-center font-semibold">
@@ -222,6 +231,7 @@
                                     wire:click="removeItem({{ $index }})"
                                     class="btn btn-sm btn-danger"
                                     title="Eliminar"
+                                    @disabled($isApproving)
                                 >
                                     ✕
                                 </button>
@@ -253,6 +263,7 @@
                         placeholder="Añade notas sobre este documento..."
                         rows="4"
                         class="form-control"
+                        @disabled($isApproving)
                     ></textarea>
                 </div>
             </div>
@@ -303,23 +314,32 @@
 
     <!-- Actions -->
     <div class="d-flex gap-2 justify-content-end">
-        <a href="{{ route('documents.index') }}" class="btn btn-secondary">
+        <a href="{{ route('documents.index') }}" class="btn btn-secondary" @if($isApproving) onclick="return false;" @endif>
             <i class="feather icon-x"></i> Cancelar
         </a>
 
         @if ($isRejecting)
-            <button wire:click="cancelRejection" class="btn btn-warning">
+            <button wire:click="cancelRejection" class="btn btn-warning" @disabled($isApproving)>
                 <i class="feather icon-arrow-left"></i> Volver
             </button>
-            <button wire:click="confirmReject" class="btn btn-danger">
+            <button wire:click="confirmReject" class="btn btn-danger" @disabled($isApproving)>
                 <i class="feather icon-trash-2"></i> Confirmar Rechazo
             </button>
         @else
-            <button wire:click="startRejecting" class="btn btn-danger">
+            <button wire:click="startRejecting" class="btn btn-danger" @disabled($isApproving)>
                 <i class="feather icon-x-circle"></i> Rechazar
             </button>
-            <button wire:click="approve" class="btn btn-primary">
-                <i class="feather icon-check-circle"></i> Aprobar
+            <button wire:click="approve" class="btn btn-primary" @disabled($isApproving) wire:loading.attr="disabled">
+                @if ($isApproving)
+                    <span wire:loading.remove>
+                        <i class="feather icon-check-circle"></i> Aprobar
+                    </span>
+                    <span wire:loading>
+                        <i class="spinner-border spinner-border-sm me-2" role="status"></i> Procesando...
+                    </span>
+                @else
+                    <i class="feather icon-check-circle"></i> Aprobar
+                @endif
             </button>
         @endif
     </div>

@@ -30,6 +30,8 @@ class DocumentDetail extends Component
 
     public float $totalInvoice = 0.0;
 
+    public bool $isApproving = false;
+
     public function mount(DocumentUpload $document): void
     {
         try {
@@ -326,6 +328,9 @@ class DocumentDetail extends Component
             return;
         }
 
+        // Set loading state
+        $this->isApproving = true;
+
         // Get selected indices
         $selectedIndices = array_keys(array_filter($this->selectedItems));
 
@@ -339,17 +344,53 @@ class DocumentDetail extends Component
         );
 
         if ($result['success']) {
+            // Don't redirect yet, let polling detect when job completes
             $this->dispatch('showToastr',
                 type: 'success',
-                message: $result['message'],
+                message: 'Documento aprobado. Procesando inventario...',
             );
-            session()->flash('success', $result['message']);
         } else {
+            // Clear loading state on error
+            $this->isApproving = false;
             $this->dispatch('showToastr',
                 type: 'error',
                 message: $result['message'],
             );
             session()->flash('error', 'Error al aprobar documento: '.$result['message']);
+        }
+    }
+
+    public function checkApprovalStatus(): void
+    {
+        if (! $this->isApproving || ! $this->document) {
+            return;
+        }
+
+        // Refresh document from database
+        $this->document = DocumentUpload::findOrFail($this->documentId);
+
+        // Check if processing completed
+        if (in_array($this->document->status->value, ['processed', 'rejected', 'parsing_failed'])) {
+            $this->isApproving = false;
+
+            if ($this->document->status->value === 'processed') {
+                $this->dispatch('showToastr',
+                    type: 'success',
+                    message: 'Inventario procesado exitosamente',
+                );
+                session()->flash('success', 'Inventario procesado exitosamente');
+                $this->redirect(route('documents.index'));
+            } elseif ($this->document->status->value === 'rejected') {
+                $this->dispatch('showToastr',
+                    type: 'error',
+                    message: 'El documento fue rechazado durante el procesamiento',
+                );
+            } else {
+                $this->dispatch('showToastr',
+                    type: 'error',
+                    message: 'Error al procesar el inventario',
+                );
+            }
         }
     }
 
