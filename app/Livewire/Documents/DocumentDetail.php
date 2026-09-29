@@ -88,6 +88,16 @@ class DocumentDetail extends Component
 
     public function updateItemField(int $itemIndex, string $field, mixed $value): void
     {
+        // Prevent editing already processed documents
+        if (in_array($this->document->status->value, ['processed', 'rejected', 'approved', 'processing'])) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'No se pueden editar items en un documento ya procesado.',
+            );
+
+            return;
+        }
+
         $this->editedItems[$itemIndex][$field] = $value;
 
         // Auto-save change to database
@@ -180,12 +190,28 @@ class DocumentDetail extends Component
 
     public function toggleItemSelection(int $itemIndex): void
     {
+        // Prevent toggling selection on already processed documents
+        if (in_array($this->document->status->value, ['processed', 'rejected', 'approved', 'processing'])) {
+            return;
+        }
+
         $this->selectedItems[$itemIndex] = ! ($this->selectedItems[$itemIndex] ?? false);
     }
 
     public function addItem(): void
     {
         if (! $this->document) {
+            return;
+        }
+
+        // Prevent adding items to already processed documents
+        if (in_array($this->document->status->value, ['processed', 'rejected', 'approved', 'processing'])) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'No se pueden agregar items a un documento ya procesado.',
+            );
+            session()->flash('error', 'No se pueden agregar items a un documento ya procesado.');
+
             return;
         }
 
@@ -245,6 +271,17 @@ class DocumentDetail extends Component
     public function removeItem(int $itemIndex): void
     {
         if (! $this->document) {
+            return;
+        }
+
+        // Prevent removing items from already processed documents
+        if (in_array($this->document->status->value, ['processed', 'rejected', 'approved', 'processing'])) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'No se pueden eliminar items de un documento ya procesado.',
+            );
+            session()->flash('error', 'No se pueden eliminar items de un documento ya procesado.');
+
             return;
         }
 
@@ -314,6 +351,17 @@ class DocumentDetail extends Component
     public function approve(): void
     {
         if (! $this->document) {
+            return;
+        }
+
+        // Prevent approving already processed documents
+        if (in_array($this->document->status->value, ['processed', 'rejected', 'approved', 'processing'])) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'No se puede aprobar este documento. Ya fue procesado.',
+            );
+            session()->flash('error', 'No se puede aprobar este documento. Ya fue procesado.');
+
             return;
         }
 
@@ -396,6 +444,17 @@ class DocumentDetail extends Component
 
     public function startRejecting(): void
     {
+        // Prevent rejecting already processed documents
+        if (in_array($this->document->status->value, ['processed', 'rejected', 'approved', 'processing'])) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'No se puede rechazar este documento. Ya fue procesado.',
+            );
+            session()->flash('error', 'No se puede rechazar este documento. Ya fue procesado.');
+
+            return;
+        }
+
         $this->isRejecting = true;
     }
 

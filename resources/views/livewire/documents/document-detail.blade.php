@@ -37,7 +37,7 @@
                     <div class="mb-3">
                         <label class="text-sm text-gray-600">Tipo</label>
                         <p class="font-semibold">
-                            <span class="badge badge-{{ $document->document_type->value === 'inventory' ? 'primary' : 'secondary' }}">
+                            <span class="badge bg-{{ $document->document_type->value === 'inventory' ? 'primary' : 'secondary' }}">
                                 {{ $document->document_type->label() }}
                             </span>
                         </p>
@@ -45,7 +45,7 @@
                     <div class="mb-3">
                         <label class="text-sm text-gray-600">Estado</label>
                         <p class="font-semibold">
-                            <span class="badge badge-{{ match($document->status->value) {
+                            <span class="badge bg-{{ match($document->status->value) {
                                 'pending' => 'warning',
                                 'parsed' => 'info',
                                 'approved' => 'success',
@@ -313,12 +313,25 @@
     @endif
 
     <!-- Actions -->
-    <div class="d-flex gap-2 justify-content-end">
+    <div class="d-flex gap-2 justify-content-end align-items-center">
         <a href="{{ route('documents.index') }}" class="btn btn-secondary" @if($isApproving) onclick="return false;" @endif>
             <i class="feather icon-x"></i> Cancelar
         </a>
 
-        @if ($isRejecting)
+        @if (in_array($document->status->value, ['processed', 'rejected', 'approved', 'processing']))
+            <div class="alert alert-info mb-0">
+                <i class="feather icon-info"></i>
+                @if ($document->status->value === 'processed')
+                    Documento ya procesado
+                @elseif ($document->status->value === 'approved')
+                    Documento aprobado - en procesamiento
+                @elseif ($document->status->value === 'processing')
+                    Documento en procesamiento
+                @elseif ($document->status->value === 'rejected')
+                    Documento rechazado
+                @endif
+            </div>
+        @elseif ($isRejecting)
             <button wire:click="cancelRejection" class="btn btn-warning" @disabled($isApproving)>
                 <i class="feather icon-arrow-left"></i> Volver
             </button>
@@ -326,7 +339,7 @@
                 <i class="feather icon-trash-2"></i> Confirmar Rechazo
             </button>
         @else
-            <button wire:click="startRejecting" class="btn btn-danger" @disabled($isApproving)>
+            <button wire:click="startRejecting" class="btn btn-danger">
                 <i class="feather icon-x-circle"></i> Rechazar
             </button>
             <button wire:click="approve" class="btn btn-primary" @disabled($isApproving) wire:loading.attr="disabled">
