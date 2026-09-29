@@ -123,8 +123,8 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
                 'track_by_lot' => false,
                 'track_by_serial' => false,
                 'expiration_tracking' => false,
-                'reorder_point' => 10,
-                'reorder_quantity' => 20,
+                'reorder_point' => 1,
+                'reorder_quantity' => 1,
             ];
 
             // Add internal tracking info if applicable
