@@ -109,10 +109,15 @@ class SupplyRequest extends BaseModel
             throw new \Exception("No inventory report found for {$this->inventoryItem->name}");
         }
 
-        if ($inventoryReport->quantity_available < $quantity) {
+        // Get available stock based on tracking type
+        $availableStock = $this->inventoryItem->track_internal_content
+            ? ($inventoryReport->internal_units_on_hand ?? 0)
+            : ($inventoryReport->quantity_on_hand ?? 0);
+
+        if ($availableStock < $quantity) {
             throw new \Exception(
                 "Insufficient stock for {$this->inventoryItem->name}. ".
-                "Available: {$inventoryReport->quantity_available}, Requested: {$quantity}"
+                "Available: {$availableStock}, Requested: {$quantity}"
             );
         }
 
@@ -135,8 +140,17 @@ class SupplyRequest extends BaseModel
             'practitioner_inventory_id' => $inventoryReport->practitioner_id,
         ]);
 
-        // Deduct stock
-        $inventoryReport->decrement('quantity_on_hand', $quantity);
+        // Deduct stock based on tracking type
+        if ($this->inventoryItem->track_internal_content) {
+            // Item tracked by internal units (píldoras)
+            $inventoryReport->decrement('internal_units_on_hand', $quantity);
+            // Also decrement presentations proportionally
+            $presentationsToDeduct = $quantity / $this->inventoryItem->internal_units_per_presentation;
+            $inventoryReport->decrement('quantity_on_hand', $presentationsToDeduct);
+        } else {
+            // Item tracked by presentations
+            $inventoryReport->decrement('quantity_on_hand', $quantity);
+        }
 
         // Mark supply request as completed
         $this->update(['status' => SupplyRequestStatus::COMPLETED]);

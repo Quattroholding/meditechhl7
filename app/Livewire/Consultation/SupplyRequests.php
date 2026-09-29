@@ -246,7 +246,9 @@ class SupplyRequests extends Component
                 return;
             }
 
-            $supplyRequest->update(['quantity' => $value]);
+            // Update both database and local state
+            $supplyRequest->update(['quantity' => (float) $value]);
+            $this->quantities[$id] = (float) $value;
         }
     }
 
