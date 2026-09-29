@@ -105,7 +105,7 @@ class InventoryItem extends BaseModel
             }
         }
 
-        // If no practitioner stock or no practitioner specified, check branch
+        // Check branch-specific inventory
         if ($branchId) {
             $report = $this->inventoryReports()
                 ->where('status', 'active')
@@ -120,18 +120,17 @@ class InventoryItem extends BaseModel
             }
         }
 
-        // If no specific location, return total available stock across all locations
-        if (! $branchId && ! $practitionerId) {
-            $totalStock = $this->inventoryReports()
-                ->where('status', 'active')
-                ->get()
-                ->sum(function ($report) use ($stockField) {
-                    $reserved = $this->track_internal_content ? 0 : ($report->quantity_reserved ?? 0);
+        // Fall back to global inventory (branch_id IS NULL and practitioner_id IS NULL)
+        $globalReport = $this->inventoryReports()
+            ->where('status', 'active')
+            ->whereNull('branch_id')
+            ->whereNull('practitioner_id')
+            ->first();
 
-                    return $report->{$stockField} - $reserved;
-                });
+        if ($globalReport) {
+            $reserved = $this->track_internal_content ? 0 : ($globalReport->quantity_reserved ?? 0);
 
-            return (float) $totalStock;
+            return (float) ($globalReport->{$stockField} - $reserved);
         }
 
         return 0.0;
