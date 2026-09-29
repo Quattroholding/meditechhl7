@@ -153,7 +153,7 @@
                                         <td data-column="acciones" data-priority="7" data-label="Acciones" class="text-end">
                                             <div class="btn-group btn-group-sm">
                                                 @if ($document->status->value === 'parsed')
-                                                    <a href="{{ route('documents.detail', $document) }}" class="btn btn-primary btn-sm" title="Revisar documento">
+                                                    <a href="{{ route('documents.detail', $document) }}" class="btn btn-warning btn-sm" title="Revisar documento">
                                                         <i class="fa-solid fa-eye"></i>
                                                     </a>
                                                 @elseif ($document->status->value === 'approved' || $document->status->value === 'processing' || $document->status->value === 'processed')

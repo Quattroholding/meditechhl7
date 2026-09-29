@@ -104,8 +104,8 @@ class DocumentDetail extends Component
             $discount = (float) ($item['discount'] ?? 0);
             $tax = (float) ($item['tax'] ?? 0);
 
-            // Total = (quantity * unit_cost) - discount
-            $itemTotal = ($quantity * $unitCost) - $discount;
+            // Total = (quantity * unit_cost) - (quantity * discount per unit)
+            $itemTotal = ($quantity * $unitCost) - ($quantity * $discount);
             $this->itemTotals[$index] = $itemTotal;
             $this->subtotal += $itemTotal;
             $this->totalTax += $tax;
@@ -184,7 +184,14 @@ class DocumentDetail extends Component
 
             // Refresh modal
             $this->document = DocumentUpload::findOrFail($this->documentId);
-            $this->editedItems = [];
+
+            // Apply edits before calculating totals (preserve previous edits)
+            foreach ($items as $index => &$item) {
+                if (isset($this->editedItems[$index])) {
+                    $item = array_merge($item, $this->editedItems[$index]);
+                }
+            }
+
             $this->calculateTotals($items);
 
         } catch (\Exception $e) {
@@ -211,6 +218,19 @@ class DocumentDetail extends Component
             if (isset($items[$itemIndex])) {
                 unset($items[$itemIndex]);
                 $items = array_values($items); // Re-index
+
+                // Also re-index editedItems to match
+                $newEditedItems = [];
+                $skipped = false;
+                foreach ($this->editedItems as $idx => $edit) {
+                    if ($idx === $itemIndex) {
+                        $skipped = true;
+                    } else {
+                        $newIdx = $skipped && $idx > $itemIndex ? $idx - 1 : $idx;
+                        $newEditedItems[$newIdx] = $edit;
+                    }
+                }
+                $this->editedItems = $newEditedItems;
             }
 
             // Update parse result
@@ -229,7 +249,14 @@ class DocumentDetail extends Component
 
             // Refresh modal
             $this->document = DocumentUpload::findOrFail($this->documentId);
-            $this->editedItems = [];
+
+            // Apply edits before calculating totals
+            foreach ($items as $index => &$item) {
+                if (isset($this->editedItems[$index])) {
+                    $item = array_merge($item, $this->editedItems[$index]);
+                }
+            }
+
             $this->calculateTotals($items);
 
         } catch (\Exception $e) {
