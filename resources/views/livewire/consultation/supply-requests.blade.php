@@ -157,7 +157,7 @@
                         SKU: {{ $supply->inventoryItem->sku }}
                     </div>
                     <div style="font-size: 0.85rem; color: #6c757d;">
-                        Precio base: ${{ number_format($supply->inventoryItem->base_price, 2) }}
+                        Precio base: <b>${{ number_format($supply->inventoryItem->base_price, 2) }}</b> <br/><small class="text-red-600">Precio que se cobrara si no marca como regalo ni coloca otro precio en Precio personalizado</small>
                     </div>
                 </td>
                 <td>
@@ -176,7 +176,13 @@
                                         placeholder="Cantidad"
                                         id="quantity_{{ $supply->id }}"
                                     />
-                                    <small class="text-muted">Unidad: {{ $supply->inventoryItem->unit_of_measure }}</small>
+                                    <small class="text-muted">
+                                        @if($supply->inventoryItem->track_internal_content && $supply->inventoryItem->internal_unit)
+                                            Unidad: {{ $supply->inventoryItem->internal_unit }}
+                                        @else
+                                            Unidad: {{ $supply->inventoryItem->unit_of_measure }}
+                                        @endif
+                                    </small>
                                 </div>
                             </td>
                             <td style="width: 50%;">
@@ -199,6 +205,7 @@
                                 <div class="form-check" style="padding-left: 1.5rem;">
                                     <input
                                         class="form-check-input"
+                                        style="width: 15px"
                                         type="checkbox"
                                         id="isFree{{ $supply->id }}"
                                         wire:click="toggleFree({{ $supply->id }})"

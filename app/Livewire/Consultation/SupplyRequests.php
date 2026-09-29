@@ -115,23 +115,19 @@ class SupplyRequests extends Component
             $practitionerId = $practitioner?->id;
             $stock = $item->getStockLevel($branchId, $practitionerId);
 
-            // Get presentation quantity for display
-            $presentationStock = 0;
-            if ($item->track_internal_content && $item->internal_units_per_presentation) {
-                $presentationStock = (int) ($stock / $item->internal_units_per_presentation);
-            } else {
-                $presentationStock = (int) $stock;
-            }
+            // When track_internal_content is true, stock is already in internal units
+            // When false, stock is in presentations/unit_of_measure
+            $displayStock = (int) $stock;
 
             return [
                 'id' => $item->id,
                 'name' => $item->name,
                 'sku' => $item->sku,
                 'description' => $item->description,
-                'unit_of_measure' => $item->unit_of_measure,
+                'unit_of_measure' => $item->track_internal_content ? $item->internal_unit : $item->unit_of_measure,
                 'base_price' => $item->base_price,
                 'currency' => $item->currency,
-                'stock' => $presentationStock,
+                'stock' => $displayStock,
                 'internal_stock' => $item->track_internal_content ? (int) $stock : null,
                 'track_internal' => $item->track_internal_content,
             ];
