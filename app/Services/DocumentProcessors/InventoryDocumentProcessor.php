@@ -105,6 +105,9 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             ->first();
 
         if (! $inventoryItem) {
+            // Normalize unit of measure value
+            $normalizedUnit = $this->normalizeUnitOfMeasure($item['unit'] ?? null);
+
             // Create new inventory item
             $itemData = [
                 'client_id' => $document->client_id,
@@ -115,7 +118,7 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
                 'base_cost' => $unitCost,
                 'base_price' => $this->calculatePrice($unitCost),
                 'category' => isset($item['category']) ? [$item['category']] : [],
-                'unit_of_measure' => $item['unit'] ?? 'unit',
+                'unit_of_measure' => $normalizedUnit,
                 'requires_prescription' => false,
                 'track_by_lot' => false,
                 'track_by_serial' => false,
@@ -127,7 +130,7 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             // Add internal tracking info if applicable
             if ($unitType === 'internal') {
                 $itemData['track_internal_content'] = true;
-                $itemData['internal_unit'] = $item['unit'] ?? 'unit';
+                $itemData['internal_unit'] = $normalizedUnit;
                 $itemData['internal_units_per_presentation'] = (float) ($item['internal_units_per_presentation'] ?? 1);
             }
 
@@ -154,8 +157,8 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
         $internalUnitsAfter = $quantityAfter;
         $totalCost = $quantityInPresentations * $unitCost;
 
-        // Determine the unit of measure for the transaction
-        $transactionUnitOfMeasure = $unitType === 'internal' ? ($item['unit'] ?? 'unit') : ($item['unit'] ?? 'unit');
+        // Normalize unit of measure for the transaction (reuse if already normalized above, otherwise normalize here)
+        $transactionUnitOfMeasure = isset($normalizedUnit) ? $normalizedUnit : $this->normalizeUnitOfMeasure($item['unit'] ?? null);
 
         // Create inventory transaction (store in internal units)
         $transaction = InventoryTransaction::create([
@@ -231,5 +234,38 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
     {
         // Apply 30% markup by default
         return round($unitCost * 1.30, 2);
+    }
+
+    /**
+     * Normalize unit value to match valid UnitOfMeasure enum values
+     * Maps common aliases and invalid values to valid enum backing values
+     */
+    private function normalizeUnitOfMeasure(?string $unit): string
+    {
+        if (! $unit) {
+            return 'unit';
+        }
+
+        // Map common aliases to valid enum values
+        $mapping = [
+            'und' => 'unit',      // Common Spanish abbreviation for unidad
+            'ud' => 'unit',       // Abbreviation used in enum symbol
+            'unidad' => 'unit',
+            'unidades' => 'unit',
+            'units' => 'unit',
+            'caja' => 'box',
+            'cajas' => 'box',
+            'viales' => 'vial',
+            'mililitro' => 'ml',
+            'mililitros' => 'ml',
+            'miligramo' => 'mg',
+            'miligramos' => 'mg',
+            'gramo' => 'g',
+            'gramos' => 'g',
+        ];
+
+        $normalized = strtolower(trim($unit));
+
+        return $mapping[$normalized] ?? 'unit';
     }
 }
