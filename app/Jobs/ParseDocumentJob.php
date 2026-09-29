@@ -49,11 +49,15 @@ class ParseDocumentJob implements ShouldQueue
             // Mark as parsing
             $document->markAsParsing();
 
-            Log::info('ParseDocumentJob: Starting parsing', [
-                'document_id' => $document->id,
-                'type' => $document->document_type->value,
-                'file' => $document->original_filename,
-            ]);
+            try {
+                Log::info('ParseDocumentJob: Starting parsing', [
+                    'document_id' => $document->id,
+                    'type' => $document->document_type->value,
+                    'file' => $document->original_filename,
+                ]);
+            } catch (\Throwable $logError) {
+                error_log('ParseDocumentJob logging warning: '.$logError->getMessage());
+            }
 
             // Initialize Google Document AI service
             if (! GoogleDocumentAIService::isConfigured()) {
@@ -119,23 +123,36 @@ class ParseDocumentJob implements ShouldQueue
             // Update document status
             $document->markAsParsed();
 
-            Log::info('ParseDocumentJob: Parsing completed successfully', [
-                'document_id' => $document->id,
-                'items' => count($parseResult['items']),
-                'confidence' => $parseResult['confidence'],
-                'warnings' => count($parseResult['warnings'] ?? []),
-                'errors' => count($parseResult['errors'] ?? []),
-            ]);
+            try {
+                Log::info('ParseDocumentJob: Parsing completed successfully', [
+                    'document_id' => $document->id,
+                    'items' => count($parseResult['items']),
+                    'confidence' => $parseResult['confidence'],
+                    'warnings' => count($parseResult['warnings'] ?? []),
+                    'errors' => count($parseResult['errors'] ?? []),
+                ]);
+            } catch (\Throwable $logError) {
+                error_log('ParseDocumentJob logging warning: '.$logError->getMessage());
+            }
 
         } catch (\Exception $e) {
-            Log::error('ParseDocumentJob: Error during parsing', [
-                'document_id' => $document->id,
-                'error' => $e->getMessage(),
-                'attempt' => $this->attempts(),
-            ]);
+            try {
+                Log::error('ParseDocumentJob: Error during parsing', [
+                    'document_id' => $document->id,
+                    'error' => $e->getMessage(),
+                    'attempt' => $this->attempts(),
+                ]);
+            } catch (\Throwable $logError) {
+                // Silently fail if logging fails - document status update is more important
+                error_log('ParseDocumentJob logging failed: '.$logError->getMessage());
+            }
 
             // Mark as parsing failed (don't retry automatically)
-            $document->markAsParsingFailed($e->getMessage());
+            try {
+                $document->markAsParsingFailed($e->getMessage());
+            } catch (\Throwable $statusError) {
+                error_log('ParseDocumentJob: Failed to update document status: '.$statusError->getMessage());
+            }
 
             // Only throw if it's the last attempt
             if ($this->attempts() >= $this->tries) {
