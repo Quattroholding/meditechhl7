@@ -146,15 +146,21 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
         $approval = $document->approval()->firstOrFail();
         $performedByUserId = $approval->approved_by_user_id;
 
-        // Get quantity before update from existing transactions
-        $existingQuantity = InventoryTransaction::where('client_id', $document->client_id)
+        // Get existing quantities from inventory_reports to ensure consistent calculation
+        $report = DB::table('inventory_reports')
+            ->where('client_id', $document->client_id)
             ->where('inventory_item_id', $inventoryItem->id)
-            ->sum('quantity_change');
+            ->whereNull('branch_id')
+            ->whereNull('practitioner_id')
+            ->first();
 
-        $quantityBefore = (float) $existingQuantity;
-        $quantityAfter = $quantityBefore + $quantityInInternalUnits;
-        $internalUnitsBefore = $quantityBefore;
-        $internalUnitsAfter = $quantityAfter;
+        // Calculate quantity before
+        $quantityOnHandBefore = $report?->quantity_on_hand ?? 0;
+        $internalUnitsOnHandBefore = $report?->internal_units_on_hand ?? 0;
+
+        // Quantity after = previous + new (in their respective units)
+        $quantityOnHandAfter = $quantityOnHandBefore + $quantityInPresentations;
+        $internalUnitsAfter = $internalUnitsOnHandBefore + $quantityInInternalUnits;
         $totalCost = $quantityInPresentations * $unitCost;
 
         // Normalize unit of measure for the transaction (reuse if already normalized above, otherwise normalize here)
@@ -167,7 +173,7 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             'transaction_type' => InventoryTransactionType::PURCHASE,
             'transaction_date' => now(),
             'quantity_change' => $quantityInInternalUnits,
-            'quantity_before' => $internalUnitsBefore,
+            'quantity_before' => $internalUnitsOnHandBefore,
             'quantity_after' => $internalUnitsAfter,
             'unit_of_measure' => $transactionUnitOfMeasure,
             'unit_cost' => $unitCost,
@@ -177,18 +183,8 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             'performed_by_user_id' => $performedByUserId,
         ]);
 
-        // Calculate quantity in presentations for inventory_reports
-        $quantityOnHandAfter = $quantityAfter / $conversionFactor;
-
         // Update or create inventory report with new quantity using direct SQL to bypass all scopes
-        $reportExists = DB::table('inventory_reports')
-            ->where('client_id', $document->client_id)
-            ->where('inventory_item_id', $inventoryItem->id)
-            ->whereNull('branch_id')
-            ->whereNull('practitioner_id')
-            ->exists();
-
-        if ($reportExists) {
+        if ($report) {
             // Update existing report
             DB::table('inventory_reports')
                 ->where('client_id', $document->client_id)
@@ -197,7 +193,7 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
                 ->whereNull('practitioner_id')
                 ->update([
                     'quantity_on_hand' => $quantityOnHandAfter,
-                    'internal_units_on_hand' => $quantityAfter,
+                    'internal_units_on_hand' => $internalUnitsAfter,
                     'quantity_reserved' => 0,
                     'status' => 'active',
                     'updated_at' => now(),
@@ -211,7 +207,7 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
                 'branch_id' => null,
                 'practitioner_id' => null,
                 'quantity_on_hand' => $quantityOnHandAfter,
-                'internal_units_on_hand' => $quantityAfter,
+                'internal_units_on_hand' => $internalUnitsAfter,
                 'quantity_reserved' => 0,
                 'status' => 'active',
                 'created_at' => now(),
