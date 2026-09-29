@@ -190,12 +190,13 @@ class SupplyRequests extends Component
         $this->customPrices[$supplyRequest->id] = null;
         $this->isFree[$supplyRequest->id] = false;
 
-        // Clear search
-        $this->query = '';
-        $this->results = [];
-
-        // Refresh list
+        // Refresh supply requests list
         $this->getSupplyRequestsProperty();
+
+        // Refresh search results to reflect updated stock (if item is still searchable)
+        if (! empty($this->query)) {
+            $this->searchInventoryItems();
+        }
 
         // Emit event to update section checkmark
         $this->dispatch('sectionDataSaved', sectionId: $this->section_id);
