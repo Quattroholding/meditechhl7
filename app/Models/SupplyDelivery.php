@@ -187,7 +187,7 @@ class SupplyDelivery extends BaseModel
                 'transaction_type' => InventoryTransactionType::RETURN,
                 'transaction_date' => now(),
                 'quantity_change' => $quantityToReturn,
-                'unit_of_measure' => $this->unit_of_measure,
+                'unit_of_measure' => $this->inventoryItem->unit_of_measure->value, // Use InventoryItem's valid enum value
                 'quantity_before' => $quantityBefore,
                 'quantity_after' => $quantityBefore + $quantityToReturn,
                 'patient_id' => $this->patient_id,
@@ -310,7 +310,7 @@ class SupplyDelivery extends BaseModel
                 'encounter_id' => $this->encounter_id,
                 'quantity_returned' => $quantityToReturn,
                 'quantity_originally_dispensed' => $this->supplied_quantity,
-                'unit_of_measure' => $this->unit_of_measure,
+                'unit_of_measure' => $this->inventoryItem->unit_of_measure->value, // Use InventoryItem's valid enum value
                 'reason' => $reason,
                 'notes' => $notes,
                 'lot_number' => $this->lot_number,
@@ -359,7 +359,7 @@ class SupplyDelivery extends BaseModel
                 ],
                 'quantity' => [
                     'value' => (float) $this->supplied_quantity,
-                    'unit' => $this->unit_of_measure,
+                    'unit' => $this->inventoryItem->unit_of_measure->value,
                 ],
             ],
             'occurrenceDateTime' => $this->occurrence_datetime->toIso8601String(),
