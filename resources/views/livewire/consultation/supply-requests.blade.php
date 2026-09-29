@@ -289,10 +289,19 @@
                                 </div>
                                 <div style="text-align: right;">
                                     @if($result['stock'] > 0)
-                                        <span class="badge bg-success" style="font-size: 0.85rem;">
-                                            <i class="fas fa-check-circle"></i>
-                                            Stock: {{ $result['stock'] }}
-                                        </span>
+                                        <div style="margin-bottom: 4px;">
+                                            <span class="badge bg-success" style="font-size: 0.85rem;">
+                                                <i class="fas fa-check-circle"></i>
+                                                Stock: {{ $result['stock'] }}
+                                            </span>
+                                        </div>
+                                        @if($result['track_internal'] && $result['internal_stock'])
+                                            <div>
+                                                <span class="badge bg-info" style="font-size: 0.75rem;">
+                                                    Unidades: {{ $result['internal_stock'] }}
+                                                </span>
+                                            </div>
+                                        @endif
                                     @else
                                         <span class="badge bg-danger" style="font-size: 0.85rem;">
                                             <i class="fas fa-exclamation-circle"></i>

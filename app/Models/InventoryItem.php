@@ -83,9 +83,14 @@ class InventoryItem extends BaseModel
 
     /**
      * Get stock level for specific location
+     * Returns internal_units_on_hand for items tracked by internal units,
+     * otherwise returns quantity_on_hand (presentations)
      */
     public function getStockLevel(?int $branchId = null, ?int $practitionerId = null): float
     {
+        // Determine which field to use based on tracking method
+        $stockField = $this->track_internal_content ? 'internal_units_on_hand' : 'quantity_on_hand';
+
         // If practitioner is specified, first check their personal inventory
         if ($practitionerId) {
             $report = $this->inventoryReports()
@@ -94,7 +99,9 @@ class InventoryItem extends BaseModel
                 ->first();
 
             if ($report) {
-                return (float) ($report->quantity_on_hand - $report->quantity_reserved);
+                $reserved = $this->track_internal_content ? 0 : ($report->quantity_reserved ?? 0);
+
+                return (float) ($report->{$stockField} - $reserved);
             }
         }
 
@@ -107,7 +114,9 @@ class InventoryItem extends BaseModel
                 ->first();
 
             if ($report) {
-                return (float) ($report->quantity_on_hand - $report->quantity_reserved);
+                $reserved = $this->track_internal_content ? 0 : ($report->quantity_reserved ?? 0);
+
+                return (float) ($report->{$stockField} - $reserved);
             }
         }
 
@@ -116,8 +125,10 @@ class InventoryItem extends BaseModel
             $totalStock = $this->inventoryReports()
                 ->where('status', 'active')
                 ->get()
-                ->sum(function ($report) {
-                    return $report->quantity_on_hand - $report->quantity_reserved;
+                ->sum(function ($report) use ($stockField) {
+                    $reserved = $this->track_internal_content ? 0 : ($report->quantity_reserved ?? 0);
+
+                    return $report->{$stockField} - $reserved;
                 });
 
             return (float) $totalStock;

@@ -115,6 +115,14 @@ class SupplyRequests extends Component
             $practitionerId = $practitioner?->id;
             $stock = $item->getStockLevel($branchId, $practitionerId);
 
+            // Get presentation quantity for display
+            $presentationStock = 0;
+            if ($item->track_internal_content && $item->internal_units_per_presentation) {
+                $presentationStock = (int) ($stock / $item->internal_units_per_presentation);
+            } else {
+                $presentationStock = (int) $stock;
+            }
+
             return [
                 'id' => $item->id,
                 'name' => $item->name,
@@ -123,7 +131,9 @@ class SupplyRequests extends Component
                 'unit_of_measure' => $item->unit_of_measure,
                 'base_price' => $item->base_price,
                 'currency' => $item->currency,
-                'stock' => $stock,
+                'stock' => $presentationStock,
+                'internal_stock' => $item->track_internal_content ? (int) $stock : null,
+                'track_internal' => $item->track_internal_content,
             ];
         })->toArray();
     }
