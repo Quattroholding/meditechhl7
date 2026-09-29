@@ -4,6 +4,7 @@ namespace App\Livewire\Documents;
 
 use App\Enums\DocumentType;
 use App\Jobs\ParseDocumentJob;
+use App\Models\Branch;
 use App\Models\Client;
 use App\Models\DocumentUpload;
 use Illuminate\Support\Facades\Log;
@@ -17,6 +18,9 @@ class DocumentUploadForm extends Component
 
     #[Validate('required|exists:clients,id')]
     public ?int $client_id = null;
+
+    #[Validate('required|exists:branches,id')]
+    public ?int $branch_id = null;
 
     #[Validate('required|string|in:inventory,electricity_bill,water_bill,gas_bill')]
     public ?string $document_type = null;
@@ -40,6 +44,23 @@ class DocumentUploadForm extends Component
             if ($firstClient) {
                 $this->client_id = $firstClient->id;
             }
+        }
+
+        // Obtener primera branch del cliente seleccionado
+        $this->selectDefaultBranch();
+    }
+
+    public function updatedClientId(): void
+    {
+        // Resetear branch cuando cambia el cliente
+        $this->selectDefaultBranch();
+    }
+
+    private function selectDefaultBranch(): void
+    {
+        if ($this->client_id) {
+            $firstBranch = Branch::where('client_id', $this->client_id)->first();
+            $this->branch_id = $firstBranch?->id;
         }
     }
 
@@ -74,6 +95,7 @@ class DocumentUploadForm extends Component
 
             $documentUpload = DocumentUpload::create([
                 'client_id' => $this->client_id,
+                'branch_id' => $this->branch_id,
                 'document_type' => DocumentType::tryFrom($this->document_type),
                 'status' => 'pending',
                 'file_path' => $filePath,
@@ -100,8 +122,13 @@ class DocumentUploadForm extends Component
 
     public function render()
     {
+        $branches = $this->client_id
+            ? Branch::where('client_id', $this->client_id)->get()
+            : collect();
+
         return view('livewire.documents.document-upload-form', [
             'clients' => Client::all(),
+            'branches' => $branches,
             'documentTypes' => DocumentType::cases(),
         ]);
     }

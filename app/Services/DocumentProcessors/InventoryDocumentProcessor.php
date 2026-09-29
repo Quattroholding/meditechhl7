@@ -150,7 +150,7 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
         $report = DB::table('inventory_reports')
             ->where('client_id', $document->client_id)
             ->where('inventory_item_id', $inventoryItem->id)
-            ->whereNull('branch_id')
+            ->where('branch_id', $document->branch_id)
             ->whereNull('practitioner_id')
             ->first();
 
@@ -189,7 +189,7 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             DB::table('inventory_reports')
                 ->where('client_id', $document->client_id)
                 ->where('inventory_item_id', $inventoryItem->id)
-                ->whereNull('branch_id')
+                ->where('branch_id', $document->branch_id)
                 ->whereNull('practitioner_id')
                 ->update([
                     'quantity_on_hand' => $quantityOnHandAfter,
@@ -204,7 +204,7 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
                 'fhir_id' => 'inventory-report-'.Str::uuid(),
                 'client_id' => $document->client_id,
                 'inventory_item_id' => $inventoryItem->id,
-                'branch_id' => null,
+                'branch_id' => $document->branch_id,
                 'practitioner_id' => null,
                 'quantity_on_hand' => $quantityOnHandAfter,
                 'internal_units_on_hand' => $internalUnitsAfter,

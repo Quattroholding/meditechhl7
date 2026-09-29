@@ -13,6 +13,7 @@ class DocumentUpload extends BaseModel
 {
     protected $fillable = [
         'client_id',
+        'branch_id',
         'document_type',
         'status',
         'file_path',
