@@ -4,7 +4,6 @@ namespace App\Livewire\Documents;
 
 use App\Models\DocumentUpload;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Reactive;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,18 +11,21 @@ class DocumentReviewList extends Component
 {
     use WithPagination;
 
-    #[Reactive]
-    public string $statusFilter = 'all';
+    public string $search = '';
 
-    public string $sortBy = 'created_at';
+    public string $sortField = 'created_at';
 
     public string $sortDirection = 'desc';
 
-    public string $search = '';
+    public string $pagination = 25;
 
-    public ?int $selectedDocumentId = null;
+    public string $statusFilter = 'all';
 
     protected $paginationTheme = 'bootstrap';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+    ];
 
     public function getStatusOptions(): array
     {
@@ -40,30 +42,25 @@ class DocumentReviewList extends Component
         ];
     }
 
-    public function updatedStatusFilter(): void
-    {
-        $this->resetPage();
-    }
-
     public function updatedSearch(): void
     {
         $this->resetPage();
     }
 
-    public function setSortBy(string $field): void
+    public function updatedStatusFilter(): void
     {
-        if ($this->sortBy === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortBy = $field;
-            $this->sortDirection = 'asc';
-        }
+        $this->resetPage();
     }
 
-    public function selectDocument(int $documentId): void
+    public function sortBy(string $field): void
     {
-        $this->selectedDocumentId = $documentId;
-        $this->redirect(route('documents.detail', $documentId));
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+        $this->resetPage();
     }
 
     #[On('documentUploaded')]
@@ -72,11 +69,11 @@ class DocumentReviewList extends Component
         $this->resetPage();
     }
 
-    public function render()
+    public function getDataProperty()
     {
         $query = DocumentUpload::query();
 
-        // Apply filter
+        // Apply status filter
         if ($this->statusFilter !== 'all') {
             $query->where('status', $this->statusFilter);
         }
@@ -87,13 +84,15 @@ class DocumentReviewList extends Component
         }
 
         // Apply sorting
-        $query->orderBy($this->sortBy, $this->sortDirection);
+        $query->orderBy($this->sortField, $this->sortDirection);
 
-        // Paginate
-        $documents = $query->paginate(25);
+        return $query->paginate($this->pagination);
+    }
 
+    public function render()
+    {
         return view('livewire.documents.document-review-list', [
-            'documents' => $documents,
+            'documents' => $this->data,
             'statusOptions' => $this->getStatusOptions(),
         ]);
     }

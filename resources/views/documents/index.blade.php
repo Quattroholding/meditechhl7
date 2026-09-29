@@ -15,7 +15,7 @@
             <!-- /Page Header -->
 
             @include('partials.message')
-
+            {{--}}
             <!-- Upload Form -->
             @can('documents.upload')
             <div class="row mb-4">
@@ -24,6 +24,7 @@
                 </div>
             </div>
             @endcan
+            {{--}}
 
             <!-- Document List -->
             <div class="row">
