@@ -88,8 +88,49 @@ class DocumentDetail extends Component
     {
         $this->editedItems[$itemIndex][$field] = $value;
 
+        // Auto-save change to database
+        $this->persistEditedItems();
+
         // Recalculate totals when any field is edited
         $this->recalculateTotalsAfterEdit();
+    }
+
+    private function persistEditedItems(): void
+    {
+        try {
+            // Get current items
+            $extractedData = $this->document->parseResult->extracted_data;
+            if (is_string($extractedData)) {
+                $extractedData = json_decode($extractedData, true);
+            }
+
+            $items = $extractedData['items'] ?? [];
+
+            // Apply all edits to items
+            foreach ($items as $index => &$item) {
+                if (isset($this->editedItems[$index])) {
+                    $item = array_merge($item, $this->editedItems[$index]);
+                }
+            }
+
+            // Save to database
+            $this->document->parseResult->update([
+                'extracted_data' => json_encode([
+                    'items' => $items,
+                    'confidence' => $extractedData['confidence'] ?? 0.9,
+                    'subtotal' => $extractedData['subtotal'] ?? 0,
+                    'total_tax' => $extractedData['total_tax'] ?? 0,
+                    'total' => $extractedData['total'] ?? 0,
+                    'invoice_number' => $extractedData['invoice_number'] ?? null,
+                    'invoice_date' => $extractedData['invoice_date'] ?? null,
+                ]),
+                'manually_edited' => true,
+                'edited_by_user_id' => auth()->id(),
+                'edited_at' => now(),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Failed to persist edited items', ['error' => $e->getMessage()]);
+        }
     }
 
     private function calculateTotals(array $items): void
