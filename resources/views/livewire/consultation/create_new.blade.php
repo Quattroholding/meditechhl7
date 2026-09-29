@@ -257,13 +257,24 @@
         }
 
         /**
-         * Cerrar modal al hacer clic fuera
+         * Cerrar modal al hacer clic fuera (solo si es el overlay, no el contenido)
          */
         window.onclick = function(event) {
-            if (event.target.classList.contains('consultation-modal-overlay')) {
-                const sectionId = event.target.getAttribute('data-section-id');
-                if (sectionId) {
-                    closeSectionModal(sectionId);
+            // Solo cerrar si se hace clic EXACTAMENTE en el overlay, no en el contenido
+            if (event.target === event.currentTarget ||
+                (event.target.classList && event.target.classList.contains('consultation-modal-overlay'))) {
+
+                // Verificar que no sea un clic dentro del modal-content
+                const isClickInContent = event.target.closest('.consultation-modal-content');
+                if (isClickInContent) {
+                    return; // No cerrar si fue dentro del contenido
+                }
+
+                if (event.target.classList.contains('consultation-modal-overlay')) {
+                    const sectionId = event.target.getAttribute('data-section-id');
+                    if (sectionId) {
+                        closeSectionModal(sectionId);
+                    }
                 }
             }
         }
