@@ -17,7 +17,7 @@ class DocumentReviewList extends Component
 
     public string $sortDirection = 'desc';
 
-    public string $pagination = 25;
+    public int $pagination = 25;
 
     public string $statusFilter = 'all';
 
