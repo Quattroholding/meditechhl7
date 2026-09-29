@@ -104,6 +104,7 @@ class InventoryItemList extends Component
             $item->total_stock = $item->inventoryReports->sum('quantity_on_hand');
             $item->total_reserved = $item->inventoryReports->sum('quantity_reserved');
             $item->total_available = $item->total_stock - $item->total_reserved;
+            $item->total_internal_units = $item->inventoryReports->sum('internal_units_on_hand');
 
             return $item;
         });

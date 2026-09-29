@@ -58,6 +58,7 @@
                                 <th>Precio</th>
                                 <th>Stock Total</th>
                                 <th>Disponible</th>
+                                <th>Unidades</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -89,6 +90,13 @@
                                         @endif
                                     </td>
                                     <td>
+                                        @if($item->total_internal_units > 0)
+                                            <span class="badge bg-info">{{ number_format($item->total_internal_units, 0) }}</span>
+                                        @else
+                                            <span class="badge bg-secondary">0</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         @if($item->status->value === 'active')
                                             <span class="badge bg-success">Activo</span>
                                         @else
@@ -115,7 +123,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">
+                                    <td colspan="9" class="text-center text-muted py-4">
                                         No se encontraron items de inventario.
                                     </td>
                                 </tr>
