@@ -14,12 +14,16 @@
             @endcomponent
             <!-- /Page Header -->
 
+            @include('partials.message')
+
             <!-- Upload Form -->
-            <div class="row">
+            @can('documents.upload')
+            <div class="row mb-4">
                 <div class="col-12">
                     @livewire('documents.document-upload-form')
                 </div>
             </div>
+            @endcan
 
             <!-- Document List -->
             <div class="row">

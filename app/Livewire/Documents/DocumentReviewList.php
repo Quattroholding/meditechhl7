@@ -4,6 +4,7 @@ namespace App\Livewire\Documents;
 
 use App\Models\DocumentUpload;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,7 +12,8 @@ class DocumentReviewList extends Component
 {
     use WithPagination;
 
-    public string $filter = 'parsed';
+    #[Reactive]
+    public string $statusFilter = 'all';
 
     public string $sortBy = 'created_at';
 
@@ -23,7 +25,22 @@ class DocumentReviewList extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public function updatedFilter(): void
+    public function getStatusOptions(): array
+    {
+        return [
+            'all' => 'Todos',
+            'pending_parsing' => 'Pendiente de Procesamiento',
+            'parsing' => 'Procesando',
+            'parsing_failed' => 'Error en Procesamiento',
+            'parsed' => 'Listo para Revisar',
+            'approved' => 'Aprobado',
+            'processing' => 'Procesando Inventario',
+            'processed' => 'Completado',
+            'rejected' => 'Rechazado',
+        ];
+    }
+
+    public function updatedStatusFilter(): void
     {
         $this->resetPage();
     }
@@ -46,7 +63,7 @@ class DocumentReviewList extends Component
     public function selectDocument(int $documentId): void
     {
         $this->selectedDocumentId = $documentId;
-        $this->dispatch('openApprovalModal', $documentId);
+        $this->redirect(route('documents.detail', $documentId));
     }
 
     #[On('documentUploaded')]
@@ -60,8 +77,8 @@ class DocumentReviewList extends Component
         $query = DocumentUpload::query();
 
         // Apply filter
-        if ($this->filter !== 'all') {
-            $query->where('status', $this->filter);
+        if ($this->statusFilter !== 'all') {
+            $query->where('status', $this->statusFilter);
         }
 
         // Apply search
@@ -77,6 +94,7 @@ class DocumentReviewList extends Component
 
         return view('livewire.documents.document-review-list', [
             'documents' => $documents,
+            'statusOptions' => $this->getStatusOptions(),
         ]);
     }
 }

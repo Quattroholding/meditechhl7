@@ -245,6 +245,23 @@
                 </li>
                 @endif
                 @endcanany
+                @canany(['documents.view','documents.upload'])
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side">
+                            <i class="fa fa-file-pdf"></i></span>
+                        <span> {{ __('Documentos') }} </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('documents.view')
+                        <li><a class="{{ Request::is('documents') ? 'active' : '' }}" href="{{route('documents.index')}}">{{ __('generic.list') }} {{__('Documentos')}}</a></li>
+                        @endcan
+                        @can('documents.upload')
+                        <li><a class="{{ Request::is('documents/create') ? 'active' : '' }}" href="{{route('documents.create')}}">{{ __('generic.create') }} {{__('Documento')}}</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
                 @canany(['settings.create_user_procedures','settings.create_consultation_template','settings.create_rapid_access','settings.create_working_hour_user','settings.invoice_template'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">

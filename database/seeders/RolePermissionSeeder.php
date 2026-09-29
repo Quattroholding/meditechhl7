@@ -196,6 +196,12 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'inventory.dispense_supplies', 'description' => 'Dispensar suministros durante consultas', 'module' => 'inventario'],
             ['name' => 'inventory.view_reports', 'description' => 'Ver reportes de inventario y transacciones', 'module' => 'inventario'],
 
+            // Documents management (invoices, receipts, etc.)
+            ['name' => 'documents.view', 'description' => 'Ver lista de documentos subidos', 'module' => 'documentos'],
+            ['name' => 'documents.upload', 'description' => 'Subir nuevos documentos (facturas, comprobantes)', 'module' => 'documentos'],
+            ['name' => 'documents.approve', 'description' => 'Aprobar o rechazar documentos', 'module' => 'documentos'],
+            ['name' => 'documents.download', 'description' => 'Descargar documentos', 'module' => 'documentos'],
+
         ];
 
         foreach ($permissions as $permissionData) {
@@ -296,6 +302,10 @@ class RolePermissionSeeder extends Seeder
             'suscriptions.payments.store',
             'suscriptions.payments.settings',
             'surveys.view',
+            /*'documents.view',
+            'documents.upload',
+            'documents.approve',
+            'documents.download',*/
         ]);
 
         $assistantRole = Role::firstOrCreate(['name' => 'recepcionista']);
@@ -393,6 +403,10 @@ class RolePermissionSeeder extends Seeder
             'inventory.delete',
             'inventory.manage_stock',
             'inventory.view_reports',
+            'documents.view',
+            'documents.upload',
+            'documents.approve',
+            'documents.download',
         ]);
 
         $doctorRole = Role::firstOrCreate(['name' => 'asistente medico']);
@@ -516,10 +530,25 @@ class RolePermissionSeeder extends Seeder
             'practitioners.add_assistant',
         ]);
 
+        // Contabilidad Client role - Accounting staff for each client
+        $contabilidadClientRole = Role::firstOrCreate(['name' => 'contabilidad_client']);
+        $contabilidadClientRole->givePermissionTo([
+            'dashboard.accounting',
+            'documents.view',
+            'documents.upload',
+            'documents.approve',
+            'documents.download',
+            'inventory.view',
+            'inventory.view_reports',
+            'users.profile',
+            'users.change_client',
+        ]);
+
         // Set 2FA requirement for specific roles
         $rolesToRequire2FA = [
             'admin' => 'Este rol requiere autenticación de dos factores por políticas de seguridad.',
             'contabilidad' => 'Este rol maneja información financiera sensible y requiere 2FA.',
+            'contabilidad_client' => 'Este rol maneja información financiera sensible del cliente y requiere 2FA.',
             'validador' => 'Este rol valida usuarios y requiere 2FA para mayor seguridad.',
             'soporte' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
             'ventas' => 'Este rol maneja datos de clientes y requiere 2FA.',

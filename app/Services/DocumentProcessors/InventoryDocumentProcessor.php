@@ -6,9 +6,9 @@ use App\Enums\InventoryItemStatus;
 use App\Enums\InventoryTransactionType;
 use App\Models\DocumentUpload;
 use App\Models\InventoryItem;
-use App\Models\InventoryReport;
 use App\Models\InventoryTransaction;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class InventoryDocumentProcessor extends BaseDocumentProcessor
 {
@@ -34,7 +34,13 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
                 throw new \RuntimeException('No parsing result found for document');
             }
 
-            $items = $parseResult->extracted_data['items'] ?? [];
+            // Decode extracted_data if it's stored as JSON string
+            $extractedData = $parseResult->extracted_data;
+            if (is_string($extractedData)) {
+                $extractedData = json_decode($extractedData, true);
+            }
+
+            $items = $extractedData['items'] ?? [];
 
             if (empty($items)) {
                 throw new \RuntimeException('No items to process in extracted data');
@@ -74,8 +80,19 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
     {
         $sku = $item['sku'] ?? null;
         $name = $item['name'] ?? null;
-        $quantity = $item['quantity'] ?? 0;
-        $unitCost = $item['unit_cost'] ?? 0;
+        $quantity = (float) ($item['quantity'] ?? 0);
+        $unitCost = (float) ($item['unit_cost'] ?? 0);
+
+        // Track both presentation and internal units
+        $unitType = $item['unit_type'] ?? 'presentation';
+        $conversionFactor = 1.0;
+        if ($unitType === 'internal' && isset($item['internal_units_per_presentation'])) {
+            $conversionFactor = (float) $item['internal_units_per_presentation'];
+        }
+
+        // Store quantities: presentation units and internal units
+        $quantityInPresentations = $quantity;
+        $quantityInInternalUnits = $quantity * $conversionFactor;
 
         if (! $sku || ! $name) {
             $this->logError("Item {$index}: Missing SKU or name", ['item' => $item]);
@@ -89,7 +106,7 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
 
         if (! $inventoryItem) {
             // Create new inventory item
-            $inventoryItem = InventoryItem::create([
+            $itemData = [
                 'client_id' => $document->client_id,
                 'sku' => $sku,
                 'name' => $name,
@@ -105,7 +122,16 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
                 'expiration_tracking' => false,
                 'reorder_point' => 10,
                 'reorder_quantity' => 20,
-            ]);
+            ];
+
+            // Add internal tracking info if applicable
+            if ($unitType === 'internal') {
+                $itemData['track_internal_content'] = true;
+                $itemData['internal_unit'] = $item['unit'] ?? 'unit';
+                $itemData['internal_units_per_presentation'] = (float) ($item['internal_units_per_presentation'] ?? 1);
+            }
+
+            $inventoryItem = InventoryItem::create($itemData);
 
             $this->logStep('Created new inventory item', [
                 'item_id' => $inventoryItem->id,
@@ -113,47 +139,82 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             ]);
         }
 
-        // Create inventory transaction
-        $quantityBefore = $inventoryItem->current_quantity ?? 0;
-        $quantityAfter = $quantityBefore + $quantity;
-        $totalCost = $quantity * $unitCost;
+        // Get the user who approved the document
+        $approval = $document->approval()->firstOrFail();
+        $performedByUserId = $approval->approved_by_user_id;
 
+        // Get quantity before update from existing transactions
+        $existingQuantity = InventoryTransaction::where('client_id', $document->client_id)
+            ->where('inventory_item_id', $inventoryItem->id)
+            ->sum('quantity_change');
+
+        $quantityBefore = (float) $existingQuantity;
+        $quantityAfter = $quantityBefore + $quantityInInternalUnits;
+        $internalUnitsBefore = $quantityBefore;
+        $internalUnitsAfter = $quantityAfter;
+        $totalCost = $quantityInPresentations * $unitCost;
+
+        // Determine the unit of measure for the transaction
+        $transactionUnitOfMeasure = $unitType === 'internal' ? ($item['unit'] ?? 'unit') : ($item['unit'] ?? 'unit');
+
+        // Create inventory transaction (store in internal units)
         $transaction = InventoryTransaction::create([
             'client_id' => $document->client_id,
             'inventory_item_id' => $inventoryItem->id,
             'transaction_type' => InventoryTransactionType::PURCHASE,
             'transaction_date' => now(),
-            'quantity_change' => $quantity,
-            'quantity_before' => $quantityBefore,
-            'quantity_after' => $quantityAfter,
+            'quantity_change' => $quantityInInternalUnits,
+            'quantity_before' => $internalUnitsBefore,
+            'quantity_after' => $internalUnitsAfter,
+            'unit_of_measure' => $transactionUnitOfMeasure,
             'unit_cost' => $unitCost,
             'total_cost' => $totalCost,
             'reason' => 'Imported from PDF document',
             'notes' => "Document: {$document->original_filename}",
-            'performed_by_user_id' => auth()->id(),
+            'performed_by_user_id' => $performedByUserId,
         ]);
 
-        // Update inventory item quantity
-        $inventoryItem->update([
-            'current_quantity' => $quantityAfter,
-        ]);
+        // Calculate quantity in presentations for inventory_reports
+        $quantityOnHandAfter = $quantityAfter / $conversionFactor;
 
-        // Update or create inventory report
-        $report = InventoryReport::firstOrCreate(
-            [
+        // Update or create inventory report with new quantity using direct SQL to bypass all scopes
+        $reportExists = DB::table('inventory_reports')
+            ->where('client_id', $document->client_id)
+            ->where('inventory_item_id', $inventoryItem->id)
+            ->whereNull('branch_id')
+            ->whereNull('practitioner_id')
+            ->exists();
+
+        if ($reportExists) {
+            // Update existing report
+            DB::table('inventory_reports')
+                ->where('client_id', $document->client_id)
+                ->where('inventory_item_id', $inventoryItem->id)
+                ->whereNull('branch_id')
+                ->whereNull('practitioner_id')
+                ->update([
+                    'quantity_on_hand' => $quantityOnHandAfter,
+                    'internal_units_on_hand' => $quantityAfter,
+                    'quantity_reserved' => 0,
+                    'status' => 'active',
+                    'updated_at' => now(),
+                ]);
+        } else {
+            // Create new report
+            DB::table('inventory_reports')->insert([
+                'fhir_id' => 'inventory-report-'.Str::uuid(),
                 'client_id' => $document->client_id,
                 'inventory_item_id' => $inventoryItem->id,
-            ],
-            [
-                'total_quantity' => 0,
-                'total_cost' => 0,
-            ]
-        );
-
-        $report->update([
-            'total_quantity' => $report->total_quantity + $quantity,
-            'total_cost' => $report->total_cost + $totalCost,
-        ]);
+                'branch_id' => null,
+                'practitioner_id' => null,
+                'quantity_on_hand' => $quantityOnHandAfter,
+                'internal_units_on_hand' => $quantityAfter,
+                'quantity_reserved' => 0,
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         $this->logStep('Created transaction for item', [
             'item_id' => $inventoryItem->id,

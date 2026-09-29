@@ -37,6 +37,10 @@ class StockManagement extends Component
 
     public $transferToLocationType = 'branch';
 
+    public $unit_type = 'presentation'; // presentation or internal
+
+    public $internalUnitsPerPresentation; // Dynamic factor when receiving internal units
+
     public function mount($item = null)
     {
         if ($item) {
@@ -44,7 +48,7 @@ class StockManagement extends Component
             $this->loadItem();
         }
 
-        if(auth()->user()->hasRole('doctor')){
+        if (auth()->user()->hasRole('doctor')) {
             $this->locationType = 'practitioner';
             $this->locationId = auth()->user()->practitioner->id;
         }
@@ -67,7 +71,8 @@ class StockManagement extends Component
     {
         $this->selectedItemId = null;
         $this->selectedItem = null;
-        $this->reset(['quantity', 'unitCost', 'lotNumber', 'expirationDate', 'reason', 'transferToLocationId']);
+        $this->reset(['quantity', 'unitCost', 'lotNumber', 'expirationDate', 'reason', 'transferToLocationId', 'unit_type', 'internalUnitsPerPresentation']);
+        $this->unit_type = 'presentation';
     }
 
     protected function loadItem()
@@ -86,10 +91,15 @@ class StockManagement extends Component
             'selectedItemId' => 'required|exists:inventory_items,id',
             'locationId' => 'required',
             'quantity' => 'required|numeric|min:0.01',
+            'unit_type' => 'required|in:presentation,internal',
         ];
 
         if ($this->operation === 'receive') {
             $rules['unitCost'] = 'nullable|numeric|min:0';
+            // If receiving internal units, need to know the factor
+            if ($this->unit_type === 'internal') {
+                $rules['internalUnitsPerPresentation'] = 'required|numeric|min:0.01';
+            }
         }
 
         if ($this->operation === 'transfer') {
@@ -126,7 +136,8 @@ class StockManagement extends Component
             });
 
             session()->flash('success', 'Operación completada exitosamente.');
-            $this->reset(['quantity', 'unitCost', 'lotNumber', 'expirationDate', 'reason', 'transferToLocationId']);
+            $this->reset(['quantity', 'unitCost', 'lotNumber', 'expirationDate', 'reason', 'transferToLocationId', 'unit_type', 'internalUnitsPerPresentation']);
+            $this->unit_type = 'presentation';
             $this->loadItem();
         } catch (\Exception $e) {
             session()->flash('error', 'Error: '.$e->getMessage());
@@ -138,7 +149,15 @@ class StockManagement extends Component
         $inventoryReport = $this->getOrCreateInventoryReport();
 
         $quantityBefore = $inventoryReport->quantity_on_hand;
-        $inventoryReport->increment('quantity_on_hand', $this->quantity);
+
+        // Calculate actual quantity to add based on unit type
+        $quantityToAdd = $this->quantity;
+        if ($this->unit_type === 'internal' && $this->internalUnitsPerPresentation) {
+            // Receiving internal units: multiply presentations by factor
+            $quantityToAdd = $this->quantity * $this->internalUnitsPerPresentation;
+        }
+
+        $inventoryReport->increment('quantity_on_hand', $quantityToAdd);
         $inventoryReport->refresh();
 
         if ($this->lotNumber) {
@@ -153,8 +172,9 @@ class StockManagement extends Component
             'transaction_type' => InventoryTransactionType::PURCHASE,
             'transaction_date' => now(),
             'inventory_item_id' => $this->selectedItemId,
-            'quantity_change' => $this->quantity,
+            'quantity_change' => $quantityToAdd,
             'unit_of_measure' => $this->selectedItem->unit_of_measure,
+            'unit_type' => $this->unit_type,
             'quantity_before' => $quantityBefore,
             'quantity_after' => $inventoryReport->quantity_on_hand,
             'to_location_client_id' => auth()->user()->clients()->first()->id,
@@ -166,6 +186,9 @@ class StockManagement extends Component
             'total_cost' => $this->unitCost ? ($this->unitCost * $this->quantity) : null,
             'performed_by_user_id' => auth()->id(),
             'reason' => 'Recepción de stock',
+            'notes' => $this->unit_type === 'internal' && $this->internalUnitsPerPresentation
+                ? "{$this->quantity} presentaciones × {$this->internalUnitsPerPresentation} = {$quantityToAdd} unidades internas"
+                : null,
             'client_id' => auth()->user()->clients()->first()->id,
         ]);
     }
@@ -190,6 +213,7 @@ class StockManagement extends Component
             'inventory_item_id' => $this->selectedItemId,
             'quantity_change' => $difference,
             'unit_of_measure' => $this->selectedItem->unit_of_measure,
+            'unit_type' => $this->unit_type,
             'quantity_before' => $quantityBefore,
             'quantity_after' => $this->quantity,
             'to_location_client_id' => auth()->user()->clients()->first()->id,
@@ -224,6 +248,7 @@ class StockManagement extends Component
             'inventory_item_id' => $this->selectedItemId,
             'quantity_change' => 0, // Net zero, it's a movement
             'unit_of_measure' => $this->selectedItem->unit_of_measure,
+            'unit_type' => $this->unit_type,
             'quantity_before' => $quantityBefore,
             'quantity_after' => $fromReport->quantity_on_hand,
             'from_location_client_id' => auth()->user()->clients()->first()->id,
@@ -256,6 +281,7 @@ class StockManagement extends Component
             'inventory_item_id' => $this->selectedItemId,
             'quantity_change' => -$this->quantity,
             'unit_of_measure' => $this->selectedItem->unit_of_measure,
+            'unit_type' => $this->unit_type,
             'quantity_before' => $quantityBefore,
             'quantity_after' => $inventoryReport->quantity_on_hand,
             'from_location_client_id' => auth()->user()->clients()->first()->id,

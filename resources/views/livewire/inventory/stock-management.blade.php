@@ -79,6 +79,50 @@
                         </div>
                     </div>
 
+                    @if($selectedItem)
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-4">
+                            <div class="input-block local-forms">
+                                <x-input-label for="unit_type" value="Tipo de Unidad" required/>
+                                <select wire:model.live="unit_type" class="form-select" id="unit_type">
+                                    <option value="presentation">Presentación ({{ $selectedItem->unit_of_measure }})</option>
+                                    <option value="internal">Unidad Interna</option>
+                                </select>
+                                @if($selectedItem->track_internal_content)
+                                <small class="text-muted d-block mt-1">
+                                    Predefinido: 1 {{ $selectedItem->unit_of_measure }} = {{ $selectedItem->internal_units_per_presentation }} {{ $selectedItem->internal_unit }}
+                                </small>
+                                @endif
+                                <x-input-error :messages="$errors->get('unit_type')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        @if($unit_type === 'internal' && $operation === 'receive')
+                        <div class="col-12 col-md-4">
+                            <div class="input-block local-forms">
+                                <x-input-label for="internalUnitsPerPresentation" value="Unidades Internas por Presentación" required/>
+                                <x-text-input
+                                    wire:model="internalUnitsPerPresentation"
+                                    class="block mt-1 w-full"
+                                    type="number"
+                                    step="0.01"
+                                    name="internalUnitsPerPresentation"
+                                    id="internalUnitsPerPresentation"
+                                    placeholder="Ej: 30, 100, 50"/>
+                                <small class="text-muted d-block mt-1">
+                                    @if($selectedItem->track_internal_content)
+                                        Ingresa el factor para esta presentación (ej: caja de 30 pastillas)
+                                    @else
+                                        ¿Cuántas unidades internas contiene cada {{ $selectedItem->unit_of_measure }}?
+                                    @endif
+                                </small>
+                                <x-input-error :messages="$errors->get('internalUnitsPerPresentation')" class="mt-2" />
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                    @endif
+
                     @if($operation === 'receive')
                         <div class="row mt-3">
                             <div class="col-12 col-md-4">

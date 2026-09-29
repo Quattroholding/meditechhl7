@@ -51,6 +51,10 @@ class InventoryDocumentParser extends BaseDocumentParser
             $totalTax += (float) ($item['tax'] ?? 0);
         }
 
+        // Extract invoice metadata
+        $invoiceNumber = $this->extractInvoiceNumber($googleAIResponse);
+        $invoiceDate = $this->extractInvoiceDate($googleAIResponse);
+
         // Return result with metadata
         return $this->getResultWithMetadata($googleAIResponse, [
             'detected_format' => $this->detectedFormat,
@@ -59,6 +63,8 @@ class InventoryDocumentParser extends BaseDocumentParser
             'subtotal' => $subtotal,
             'total_tax' => $totalTax,
             'total' => $subtotal + $totalTax,
+            'invoice_number' => $invoiceNumber,
+            'invoice_date' => $invoiceDate,
         ]);
     }
 
@@ -913,5 +919,109 @@ class InventoryDocumentParser extends BaseDocumentParser
                 $this->addWarning("SKU duplicado en el documento: {$duplicate}");
             }
         }
+    }
+
+    /**
+     * Extract invoice/factura number from OCR response
+     */
+    private function extractInvoiceNumber(array $googleAIResponse): ?string
+    {
+        $text = $googleAIResponse['document']['text'] ?? '';
+
+        if (empty($text)) {
+            return null;
+        }
+
+        // Patterns for invoice numbers - be more specific to avoid false matches
+        $patterns = [
+            // "Número: 0000005614" or "No: 0000005614"
+            '/(?:n[úu]mero|no\.?)\s*[:=]?\s*([0-9]{4,15})/i',
+            // "Factura No: 123456" or "Factura No 123456"
+            '/factura\s+(?:no\.?|#)\s*[:=]?\s*([A-Z0-9]{3,20})/i',
+            // "Invoice #123456" or "Invoice: 123456"
+            '/invoice\s+#?\s*[:=]?\s*([A-Z0-9]{3,20})/i',
+            // "No. Factura: 123456" or "Nro. Factura: 123456"
+            '/(?:no\.?|nro\.?)\s+(?:de\s+)?factura\s*[:=]?\s*([A-Z0-9]{3,20})/i',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $text, $matches)) {
+                $number = trim($matches[1]);
+                // Reject if it's just a single letter or too short
+                if (strlen($number) > 2) {
+                    return $number;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Extract invoice date from OCR response
+     */
+    private function extractInvoiceDate(array $googleAIResponse): ?string
+    {
+        $text = $googleAIResponse['document']['text'] ?? '';
+
+        if (empty($text)) {
+            return null;
+        }
+
+        // Patterns for dates - be specific to avoid future dates or invalid dates
+        $datePatterns = [
+            // "Fecha de emisión:" followed by DD/M/YYYY or DD/MM/YYYY (including single digit months)
+            '/fecha\s+de\s+emisi[óo]n\s*:?\s*(\d{1,2}[-\/]\d{1,2}[-\/]\d{4})/i',
+            // "Fecha:" followed by DD-MM-YYYY or DD/MM/YYYY
+            '/fecha\s*:?\s*(\d{1,2}[-\/]\d{1,2}[-\/]\d{4})/i',
+            // "Date:" followed by date
+            '/date\s*:?\s*(\d{1,2}[-\/]\d{1,2}[-\/]\d{4})/i',
+            // YYYY-MM-DD format (but only valid dates 2020-2030)
+            '/([2][0][2-3]\d[-\/]\d{1,2}[-\/]\d{1,2})/i',
+            // Standalone DD/M/YYYY or DD-MM-YYYY (must be 20xx to 20xx range)
+            '/(\d{1,2}[-\/]\d{1,2}[-\/]20\d{2})/i',
+        ];
+
+        foreach ($datePatterns as $pattern) {
+            if (preg_match($pattern, $text, $matches)) {
+                $dateStr = trim($matches[1]);
+                $parsed = $this->parseAndFormatDate($dateStr);
+
+                // Only return valid dates from 2020 onwards
+                if ($parsed && strtotime($parsed) >= strtotime('2020-01-01')) {
+                    return $parsed;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Parse date string and return in YYYY-MM-DD format
+     */
+    private function parseAndFormatDate(string $dateStr): ?string
+    {
+        // Replace slashes with hyphens for consistency
+        $dateStr = str_replace('/', '-', trim($dateStr));
+
+        // Try to parse different date formats - some formats may have single-digit months/days
+        $formats = [
+            'd-m-Y',   // 30-7-2024 or 30-07-2024
+            'j-n-Y',   // 30-7-2024 (flexible day and month)
+            'Y-m-d',   // 2024-07-30
+            'Y-n-j',   // 2024-7-30
+            'd-m-y',   // 30-07-24
+            'j-n-y',   // 30-7-24
+        ];
+
+        foreach ($formats as $format) {
+            $date = \DateTime::createFromFormat($format, $dateStr);
+            if ($date && $date->format('Y') >= 2020) {
+                return $date->format('Y-m-d');
+            }
+        }
+
+        return null;
     }
 }

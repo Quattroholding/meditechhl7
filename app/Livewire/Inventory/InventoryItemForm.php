@@ -43,6 +43,12 @@ class InventoryItemForm extends Component
 
     public $status = 'active';
 
+    public $track_internal_content = false;
+
+    public $internal_unit;
+
+    public $internal_units_per_presentation;
+
     public function mount($itemId = null)
     {
         if ($itemId) {
@@ -64,6 +70,9 @@ class InventoryItemForm extends Component
                 'reorder_point' => $this->item->reorder_point,
                 'reorder_quantity' => $this->item->reorder_quantity,
                 'status' => $this->item->status->value,
+                'track_internal_content' => $this->item->track_internal_content,
+                'internal_unit' => $this->item->internal_unit,
+                'internal_units_per_presentation' => $this->item->internal_units_per_presentation,
             ]);
         }
     }
@@ -91,6 +100,9 @@ class InventoryItemForm extends Component
             'reorder_point' => 'nullable|integer|min:0',
             'reorder_quantity' => 'nullable|integer|min:0',
             'status' => 'required|in:active,inactive',
+            'track_internal_content' => 'boolean',
+            'internal_unit' => 'nullable|required_if:track_internal_content,true|string|max:50',
+            'internal_units_per_presentation' => 'nullable|required_if:track_internal_content,true|numeric|min:0.01',
         ];
     }
 
@@ -115,6 +127,9 @@ class InventoryItemForm extends Component
             'reorder_point' => $this->reorder_point,
             'reorder_quantity' => $this->reorder_quantity,
             'status' => $this->status,
+            'track_internal_content' => $this->track_internal_content,
+            'internal_unit' => $this->track_internal_content ? $this->internal_unit : null,
+            'internal_units_per_presentation' => $this->track_internal_content ? $this->internal_units_per_presentation : null,
             'category' => [[
                 'coding' => [[
                     'system' => 'http://terminology.hl7.org/CodeSystem/supply-item-type',
@@ -143,6 +158,15 @@ class InventoryItemForm extends Component
         session()->flash('success', $message);
 
         return redirect()->route('inventory.items.index');
+    }
+
+    public function updatedTrackInternalContent()
+    {
+        // Limpiar campos internos si se desactiva el seguimiento
+        if (! $this->track_internal_content) {
+            $this->internal_unit = null;
+            $this->internal_units_per_presentation = null;
+        }
     }
 
     public function render()

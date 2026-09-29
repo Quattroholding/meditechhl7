@@ -101,6 +101,8 @@ class ParseDocumentJob implements ShouldQueue
                     'subtotal' => $parseResult['subtotal'] ?? 0,
                     'total_tax' => $parseResult['total_tax'] ?? 0,
                     'total' => $parseResult['total'] ?? 0,
+                    'invoice_number' => $parseResult['invoice_number'] ?? null,
+                    'invoice_date' => $parseResult['invoice_date'] ?? null,
                 ]),
                 'confidence_score' => $parseResult['confidence'],
                 'detected_format' => $parseResult['detected_format'] ?? 'standard',

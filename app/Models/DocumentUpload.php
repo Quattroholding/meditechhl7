@@ -22,6 +22,11 @@ class DocumentUpload extends BaseModel
         'uploaded_by_user_id',
         'processing_started_at',
         'processing_completed_at',
+        'invoice_number',
+        'invoice_date',
+        'subtotal',
+        'total_tax',
+        'total',
     ];
 
     protected $casts = [
@@ -29,6 +34,10 @@ class DocumentUpload extends BaseModel
         'status' => DocumentStatus::class,
         'processing_started_at' => 'datetime',
         'processing_completed_at' => 'datetime',
+        'invoice_date' => 'date',
+        'subtotal' => 'decimal:2',
+        'total_tax' => 'decimal:2',
+        'total' => 'decimal:2',
     ];
 
     public static function boot(): void

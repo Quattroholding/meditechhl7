@@ -81,6 +81,8 @@
                                     <th class="px-3 py-2 text-right">Desc</th>
                                     <th class="px-3 py-2 text-right">Impuesto</th>
                                     <th class="px-3 py-2 text-right">Total</th>
+                                    <th class="px-3 py-2 text-center">Tipo Unidad</th>
+                                    <th class="px-3 py-2 text-center">Factor</th>
                                     <th class="px-3 py-2 text-center">Acciones</th>
                                 </tr>
                                 </thead>
@@ -155,6 +157,30 @@
                                             {{ number_format($itemTotals[$index] ?? 0, 2, '.', ',') }}
                                         </td>
                                         <td class="px-3 py-2 text-center">
+                                            <select
+                                                wire:change="updateItemField({{ $index }}, 'unit_type', $event.target.value)"
+                                                class="w-28 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            >
+                                                <option value="presentation" @selected(($item['unit_type'] ?? 'internal') === 'presentation')>
+                                                    Presentación
+                                                </option>
+                                                <option value="internal" @selected(($item['unit_type'] ?? 'internal') === 'internal')>
+                                                    Unidad Interna
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td class="px-3 py-2 text-center">
+                                            <input
+                                                type="number"
+                                                value="{{ $item['internal_units_per_presentation'] ?? 1 }}"
+                                                wire:change="updateItemField({{ $index }}, 'internal_units_per_presentation', $event.target.value)"
+                                                class="w-16 px-2 py-1 border border-gray-300 rounded text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                                step="0.01"
+                                                min="0.01"
+                                                placeholder="1"
+                                            />
+                                        </td>
+                                        <td class="px-3 py-2 text-center">
                                             <button
                                                 wire:click="removeItem({{ $index }})"
                                                 class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded hover:bg-red-200"
@@ -166,7 +192,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="px-3 py-4 text-center text-gray-500 text-sm">
+                                        <td colspan="11" class="px-3 py-4 text-center text-gray-500 text-sm">
                                             No hay items
                                         </td>
                                     </tr>

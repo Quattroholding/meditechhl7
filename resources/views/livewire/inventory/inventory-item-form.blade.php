@@ -148,7 +148,59 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="col-12 col-md-6 col-lg-3 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" wire:model="track_internal_content" id="track_internal_content">
+                                <label class="form-check-label" for="track_internal_content">
+                                    <i class="fas fa-cube text-success me-1"></i>
+                                    <strong>Controlar Contenido Interno</strong>
+                                    <small class="d-block text-muted">Rastrear unidades internas</small>
+                                </label>
+                            </div>
+                        </div>
                     </div>
+
+                    @if ($track_internal_content)
+                    <div class="row mt-3 pt-3 border-top">
+                        <div class="col-12">
+                            <small class="text-muted d-block mb-3">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Especifica la unidad interna y su cantidad por presentación.
+                                Ejemplo: 1 Caja = 30 Pastillas de Ibuprofeno, 1 Botella = 100ml de Botox
+                            </small>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="input-block local-forms">
+                                <x-input-label for="internal_unit" value="Unidad Interna" required/>
+                                <x-text-input
+                                    wire:model="internal_unit"
+                                    class="block mt-1 w-full"
+                                    type="text"
+                                    name="internal_unit"
+                                    id="internal_unit"
+                                    placeholder="Ej: pastilla, ml, gramo"/>
+                                <x-input-error :messages="$errors->get('internal_unit')" class="mt-2" />
+                                <small class="text-muted d-block mt-1">La unidad más pequeña de este artículo</small>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="input-block local-forms">
+                                <x-input-label for="internal_units_per_presentation" value="Cantidad por Presentación" required/>
+                                <x-text-input
+                                    wire:model="internal_units_per_presentation"
+                                    class="block mt-1 w-full"
+                                    type="number"
+                                    step="0.01"
+                                    name="internal_units_per_presentation"
+                                    id="internal_units_per_presentation"
+                                    placeholder="Ej: 30, 100, 50"/>
+                                <x-input-error :messages="$errors->get('internal_units_per_presentation')" class="mt-2" />
+                                <small class="text-muted d-block mt-1">Cuántas unidades internas contiene cada presentación</small>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

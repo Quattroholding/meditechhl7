@@ -4,12 +4,11 @@ namespace App\Livewire\Documents;
 
 use App\Models\DocumentUpload;
 use App\Services\DocumentApprovalService;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
-class DocumentApprovalModal extends Component
+class DocumentDetail extends Component
 {
-    public ?int $documentUploadId = null;
+    public ?int $documentId = null;
 
     public ?DocumentUpload $document = null;
 
@@ -21,13 +20,9 @@ class DocumentApprovalModal extends Component
 
     public ?string $rejectionReason = null;
 
-    public bool $isEditing = false;
-
-    public bool $showModal = false;
-
     public bool $isRejecting = false;
 
-    public array $itemTotals = []; // Calculated totals per item
+    public array $itemTotals = [];
 
     public float $subtotal = 0.0;
 
@@ -35,23 +30,24 @@ class DocumentApprovalModal extends Component
 
     public float $totalInvoice = 0.0;
 
-    #[On('openApprovalModal')]
-    public function open(int $documentId): void
+    public function mount(DocumentUpload $document): void
     {
         try {
-            $this->documentUploadId = $documentId;
-            $this->document = DocumentUpload::findOrFail($documentId);
+            $this->documentId = $document->id;
+            $this->document = $document;
 
             // Verify user has access to this client
             $currentClient = auth()->user()->getCurrentClient();
             if (! $currentClient || $currentClient->id !== $this->document->client_id) {
-                session()->flash('error', 'No tienes acceso a este documento');
-
-                return;
+                abort(403, 'No tienes acceso a este documento');
             }
 
             // Verify document has been parsed
             if (! $this->document->parseResult) {
+                $this->dispatch('showToastr',
+                    type: 'error',
+                    message: 'El documento aún no ha sido procesado. Por favor, espera a que termine el procesamiento.',
+                );
                 session()->flash('error', 'El documento aún no ha sido procesado. Por favor, espera a que termine el procesamiento.');
 
                 return;
@@ -76,24 +72,15 @@ class DocumentApprovalModal extends Component
 
             $this->selectedItems = array_fill(0, count($items), true);
 
-            // Load totals from OCR if available, otherwise calculate
-            if (isset($extractedData['subtotal']) && isset($extractedData['total_tax']) && isset($extractedData['total'])) {
-                $this->subtotal = (float) $extractedData['subtotal'];
-                $this->totalTax = (float) $extractedData['total_tax'];
-                $this->totalInvoice = (float) $extractedData['total'];
-            } else {
-                // Fallback: calculate totals from items
-                $this->calculateTotals($items);
-            }
-
-            $this->showModal = true;
+            // Calculate totals
+            $this->calculateTotals($items);
 
         } catch (\Exception $e) {
-            Log::error('Error opening approval modal', [
-                'document_id' => $documentId,
-                'error' => $e->getMessage(),
-            ]);
-            session()->flash('error', 'Error al abrir el documento: '.$e->getMessage());
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Error al cargar el documento: '.$e->getMessage(),
+            );
+            abort(500, 'Error al cargar el documento: '.$e->getMessage());
         }
     }
 
@@ -196,7 +183,7 @@ class DocumentApprovalModal extends Component
             ]);
 
             // Refresh modal
-            $this->document = DocumentUpload::findOrFail($this->documentUploadId);
+            $this->document = DocumentUpload::findOrFail($this->documentId);
             $this->editedItems = [];
             $this->calculateTotals($items);
 
@@ -241,11 +228,15 @@ class DocumentApprovalModal extends Component
             ]);
 
             // Refresh modal
-            $this->document = DocumentUpload::findOrFail($this->documentUploadId);
+            $this->document = DocumentUpload::findOrFail($this->documentId);
             $this->editedItems = [];
             $this->calculateTotals($items);
 
         } catch (\Exception $e) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: $e->getMessage(),
+            );
             session()->flash('error', 'Error al eliminar item: '.$e->getMessage());
         }
     }
@@ -258,6 +249,10 @@ class DocumentApprovalModal extends Component
 
         // Validate at least one item is selected
         if (! in_array(true, $this->selectedItems)) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Debes seleccionar al menos un item',
+            );
             session()->flash('error', 'Debes seleccionar al menos un item');
 
             return;
@@ -276,10 +271,16 @@ class DocumentApprovalModal extends Component
         );
 
         if ($result['success']) {
+            $this->dispatch('showToastr',
+                type: 'success',
+                message: $result['message'],
+            );
             session()->flash('success', $result['message']);
-            $this->dispatch('refreshDocumentList');
-            $this->closeModal();
         } else {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: $result['message'],
+            );
             session()->flash('error', 'Error al aprobar documento: '.$result['message']);
         }
     }
@@ -310,18 +311,19 @@ class DocumentApprovalModal extends Component
         $result = $service->reject($this->document, $this->rejectionReason);
 
         if ($result['success']) {
+            $this->dispatch('showToastr',
+                type: 'success',
+                message: $result['message'],
+            );
             session()->flash('success', $result['message']);
-            $this->dispatch('refreshDocumentList');
-            $this->closeModal();
+            $this->redirect(route('documents.index'));
         } else {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: $result['message'],
+            );
             session()->flash('error', 'Error al rechazar documento: '.$result['message']);
         }
-    }
-
-    public function closeModal(): void
-    {
-        $this->reset();
-        $this->showModal = false;
     }
 
     public function render()
@@ -353,7 +355,7 @@ class DocumentApprovalModal extends Component
         // Generate PDF view URL
         $pdfUrl = $this->document ? route('documents.view', $this->document) : null;
 
-        return view('livewire.documents.document-approval-modal', [
+        return view('livewire.documents.document-detail', [
             'items' => $items,
             'validationMessages' => $validationMessages,
             'confidenceScore' => $parseResult?->confidence_score ?? 0,
