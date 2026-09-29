@@ -62,13 +62,16 @@ class DocumentDetail extends Component
             }
             $items = $extractedData['items'] ?? [];
 
-            // Ensure all items have unit_type and internal_units_per_presentation fields
+            // Ensure all items have required fields
             foreach ($items as &$item) {
                 if (! isset($item['unit_type'])) {
                     $item['unit_type'] = 'internal';
                 }
                 if (! isset($item['internal_units_per_presentation'])) {
                     $item['internal_units_per_presentation'] = 1;
+                }
+                if (! isset($item['base_price'])) {
+                    $item['base_price'] = $item['unit_cost'] ?? 0;
                 }
             }
 
@@ -122,6 +125,13 @@ class DocumentDetail extends Component
             foreach ($items as $index => &$item) {
                 if (isset($this->editedItems[$index])) {
                     $item = array_merge($item, $this->editedItems[$index]);
+                }
+            }
+
+            // Ensure base_price is set for items that don't have it
+            foreach ($items as &$item) {
+                if (! isset($item['base_price']) || empty($item['base_price'])) {
+                    $item['base_price'] = $item['unit_cost'] ?? 0;
                 }
             }
 
@@ -230,6 +240,7 @@ class DocumentDetail extends Component
                 'name' => '',
                 'quantity' => 1,
                 'unit_cost' => 0.0,
+                'base_price' => 0.0,
                 'discount' => 0.0,
                 'tax' => 0.0,
                 'unit' => 'und',

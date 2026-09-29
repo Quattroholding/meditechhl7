@@ -108,6 +108,9 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             // Normalize unit of measure value
             $normalizedUnit = $this->normalizeUnitOfMeasure($item['unit'] ?? null);
 
+            // Use base_price from document if available, otherwise use unit_cost
+            $basePrice = (float) ($item['base_price'] ?? $unitCost);
+
             // Create new inventory item
             $itemData = [
                 'client_id' => $document->client_id,
@@ -116,7 +119,7 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
                 'status' => InventoryItemStatus::ACTIVE,
                 'item_type' => 'supply', // Default type
                 'base_cost' => $unitCost,
-                'base_price' => $this->calculatePrice($unitCost),
+                'base_price' => $basePrice,
                 'category' => isset($item['category']) ? [$item['category']] : [],
                 'unit_of_measure' => $normalizedUnit,
                 'requires_prescription' => false,
@@ -221,15 +224,6 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             'quantity' => $quantity,
             'unit_cost' => $unitCost,
         ]);
-    }
-
-    /**
-     * Calculate selling price from unit cost (simple markup)
-     */
-    private function calculatePrice(float $unitCost): float
-    {
-        // Apply 30% markup by default
-        return round($unitCost * 1.30, 2);
     }
 
     /**

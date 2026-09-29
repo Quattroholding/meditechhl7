@@ -110,15 +110,16 @@
                     <thead class="table-light">
                         <tr>
                             <th class="w-1"><input type="checkbox" class="form-check-input" wire:model="selectedItems" /></th>
-                            <th style="width: 10%;">SKU</th>
-                            <th style="width: 20%;">Nombre</th>
-                            <th style="width: 10%;" class="text-right">Cantidad</th>
-                            <th style="width: 10%;" class="text-right">Costo Unit.</th>
-                            <th style="width: 10%;" class="text-right">Desc.</th>
-                            <th style="width: 10%;" class="text-right">Impuesto</th>
-                            <th style="width: 10%;">Tipo Unidad</th>
+                            <th style="width: 8%;">SKU</th>
+                            <th style="width: 16%;">Nombre</th>
+                            <th style="width: 8%;" class="text-right">Cantidad</th>
+                            <th style="width: 8%;" class="text-right">Costo Unit.</th>
+                            <th style="width: 8%;" class="text-right">Precio Venta</th>
+                            <th style="width: 8%;" class="text-right">Desc.</th>
+                            <th style="width: 8%;" class="text-right">Impuesto</th>
+                            <th style="width: 8%;">Tipo Unidad</th>
                             <th style="width: 5%;" class="text-center">Factor</th>
-                            <th class="text-center">Total</th>
+                            <th style="width: 8%;" class="text-center">Total</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
@@ -167,6 +168,17 @@
                                     type="number"
                                     value="{{ $item['unit_cost'] ?? '' }}"
                                     wire:change="updateItemField({{ $index }}, 'unit_cost', $event.target.value)"
+                                    class="form-control form-control-sm text-right"
+                                    step="0.01"
+                                    min="0"
+                                    @disabled($isApproving)
+                                />
+                            </td>
+                            <td class="text-right">
+                                <input
+                                    type="number"
+                                    value="{{ $item['base_price'] ?? $item['unit_cost'] ?? '' }}"
+                                    wire:change="updateItemField({{ $index }}, 'base_price', $event.target.value)"
                                     class="form-control form-control-sm text-right"
                                     step="0.01"
                                     min="0"

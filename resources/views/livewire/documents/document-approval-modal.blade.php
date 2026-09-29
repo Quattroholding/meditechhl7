@@ -78,6 +78,7 @@
                                     <th class="px-3 py-2 text-left">Nombre</th>
                                     <th class="px-3 py-2 text-right">Cantidad</th>
                                     <th class="px-3 py-2 text-right">Costo Unit.</th>
+                                    <th class="px-3 py-2 text-right">Precio Venta</th>
                                     <th class="px-3 py-2 text-right">Desc</th>
                                     <th class="px-3 py-2 text-right">Impuesto</th>
                                     <th class="px-3 py-2 text-right">Total</th>
@@ -127,6 +128,16 @@
                                                 type="number"
                                                 value="{{ $item['unit_cost'] ?? '' }}"
                                                 wire:change="updateItemField({{ $index }}, 'unit_cost', $event.target.value)"
+                                                class="w-20 px-2 py-1 border border-gray-300 rounded text-xs text-right focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                                step="0.01"
+                                                min="0"
+                                            />
+                                        </td>
+                                        <td class="px-3 py-2 text-right">
+                                            <input
+                                                type="number"
+                                                value="{{ $item['base_price'] ?? $item['unit_cost'] ?? '' }}"
+                                                wire:change="updateItemField({{ $index }}, 'base_price', $event.target.value)"
                                                 class="w-20 px-2 py-1 border border-gray-300 rounded text-xs text-right focus:outline-none focus:ring-1 focus:ring-blue-500"
                                                 step="0.01"
                                                 min="0"
@@ -192,7 +203,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="11" class="px-3 py-4 text-center text-gray-500 text-sm">
+                                        <td colspan="12" class="px-3 py-4 text-center text-gray-500 text-sm">
                                             No hay items
                                         </td>
                                     </tr>
