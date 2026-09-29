@@ -124,7 +124,9 @@ class SupplyRequests extends Component
                 'name' => $item->name,
                 'sku' => $item->sku,
                 'description' => $item->description,
-                'unit_of_measure' => $item->track_internal_content ? $item->internal_unit : $item->unit_of_measure,
+                'unit_of_measure' => $item->unit_of_measure->value, // Always use enum backing value
+                'unit_type' => $item->track_internal_content ? 'internal' : 'presentation',
+                'internal_unit' => $item->internal_unit, // Store for display only
                 'base_price' => $item->base_price,
                 'currency' => $item->currency,
                 'stock' => $displayStock,
@@ -170,6 +172,7 @@ class SupplyRequests extends Component
             'inventory_item_id' => $itemId,
             'quantity' => 1, // Default quantity
             'unit_of_measure' => $itemData['unit_of_measure'],
+            'unit_type' => $itemData['unit_type'] ?? 'presentation',
             'patient_id' => $this->encounter->patient_id,
             'encounter_id' => $this->encounter_id,
             'practitioner_id' => $this->encounter->practitioner_id,
