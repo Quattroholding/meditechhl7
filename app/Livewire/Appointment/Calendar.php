@@ -218,7 +218,10 @@ class Calendar extends Component
 
         // Aplicar filtros
         if ($this->selectedDoctor) {
-            $query->where('practitioner_id', $this->selectedDoctor);
+            $query->where(function ($q) {
+                $q->where('practitioner_id', $this->selectedDoctor)
+                    ->orWhere('assisted_by', $this->selectedDoctor);
+            });
         }
 
         if ($this->selectedStatus) {
@@ -748,7 +751,10 @@ class Calendar extends Component
 
                 // Aplicar los mismos filtros que en loadAppointments
                 if ($this->selectedDoctor) {
-                    $appointmentCount->where('practitioner_id', $this->selectedDoctor);
+                    $appointmentCount->where(function ($q) {
+                        $q->where('practitioner_id', $this->selectedDoctor)
+                            ->orWhere('assisted_by', $this->selectedDoctor);
+                    });
                 }
 
                 if ($this->selectedStatus) {
