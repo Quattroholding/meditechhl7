@@ -616,10 +616,14 @@ class ModalSave extends Component
                 $originalStart = $this->appointment->start->copy();
                 $newStart = $start->copy();
                 $hasDateTimeChanged = ! $originalStart->equalTo($newStart);
+                // Detectar si cambió el asistente médico
+                $hasAssistantChanged = $this->appointment->assisted_by !== $this->assisted_by;
+            } else {
+                $hasAssistantChanged = false;
             }
 
-            // Verificar disponibilidad solo si es nueva cita o si cambió fecha/hora
-            if (! $this->appointment || $hasDateTimeChanged) {
+            // Verificar disponibilidad si es nueva cita, si cambió fecha/hora o si cambió el asistente
+            if (! $this->appointment || $hasDateTimeChanged || $hasAssistantChanged) {
                 if (! $this->checkAvailability()) {
                     // Mostrar modal de lista de espera
                     $this->showWaitlistOptions();
@@ -1148,13 +1152,22 @@ class ModalSave extends Component
         $endTime = $startTime->copy()->addMinutes($minutes);
 
         // Buscar conflictos con otras citas
-        $query = Appointment::where('practitioner_id', $this->doctor_id)
-            ->whereDate('start', $this->appointment_date)
+        // Si hay asistente médico seleccionado, validar conflicto del asistente
+        // Si no, validar conflicto del doctor
+        $query = Appointment::whereDate('start', $this->appointment_date)
             ->where('status', '!=', 'cancelled')
             ->where(function ($q) use ($startTime, $endTime) {
                 $q->where('start', '<', $endTime)
                     ->where('end', '>', $startTime);
             });
+
+        if ($this->assisted_by) {
+            // Validar conflictos del asistente médico
+            $query->where('assisted_by', $this->assisted_by);
+        } else {
+            // Validar conflictos del doctor
+            $query->where('practitioner_id', $this->doctor_id);
+        }
 
         // Excluir la cita actual si estamos editando
         if ($this->appointment) {
@@ -1168,8 +1181,11 @@ class ModalSave extends Component
             $this->conflictingAppointment = $conflicting;
             $this->conflictingPatientName = $conflicting->patient?->profile_name ?? 'Paciente desconocido';
 
+            $conflictType = $this->assisted_by ? 'asistente médico' : 'doctor';
             Log::info('Conflicto detectado', [
                 'doctor_id' => $this->doctor_id,
+                'assisted_by' => $this->assisted_by,
+                'conflict_type' => $conflictType,
                 'requested_time' => $startTime->format('Y-m-d H:i'),
                 'conflicting_appointment_id' => $conflicting->id,
                 'conflicting_patient' => $this->conflictingPatientName,
@@ -1258,8 +1274,9 @@ class ModalSave extends Component
         }
 
         // Verificar conflictos con otras citas
-        $query = Appointment::where('practitioner_id', $this->doctor_id)
-            ->whereDate('start', $this->appointment_date)
+        // Si hay asistente médico seleccionado, validar disponibilidad del asistente
+        // Si no, validar disponibilidad del doctor
+        $query = Appointment::whereDate('start', $this->appointment_date)
             ->where('status', '!=', 'cancelled')
             ->where(function ($q) use ($startTime, $endTime) {
                 $q->where(function ($q2) use ($startTime, $endTime) {
@@ -1268,13 +1285,25 @@ class ModalSave extends Component
                 });
             });
 
+        if ($this->assisted_by) {
+            // Validar conflictos del asistente médico
+            $query->where('assisted_by', $this->assisted_by);
+        } else {
+            // Validar conflictos del doctor
+            $query->where('practitioner_id', $this->doctor_id);
+        }
+
         if ($this->appointment) {
             $query->where('id', '!=', $this->appointment->id);
         }
 
         $conflictingAppointments = $query->count();
+
+        $conflictType = $this->assisted_by ? 'asistente médico' : 'doctor';
         Log::info('checkAvailability() - Checking for conflicts', [
             'doctor_id' => $this->doctor_id,
+            'assisted_by' => $this->assisted_by,
+            'conflict_type' => $conflictType,
             'date' => $this->appointment_date,
             'conflicting_appointments' => $conflictingAppointments,
         ]);
@@ -1282,10 +1311,16 @@ class ModalSave extends Component
         if ($conflictingAppointments > 0) {
             Log::info('checkAvailability() - Conflict found', [
                 'doctor_id' => $this->doctor_id,
+                'assisted_by' => $this->assisted_by,
+                'conflict_type' => $conflictType,
                 'start_time' => $startTime->format('Y-m-d H:i'),
                 'end_time' => $endTime->format('Y-m-d H:i'),
             ]);
-            $this->addError('appointment_time', 'El doctor ya tiene una cita programada en ese horario.');
+
+            $errorMessage = $this->assisted_by
+                ? 'El asistente médico ya tiene una cita programada en ese horario.'
+                : 'El doctor ya tiene una cita programada en ese horario.';
+            $this->addError('appointment_time', $errorMessage);
 
             return false;
         }
