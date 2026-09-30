@@ -90,6 +90,19 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             $conversionFactor = (float) $item['internal_units_per_presentation'];
         }
 
+        // Log the item data being processed
+        $this->logStep('Processing item from document', [
+            'document_id' => $document->id,
+            'item_index' => $index,
+            'sku' => $sku,
+            'name' => $name,
+            'quantity' => $quantity,
+            'unit_type' => $unitType,
+            'internal_units_per_presentation_from_item' => $item['internal_units_per_presentation'] ?? 'NOT_SET',
+            'conversion_factor_calculated' => $conversionFactor,
+            'full_item_data' => $item,
+        ]);
+
         // Store quantities: presentation units and internal units
         $quantityInPresentations = $quantity;
         $quantityInInternalUnits = $quantity * $conversionFactor;

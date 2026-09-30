@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Enums\DocumentType;
 use App\Models\DocumentUpload;
+use App\Services\DocumentParsers\ElectricityBillParser;
+use App\Services\DocumentParsers\GenericDocumentParser;
 use App\Services\DocumentParsers\InventoryDocumentParser;
 use App\Services\GoogleDocumentAIService;
 use Illuminate\Bus\Queueable;
@@ -97,17 +99,40 @@ class ParseDocumentJob implements ShouldQueue
             // Save parsing result
             $document->parseResult()->delete(); // Delete any previous result
 
+            // Build extracted data array - support both structured (inventory) and generic data
+            $extractedDataArray = [
+                'items' => $parseResult['items'] ?? [],
+                'confidence' => $parseResult['confidence'],
+                'subtotal' => $parseResult['subtotal'] ?? 0,
+                'total_tax' => $parseResult['total_tax'] ?? 0,
+                'total' => $parseResult['total'] ?? 0,
+                'invoice_number' => $parseResult['invoice_number'] ?? null,
+                'invoice_date' => $parseResult['invoice_date'] ?? null,
+            ];
+
+            // Include generic fields if present
+            if (! empty($parseResult['full_text'])) {
+                $extractedDataArray['full_text'] = $parseResult['full_text'];
+            }
+            if (! empty($parseResult['tables'])) {
+                $extractedDataArray['tables'] = $parseResult['tables'];
+            }
+            if (! empty($parseResult['entities'])) {
+                $extractedDataArray['entities'] = $parseResult['entities'];
+            }
+            if (! empty($parseResult['key_value_pairs'])) {
+                $extractedDataArray['key_value_pairs'] = $parseResult['key_value_pairs'];
+            }
+            if (! empty($parseResult['numeric_fields'])) {
+                $extractedDataArray['numeric_fields'] = $parseResult['numeric_fields'];
+            }
+            if (! empty($parseResult['lines'])) {
+                $extractedDataArray['lines'] = $parseResult['lines'];
+            }
+
             $document->parseResult()->create([
                 'raw_response' => json_encode($googleAIResponse),
-                'extracted_data' => json_encode([
-                    'items' => $parseResult['items'],
-                    'confidence' => $parseResult['confidence'],
-                    'subtotal' => $parseResult['subtotal'] ?? 0,
-                    'total_tax' => $parseResult['total_tax'] ?? 0,
-                    'total' => $parseResult['total'] ?? 0,
-                    'invoice_number' => $parseResult['invoice_number'] ?? null,
-                    'invoice_date' => $parseResult['invoice_date'] ?? null,
-                ]),
+                'extracted_data' => json_encode($extractedDataArray),
                 'confidence_score' => $parseResult['confidence'],
                 'detected_format' => $parseResult['detected_format'] ?? 'standard',
                 'has_warnings' => $parseResult['has_warnings'] ?? false,
@@ -168,9 +193,10 @@ class ParseDocumentJob implements ShouldQueue
     {
         return match ($type) {
             DocumentType::INVENTORY => new InventoryDocumentParser,
-            DocumentType::ELECTRICITY_BILL => throw new \RuntimeException('ElectricityBillParser not yet implemented'),
-            DocumentType::WATER_BILL => throw new \RuntimeException('WaterBillParser not yet implemented'),
-            DocumentType::GAS_BILL => throw new \RuntimeException('GasBillParser not yet implemented'),
+            DocumentType::ELECTRICITY_BILL => new ElectricityBillParser,
+            DocumentType::WATER_BILL => new GenericDocumentParser,
+            DocumentType::GAS_BILL => new GenericDocumentParser,
+            default => new GenericDocumentParser,
         };
     }
 

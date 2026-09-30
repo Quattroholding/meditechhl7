@@ -1,5 +1,3 @@
-
-
 <div>
     <div class="row">
         <div class="col-sm-12">
@@ -136,4 +134,17 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrItemList', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+
+    </script>
 </div>

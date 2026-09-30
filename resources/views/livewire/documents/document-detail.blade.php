@@ -93,7 +93,149 @@
         </div>
     </div>
 
-    <!-- Items Table -->
+    <!-- Generic Document Form -->
+    @if (!in_array($document->document_type->value, ['inventory', 'electricity-bill']))
+    <div class="card mb-6">
+        <div class="card-header">
+            <h5 class="card-title mb-0">¿Qué deseas hacer con este documento?</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <label for="selectedAction" class="form-label">Selecciona una acción</label>
+                <select
+                    id="selectedAction"
+                    wire:model="selectedAction"
+                    class="form-control"
+                    @disabled($isApproving)
+                >
+                    <option value="">-- Selecciona una acción --</option>
+                    @foreach ($availableActions as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                    @endforeach
+                </select>
+                @error('selectedAction')
+                    <span class="text-danger small mt-1">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+    </div>
+
+    <!-- Editable Fields - Key-Value Pairs -->
+    @if (!empty($editableFields['key_value_pairs']))
+    <div class="card mb-6">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Pares Clave-Valor Detectados</h5>
+        </div>
+        <div class="card-body">
+            @foreach ($editableFields['key_value_pairs'] as $key => $value)
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input
+                        type="text"
+                        wire:model="editableFields.key_value_pairs.{{ $key }}"
+                        placeholder="Clave"
+                        class="form-control form-control-sm"
+                        @disabled($isApproving)
+                    />
+                </div>
+                <div class="col-md-8">
+                    <input
+                        type="text"
+                        wire:model="editableFields.key_value_pairs.{{ $key }}"
+                        placeholder="Valor"
+                        class="form-control form-control-sm"
+                        @disabled($isApproving)
+                    />
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    <!-- Editable Fields - Numeric Fields -->
+    @if (!empty($editableFields['numeric_fields']))
+    <div class="card mb-6">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Campos Numéricos Detectados</h5>
+        </div>
+        <div class="card-body">
+            @foreach ($editableFields['numeric_fields'] as $index => $field)
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label text-sm">{{ $field['label'] ?? 'Monto' }}</label>
+                </div>
+                <div class="col-md-8">
+                    <input
+                        type="number"
+                        step="0.01"
+                        wire:model="editableFields.numeric_fields.{{ $index }}.value"
+                        class="form-control form-control-sm"
+                        @disabled($isApproving)
+                    />
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    <!-- Editable Fields - Tables -->
+    @if (!empty($editableFields['tables']))
+    @foreach ($editableFields['tables'] as $tableIndex => $table)
+    <div class="card mb-6">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Tabla {{ $tableIndex + 1 }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                    @foreach ($table as $rowIndex => $row)
+                    <tr>
+                        @foreach ($row as $cellIndex => $cell)
+                        <td>
+                            <input
+                                type="text"
+                                wire:model="editableFields.tables.{{ $tableIndex }}.{{ $rowIndex }}.{{ $cellIndex }}"
+                                class="form-control form-control-sm"
+                                @disabled($isApproving)
+                            />
+                        </td>
+                        @endforeach
+                    </tr>
+                    @endforeach
+                </table>
+            </div>
+        </div>
+    </div>
+    @endforeach
+    @endif
+
+    <!-- Full Text (Collapsible) -->
+    @if (!empty($editableFields['full_text']))
+    <div class="card mb-6">
+        <div class="card-header cursor-pointer" data-bs-toggle="collapse" href="#fullTextCollapse" role="button">
+            <h5 class="card-title mb-0">
+                <i class="feather icon-chevron-down"></i>
+                Ver texto completo extraído
+            </h5>
+        </div>
+        <div id="fullTextCollapse" class="collapse">
+            <div class="card-body">
+                <textarea
+                    wire:model="editableFields.full_text"
+                    rows="15"
+                    class="form-control"
+                    @disabled($isApproving)
+                ></textarea>
+            </div>
+        </div>
+    </div>
+    @endif
+    @endif
+
+    <!-- Inventory Items Table -->
+    @if ($document->document_type->value === 'inventory')
     <div class="card mb-6">
         <div class="card-header">
             <h5 class="card-title mb-0">Artículos Extraídos</h5>
@@ -261,8 +403,107 @@
             </div>
         </div>
     </div>
+    @else
+    <!-- Electricity Bill Details -->
+    <div class="card mb-6">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Datos de la Factura de Electricidad</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="text-sm text-gray-600">Número de Factura</label>
+                        <p class="font-semibold">{{ $billData['bill_number'] ?? 'N/A' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-sm text-gray-600">Cliente</label>
+                        <p class="font-semibold">{{ $billData['customer_name'] ?? 'N/A' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-sm text-gray-600">Número de Servicio</label>
+                        <p class="font-semibold">{{ $billData['service_number'] ?? 'N/A' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-sm text-gray-600">Número de Medidor</label>
+                        <p class="font-semibold">{{ $billData['meter_number'] ?? 'N/A' }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="text-sm text-gray-600">Período de Facturación</label>
+                        <p class="font-semibold">{{ $billData['billing_period_start'] ?? '' }} - {{ $billData['billing_period_end'] ?? '' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-sm text-gray-600">Fecha de Emisión</label>
+                        <p class="font-semibold">{{ $billData['issue_date'] ?? 'N/A' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-sm text-gray-600">Fecha de Vencimiento</label>
+                        <p class="font-semibold">{{ $billData['due_date'] ?? 'N/A' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-sm text-gray-600">Consumo (kWh)</label>
+                        <p class="font-semibold">{{ number_format($billData['consumption_kwh'] ?? 0, 0, '.', ',') }} kWh</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Totals -->
+    <!-- Bill Financial Summary -->
+    <div class="row mb-6">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Información de Consumo</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Tipo de Lectura:</span>
+                        <strong>{{ $billData['consumption_type'] ?? 'Real' }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Consumo (kWh):</span>
+                        <strong>{{ number_format($billData['consumption_kwh'] ?? 0, 0, '.', ',') }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom pb-3">
+                        <span>Dirección del Servicio:</span>
+                        <strong>{{ $billData['service_address'] ?? 'N/A' }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Resumen Financiero</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Subtotal:</span>
+                        <strong>B/. {{ number_format($billData['subtotal'] ?? 0, 2, '.', ',') }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Descuentos:</span>
+                        <strong>-B/. {{ number_format($billData['discounts'] ?? 0, 2, '.', ',') }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
+                        <span>Impuestos:</span>
+                        <strong>B/. {{ number_format($billData['taxes'] ?? 0, 2, '.', ',') }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-lg font-semibold">Total a Pagar:</span>
+                        <strong class="text-lg text-primary">B/. {{ number_format($billData['total'] ?? 0, 2, '.', ',') }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Totals (Inventory Documents) -->
+    @if ($document->document_type->value === 'inventory')
     <div class="row mb-6">
         <div class="col-md-6">
             <div class="card">
@@ -303,6 +544,23 @@
             </div>
         </div>
     </div>
+    @else
+    <!-- Notes Section (Utility Bills) -->
+    <div class="card mb-6">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Notas (Opcional)</h5>
+        </div>
+        <div class="card-body">
+            <textarea
+                wire:model="notes"
+                placeholder="Añade notas sobre este documento..."
+                rows="4"
+                class="form-control"
+                @disabled($isApproving)
+            ></textarea>
+        </div>
+    </div>
+    @endif
 
     <!-- Rejection Form -->
     @if ($isRejecting)

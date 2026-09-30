@@ -76,7 +76,7 @@
                                     @endphp
                                     <span class="badge bg-{{ $badge }}">{{ ucfirst($trans->transaction_type->value) }}</span>
                                 </td>
-                                <td>{{ $trans->inventoryItem->name }}</td>
+                                <td>{{ $trans->inventoryItem?->name }}</td>
                                 <td>
                                     @if($trans->quantity_change > 0)
                                         <span class="text-success">+{{ $trans->quantity_change }}</span>

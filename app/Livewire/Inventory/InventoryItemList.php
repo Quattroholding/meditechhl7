@@ -51,20 +51,68 @@ class InventoryItemList extends Component
 
     public function delete($itemId)
     {
-        $item = InventoryItem::find($itemId);
+        try {
+            $item = InventoryItem::find($itemId);
 
-        if ($item) {
-            // Check if item has active inventory reports
-            $hasStock = $item->inventoryReports()->where('status', 'active')->exists();
+            \Log::info('InventoryItemList::delete() - Attempting to delete item', [
+                'item_id' => $itemId,
+                'item_found' => $item ? true : false,
+                'item_sku' => $item?->sku,
+            ]);
+
+            if (! $item) {
+                \Log::warning('InventoryItemList::delete() - Item not found', ['item_id' => $itemId]);
+                $this->dispatch('showToastrItemList',
+                    type: 'error',
+                    message: 'No se encontró el item a eliminar.',
+                );
+
+                return;
+            }
+
+            // Check if item has stock (active reports with quantity > 0)
+            $hasStock = $item->inventoryReports()
+                ->where('status', 'active')
+                ->where(function ($query) {
+                    $query->where('quantity_on_hand', '>', 0)
+                        ->orWhere('internal_units_on_hand', '>', 0);
+                })
+                ->exists();
+
+            \Log::info('InventoryItemList::delete() - Stock check', [
+                'item_id' => $itemId,
+                'has_active_stock_with_quantity' => $hasStock,
+                'total_inventory_reports' => $item->inventoryReports()->count(),
+                'active_reports_detail' => $item->inventoryReports()
+                    ->where('status', 'active')
+                    ->get(['id', 'quantity_on_hand', 'internal_units_on_hand', 'status'])
+                    ->toArray(),
+            ]);
 
             if ($hasStock) {
-                session()->flash('error', 'No se puede eliminar este item porque tiene stock activo en inventario.');
+                $this->dispatch('showToastrItemList',
+                    type: 'error',
+                    message: 'No se puede eliminar este item porque tiene stock activo en inventario.',
+                );
 
                 return;
             }
 
             $item->delete();
-            session()->flash('success', 'Item eliminado exitosamente.');
+            \Log::info('InventoryItemList::delete() - Item deleted successfully', ['item_id' => $itemId]);
+            $this->dispatch('showToastrItemList',
+                type: 'success',
+                message: 'Item eliminado exitosamente.',
+            );
+        } catch (\Exception $e) {
+            \Log::error('InventoryItemList::delete() - Error deleting item', [
+                'item_id' => $itemId,
+                'error' => $e->getMessage(),
+            ]);
+            $this->dispatch('showToastrItemList',
+                type: 'error',
+                message: 'Error al eliminar item: '.$e->getMessage(),
+            );
         }
     }
 

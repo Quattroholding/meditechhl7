@@ -16,13 +16,15 @@ class DocumentApprovalService
      * @param  array  $selectedItemIndices  Array of selected item indices
      * @param  array  $editedItems  Array of edited items
      * @param  ?string  $notes  Optional approval notes
+     * @param  ?string  $action  Optional action for generic documents
      * @return array Result with status and message
      */
     public function approve(
         DocumentUpload $document,
         array $selectedItemIndices,
         array $editedItems = [],
-        ?string $notes = null
+        ?string $notes = null,
+        ?string $action = null
     ): array {
         try {
             // Decode extracted data
@@ -34,11 +36,25 @@ class DocumentApprovalService
             // Filter items based on selection
             $items = $extractedData['items'] ?? [];
             $filteredItems = [];
+
+            Log::info('DocumentApprovalService::approve - Processing items', [
+                'document_id' => $document->id,
+                'total_items_in_data' => count($items),
+                'selected_indices' => $selectedItemIndices,
+                'edited_items_count' => count($editedItems),
+            ]);
+
             foreach ($items as $index => $item) {
                 if (in_array($index, $selectedItemIndices)) {
                     if (isset($editedItems[$index])) {
                         $item = array_merge($item, $editedItems[$index]);
                     }
+
+                    Log::debug('DocumentApprovalService::approve - Item after processing', [
+                        'item_index' => $index,
+                        'item' => $item,
+                    ]);
+
                     $filteredItems[] = $item;
                 }
             }
@@ -96,6 +112,7 @@ class DocumentApprovalService
                     'approved_by_user_id' => auth()->id(),
                     'approved_at' => now(),
                     'notes' => $notes,
+                    'selected_action' => $action,
                     'rejected_by_user_id' => null,
                     'rejected_at' => null,
                     'rejection_reason' => null,

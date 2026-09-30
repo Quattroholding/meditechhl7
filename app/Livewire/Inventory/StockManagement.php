@@ -135,12 +135,18 @@ class StockManagement extends Component
                 }
             });
 
-            session()->flash('success', 'Operación completada exitosamente.');
+            $this->dispatch('showToastr',
+                type: 'success',
+                message: 'Operación completada exitosamente.',
+            );
             $this->reset(['quantity', 'unitCost', 'lotNumber', 'expirationDate', 'reason', 'transferToLocationId', 'unit_type', 'internalUnitsPerPresentation']);
             $this->unit_type = 'presentation';
             $this->loadItem();
         } catch (\Exception $e) {
-            session()->flash('error', 'Error: '.$e->getMessage());
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Error: '.$e->getMessage(),
+            );
         }
     }
 
@@ -255,14 +261,26 @@ class StockManagement extends Component
             throw new \Exception('Stock insuficiente en ubicación de origen.');
         }
 
+        // Calculate quantities to transfer based on unit type
+        $quantityToTransferPresentations = $this->quantity;
+        $quantityToTransferInternalUnits = $this->quantity;
+
+        if ($this->unit_type === 'internal' && $this->selectedItem->internal_units_per_presentation) {
+            // User entered internal units, convert to presentations
+            $quantityToTransferPresentations = $this->quantity / $this->selectedItem->internal_units_per_presentation;
+            $quantityToTransferInternalUnits = $this->quantity;
+        }
+
         // Deduct from origin
         $quantityBefore = $fromReport->quantity_on_hand;
-        $fromReport->decrement('quantity_on_hand', $this->quantity);
+        $fromReport->decrement('quantity_on_hand', $quantityToTransferPresentations);
+        $fromReport->decrement('internal_units_on_hand', $quantityToTransferInternalUnits);
         $fromReport->refresh();
 
         // Add to destination
         $toReport = $this->getOrCreateInventoryReport($this->transferToLocationId, $this->transferToLocationType);
-        $toReport->increment('quantity_on_hand', $this->quantity);
+        $toReport->increment('quantity_on_hand', $quantityToTransferPresentations);
+        $toReport->increment('internal_units_on_hand', $quantityToTransferInternalUnits);
 
         InventoryTransaction::create([
             'transaction_type' => InventoryTransactionType::TRANSFER,
@@ -273,6 +291,9 @@ class StockManagement extends Component
             'unit_type' => $this->unit_type,
             'quantity_before' => $quantityBefore,
             'quantity_after' => $fromReport->quantity_on_hand,
+            'notes' => $this->unit_type === 'internal' && $this->selectedItem->internal_units_per_presentation
+                ? "{$this->quantity} unidades internas ÷ {$this->selectedItem->internal_units_per_presentation} = {$quantityToTransferPresentations} presentaciones"
+                : null,
             'from_location_client_id' => auth()->user()->clients()->first()->id,
             'from_location_branch_id' => $this->locationType === 'branch' ? $this->locationId : null,
             'from_location_practitioner_id' => $this->locationType === 'practitioner' ? $this->locationId : null,
@@ -294,14 +315,28 @@ class StockManagement extends Component
         }
 
         $quantityBefore = $inventoryReport->quantity_on_hand;
-        $inventoryReport->decrement('quantity_on_hand', $this->quantity);
+        $internalUnitsBeforeBefore = $inventoryReport->internal_units_on_hand ?? 0;
+
+        // Calculate quantity to reduce based on unit type
+        $quantityToReducePresentations = $this->quantity;
+        $quantityToReduceInternalUnits = $this->quantity;
+
+        if ($this->unit_type === 'internal' && $this->selectedItem->internal_units_per_presentation) {
+            // User entered internal units, convert to presentations
+            $quantityToReducePresentations = $this->quantity / $this->selectedItem->internal_units_per_presentation;
+            $quantityToReduceInternalUnits = $this->quantity;
+        }
+
+        // Reduce both fields
+        $inventoryReport->decrement('quantity_on_hand', $quantityToReducePresentations);
+        $inventoryReport->decrement('internal_units_on_hand', $quantityToReduceInternalUnits);
         $inventoryReport->refresh();
 
         InventoryTransaction::create([
             'transaction_type' => InventoryTransactionType::DISPOSAL,
             'transaction_date' => now(),
             'inventory_item_id' => $this->selectedItemId,
-            'quantity_change' => -$this->quantity,
+            'quantity_change' => -$quantityToReducePresentations,
             'unit_of_measure' => $this->selectedItem->unit_of_measure,
             'unit_type' => $this->unit_type,
             'quantity_before' => $quantityBefore,

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Documents;
 
+use App\Enums\DocumentType;
 use App\Models\DocumentUpload;
 use App\Services\DocumentApprovalService;
 use Livewire\Component;
@@ -32,6 +33,24 @@ class DocumentDetail extends Component
 
     public bool $isApproving = false;
 
+    // Electricity bill properties
+    public array $billData = [];
+
+    // Generic document properties
+    public array $genericData = [];
+
+    public array $editableFields = [];
+
+    public ?string $selectedAction = null;
+
+    public array $availableActions = [
+        'register_electricity_bill' => 'Registrar factura de electricidad',
+        'register_water_bill' => 'Registrar factura de agua',
+        'register_gas_bill' => 'Registrar factura de gas',
+        'save_for_reference' => 'Solo guardar para referencia',
+        'discard' => 'Descartar documento',
+    ];
+
     public function mount(DocumentUpload $document): void
     {
         try {
@@ -55,30 +74,42 @@ class DocumentDetail extends Component
                 return;
             }
 
-            // Decode extracted_data and initialize selected items
+            // Decode extracted_data
             $extractedData = $this->document->parseResult->extracted_data;
             if (is_string($extractedData)) {
                 $extractedData = json_decode($extractedData, true);
             }
-            $items = $extractedData['items'] ?? [];
 
-            // Ensure all items have required fields
-            foreach ($items as &$item) {
-                if (! isset($item['unit_type'])) {
-                    $item['unit_type'] = 'internal';
+            // Handle different document types
+            if ($this->document->document_type === DocumentType::ELECTRICITY_BILL) {
+                // For electricity bills, store the bill data
+                $this->billData = $extractedData;
+            } elseif ($this->isGenericDocument()) {
+                // For generic documents, prepare editable fields
+                $this->genericData = $extractedData;
+                $this->editableFields = $this->buildEditableFields($extractedData);
+            } else {
+                // For inventory documents, process items
+                $items = $extractedData['items'] ?? [];
+
+                // Ensure all items have required fields
+                foreach ($items as &$item) {
+                    if (! isset($item['unit_type'])) {
+                        $item['unit_type'] = 'internal';
+                    }
+                    if (! isset($item['internal_units_per_presentation'])) {
+                        $item['internal_units_per_presentation'] = 1;
+                    }
+                    if (! isset($item['base_price'])) {
+                        $item['base_price'] = $item['unit_cost'] ?? 0;
+                    }
                 }
-                if (! isset($item['internal_units_per_presentation'])) {
-                    $item['internal_units_per_presentation'] = 1;
-                }
-                if (! isset($item['base_price'])) {
-                    $item['base_price'] = $item['unit_cost'] ?? 0;
-                }
+
+                $this->selectedItems = array_fill(0, count($items), true);
+
+                // Calculate totals
+                $this->calculateTotals($items);
             }
-
-            $this->selectedItems = array_fill(0, count($items), true);
-
-            // Calculate totals
-            $this->calculateTotals($items);
 
         } catch (\Exception $e) {
             $this->dispatch('showToastr',
@@ -86,6 +117,60 @@ class DocumentDetail extends Component
                 message: 'Error al cargar el documento: '.$e->getMessage(),
             );
             abort(500, 'Error al cargar el documento: '.$e->getMessage());
+        }
+    }
+
+    private function isGenericDocument(): bool
+    {
+        return $this->document
+            && ! in_array(
+                $this->document->document_type->value,
+                [
+                    DocumentType::INVENTORY->value,
+                    DocumentType::ELECTRICITY_BILL->value,
+                ]
+            );
+    }
+
+    private function buildEditableFields(array $extractedData): array
+    {
+        return [
+            'key_value_pairs' => $extractedData['key_value_pairs'] ?? [],
+            'numeric_fields' => $extractedData['numeric_fields'] ?? [],
+            'tables' => $this->formatTablesForEditing($extractedData['tables'] ?? []),
+            'full_text' => $extractedData['full_text'] ?? '',
+        ];
+    }
+
+    private function formatTablesForEditing(array $tables): array
+    {
+        $formatted = [];
+
+        foreach ($tables as $tableIndex => $table) {
+            $formatted[$tableIndex] = $table['rows'] ?? [];
+        }
+
+        return $formatted;
+    }
+
+    private function persistGenericFields(): void
+    {
+        try {
+            $parseResult = $this->document->parseResult;
+            $extractedData = json_decode($parseResult->extracted_data, true) ?? [];
+
+            // Update with edited fields and selected action
+            $extractedData['edited_fields'] = $this->editableFields;
+            $extractedData['selected_action'] = $this->selectedAction;
+
+            $parseResult->update([
+                'extracted_data' => json_encode($extractedData),
+                'manually_edited' => true,
+                'edited_by_user_id' => auth()->id(),
+                'edited_at' => now(),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Failed to persist generic fields', ['error' => $e->getMessage()]);
         }
     }
 
@@ -128,10 +213,18 @@ class DocumentDetail extends Component
                 }
             }
 
-            // Ensure base_price is set for items that don't have it
+            // Ensure all items have required fields
             foreach ($items as &$item) {
                 if (! isset($item['base_price']) || empty($item['base_price'])) {
                     $item['base_price'] = $item['unit_cost'] ?? 0;
+                }
+                // Ensure unit_type is present
+                if (! isset($item['unit_type'])) {
+                    $item['unit_type'] = 'internal';
+                }
+                // Ensure internal_units_per_presentation is present
+                if (! isset($item['internal_units_per_presentation'])) {
+                    $item['internal_units_per_presentation'] = 1;
                 }
             }
 
@@ -376,8 +469,19 @@ class DocumentDetail extends Component
             return;
         }
 
-        // Validate at least one item is selected
-        if (! in_array(true, $this->selectedItems)) {
+        // Validate generic documents have action selected
+        if ($this->isGenericDocument() && empty($this->selectedAction)) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Debes seleccionar una acción para procesar el documento',
+            );
+            session()->flash('error', 'Debes seleccionar una acción para procesar el documento');
+
+            return;
+        }
+
+        // Validate at least one item is selected (only for inventory documents)
+        if ($this->document->document_type === DocumentType::INVENTORY && ! in_array(true, $this->selectedItems)) {
             $this->dispatch('showToastr',
                 type: 'error',
                 message: 'Debes seleccionar al menos un item',
@@ -393,20 +497,44 @@ class DocumentDetail extends Component
         // Get selected indices
         $selectedIndices = array_keys(array_filter($this->selectedItems));
 
+        // Persist generic fields if applicable
+        if ($this->isGenericDocument()) {
+            $this->persistGenericFields();
+        }
+
+        // Refresh document from database to ensure we have the latest parsed data
+        $this->document->refresh();
+        $this->document->load('parseResult');
+
+        // Log the data being sent to approval service
+        \Log::info('DocumentDetail::approve() - Data being sent', [
+            'document_id' => $this->document->id,
+            'selected_indices' => $selectedIndices,
+            'edited_items' => $this->editedItems,
+            'selected_action' => $this->selectedAction,
+            'parse_result_extracted_data' => $this->document->parseResult?->extracted_data,
+        ]);
+
         // Use service to approve document
         $service = new DocumentApprovalService;
         $result = $service->approve(
             $this->document,
             $selectedIndices,
             $this->editedItems,
-            $this->notes
+            $this->notes,
+            $this->selectedAction
         );
 
         if ($result['success']) {
             // Don't redirect yet, let polling detect when job completes
+            $message = match ($this->document->document_type) {
+                DocumentType::ELECTRICITY_BILL => 'Factura aprobada. Procesando...',
+                default => 'Documento aprobado. Procesando...',
+            };
+
             $this->dispatch('showToastr',
                 type: 'success',
-                message: 'Documento aprobado. Procesando inventario...',
+                message: $message,
             );
         } else {
             // Clear loading state on error
@@ -536,6 +664,10 @@ class DocumentDetail extends Component
 
         return view('livewire.documents.document-detail', [
             'items' => $items,
+            'billData' => $this->billData,
+            'genericData' => $this->genericData,
+            'editableFields' => $this->editableFields,
+            'availableActions' => $this->availableActions,
             'validationMessages' => $validationMessages,
             'confidenceScore' => $parseResult?->confidence_score ?? 0,
             'pdfUrl' => $pdfUrl,

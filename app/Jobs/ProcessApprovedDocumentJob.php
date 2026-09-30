@@ -5,7 +5,13 @@ namespace App\Jobs;
 use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
 use App\Models\DocumentUpload;
+use App\Services\DocumentProcessors\DiscardDocumentProcessor;
+use App\Services\DocumentProcessors\ElectricityBillProcessor;
 use App\Services\DocumentProcessors\InventoryDocumentProcessor;
+use App\Services\DocumentProcessors\RegisterElectricityBillProcessor;
+use App\Services\DocumentProcessors\RegisterGasBillProcessor;
+use App\Services\DocumentProcessors\RegisterWaterBillProcessor;
+use App\Services\DocumentProcessors\SaveReferenceDocumentProcessor;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -64,8 +70,10 @@ class ProcessApprovedDocumentJob implements ShouldQueue
             // Mark as processing
             $document->markAsProcessing();
 
-            // Get processor for document type
-            $processor = $this->getProcessor($document->document_type);
+            // Get processor - prioritize action from approval if available
+            $approval = $document->approval;
+            $action = $approval?->selected_action;
+            $processor = $this->getProcessor($document, $action);
 
             // Process document
             $processor->process($document);
@@ -93,15 +101,37 @@ class ProcessApprovedDocumentJob implements ShouldQueue
     }
 
     /**
-     * Get processor based on document type
+     * Get processor based on document type and selected action
      */
-    private function getProcessor(DocumentType $type)
+    private function getProcessor(DocumentUpload $document, ?string $action)
+    {
+        // If a specific action was selected by the user, use that processor
+        if ($action) {
+            return match ($action) {
+                'register_electricity_bill' => new RegisterElectricityBillProcessor,
+                'register_water_bill' => new RegisterWaterBillProcessor,
+                'register_gas_bill' => new RegisterGasBillProcessor,
+                'save_for_reference' => new SaveReferenceDocumentProcessor,
+                'discard' => new DiscardDocumentProcessor,
+                default => $this->getDefaultProcessor($document->document_type),
+            };
+        }
+
+        // Otherwise, use the default processor for the document type
+        return $this->getDefaultProcessor($document->document_type);
+    }
+
+    /**
+     * Get default processor based on document type
+     */
+    private function getDefaultProcessor(DocumentType $type)
     {
         return match ($type) {
             DocumentType::INVENTORY => new InventoryDocumentProcessor,
-            DocumentType::ELECTRICITY_BILL => throw new \RuntimeException('ElectricityBillProcessor not yet implemented'),
-            DocumentType::WATER_BILL => throw new \RuntimeException('WaterBillProcessor not yet implemented'),
-            DocumentType::GAS_BILL => throw new \RuntimeException('GasBillProcessor not yet implemented'),
+            DocumentType::ELECTRICITY_BILL => new ElectricityBillProcessor,
+            DocumentType::WATER_BILL => new SaveReferenceDocumentProcessor,
+            DocumentType::GAS_BILL => new SaveReferenceDocumentProcessor,
+            default => new SaveReferenceDocumentProcessor,
         };
     }
 }
