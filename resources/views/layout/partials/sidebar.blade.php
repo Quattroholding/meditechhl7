@@ -245,7 +245,7 @@
                 </li>
                 @endif
                 @endcanany
-                @canany(['documents.view','documents.upload'])
+                @canany(['documents.view','documents.create'])
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side">
@@ -256,7 +256,7 @@
                         @can('documents.view')
                         <li><a class="{{ Request::is('documents') ? 'active' : '' }}" href="{{route('documents.index')}}">{{ __('generic.list') }} {{__('Documentos')}}</a></li>
                         @endcan
-                        @can('documents.upload')
+                        @can('documents.create')
                         <li><a class="{{ Request::is('documents/create') ? 'active' : '' }}" href="{{route('documents.create')}}">{{ __('generic.create') }} {{__('Documento')}}</a></li>
                         @endcan
                     </ul>
