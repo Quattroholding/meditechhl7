@@ -537,6 +537,7 @@ class ModalSave extends Component
             'client_id' => $userClient->client_id,
             'assistants_count' => count($this->assistants),
             'assisted_by' => $this->assisted_by,
+            'assistants_array' => $this->assistants,
         ]);
     }
 

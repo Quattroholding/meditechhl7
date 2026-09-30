@@ -13,6 +13,6 @@
                 $label =  $option;
             }
         @endphp
-        <option value="{{ $value }}" {{ in_array($value,$selected) ? 'selected' : '' }}>{{ $label }}</option>
+        <option value="{{ $value }}" {{ (is_array($selected) ? in_array($value, $selected) : $value == $selected) ? 'selected' : '' }}>{{ $label }}</option>
     @endforeach
 </select>
