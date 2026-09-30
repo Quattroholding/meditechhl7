@@ -197,6 +197,7 @@ class Calendar extends Component
              ->with('patient:id,name,phone')
              ->with('medicalSpeciality:id,name')
              ->with('assistant:id,first_name,last_name')
+             ->with('consultingRoom:id,name,branch_id')
              ->selectRaw('appointments.*')
              ->leftJoin('patients', 'patients.id', '=', 'appointments.patient_id')
              ->leftJoin('practitioners', 'practitioners.id', '=', 'appointments.practitioner_id')

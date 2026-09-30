@@ -747,6 +747,11 @@
                             <div class="appointment-specialty">
                                 {{ $appointment['medical_speciality']['name'] ?? 'Especialidad no asignada' }}
                             </div>
+                            @if($appointment['consulting_room'])
+                                <div class="appointment-specialty" style="margin-top: 5px;">
+                                    🏥 {{ $appointment['consulting_room']['name'] ?? 'Consultorio no asignado' }}
+                                </div>
+                            @endif
                         </div>
                         <div class="appointment-contact">
                             @if(isset($appointment['patient']['phone']) && $appointment['patient']['phone'])
