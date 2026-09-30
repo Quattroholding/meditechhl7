@@ -328,6 +328,24 @@ class ModalSave extends Component
     }
 
     /**
+     * Listener para cuando cambia el asistente médico
+     * Revalida conflictos cuando se selecciona un asistente
+     */
+    public function updatedAssistedBy($value)
+    {
+        Log::info('updatedAssistedBy called', [
+            'assisted_by' => $value,
+            'appointment_date' => $this->appointment_date,
+            'appointment_time' => $this->appointment_time,
+        ]);
+
+        // Revalidar conflictos cuando cambia el asistente
+        if ($this->appointment_date && $this->appointment_time) {
+            $this->checkConflicts();
+        }
+    }
+
+    /**
      * Listener para cuando cambia la especialidad médica
      */
     public function updatedMedicalSpecialityId($value)
