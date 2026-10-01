@@ -109,6 +109,25 @@ class ParseDocumentJob implements ShouldQueue
                 'total' => $parseResult['total'] ?? 0,
                 'invoice_number' => $parseResult['invoice_number'] ?? null,
                 'invoice_date' => $parseResult['invoice_date'] ?? null,
+                // ENSA/Electricity bill fields
+                'bill_number' => $parseResult['bill_number'] ?? null,
+                'customer_name' => $parseResult['customer_name'] ?? null,
+                'customer_address' => $parseResult['customer_address'] ?? null,
+                'service_address' => $parseResult['service_address'] ?? null,
+                'service_number' => $parseResult['service_number'] ?? null,
+                'billing_period_start' => $parseResult['billing_period_start'] ?? null,
+                'billing_period_end' => $parseResult['billing_period_end'] ?? null,
+                'issue_date' => $parseResult['issue_date'] ?? null,
+                'due_date' => $parseResult['due_date'] ?? null,
+                'meter_number' => $parseResult['meter_number'] ?? null,
+                'consumption_kwh' => $parseResult['consumption_kwh'] ?? 0,
+                'consumption_type' => $parseResult['consumption_type'] ?? null,
+                'discounts' => $parseResult['discounts'] ?? 0,
+                'taxes' => $parseResult['taxes'] ?? 0,
+                'previous_balance' => $parseResult['previous_balance'] ?? 0,
+                'amount_paid' => $parseResult['amount_paid'] ?? 0,
+                'balance' => $parseResult['balance'] ?? 0,
+                'charges' => $parseResult['charges'] ?? [],
             ];
 
             // Include generic fields if present

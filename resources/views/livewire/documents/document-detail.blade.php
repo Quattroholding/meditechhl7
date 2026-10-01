@@ -94,7 +94,7 @@
     </div>
 
     <!-- Generic Document Form -->
-    @if (!in_array($document->document_type->value, ['inventory', 'electricity-bill']))
+    @if (!in_array($document->document_type->value, ['inventory', 'ensa','naturgy','idaan']))
     <div class="card mb-6">
         <div class="card-header">
             <h5 class="card-title mb-0">¿Qué deseas hacer con este documento?</h5>

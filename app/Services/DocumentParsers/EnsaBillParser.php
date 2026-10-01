@@ -34,6 +34,8 @@ class EnsaBillParser extends BaseDocumentParser
 
             // Build result with metadata
             $result = [
+                'invoice_number' => $billInfo['invoice_number'] ?? null,
+                'invoice_date' => $billInfo['issue_date'] ?? null,
                 'bill_number' => $billInfo['bill_number'] ?? null,
                 'customer_name' => $billInfo['customer_name'] ?? null,
                 'customer_address' => $billInfo['customer_address'] ?? null,
@@ -75,9 +77,18 @@ class EnsaBillParser extends BaseDocumentParser
         $info = [];
         $lines = array_filter(array_map('trim', explode("\n", $text)));
 
-        // Extract invoice number (NAC: XXXXXX) - NAC can be on next line
+        // Extract invoice number (Factura N°: XXXXXX) - Priority 1
+        if (preg_match('/Factura\s+N°\s*:\s*(\d+)/i', $text, $matches)) {
+            $info['invoice_number'] = $matches[1];
+        }
+
+        // Extract bill/NAC number (NAC: XXXXXX) - Priority 2
         if (preg_match('/NAC:\s*[\n\s]*(\d+)/i', $text, $matches)) {
             $info['bill_number'] = $matches[1];
+            // If no invoice_number, use bill_number as fallback
+            if (empty($info['invoice_number'])) {
+                $info['invoice_number'] = $matches[1];
+            }
         }
 
         // Extract customer name (handles multi-word names)
@@ -85,9 +96,11 @@ class EnsaBillParser extends BaseDocumentParser
             $info['customer_name'] = trim($matches[1]);
         }
 
-        // Extract service address (may span multiple lines)
+        // Extract service address (may span multiple lines, clean up OCR artifacts)
         if (preg_match('/Dirección:\s*([^\n]+(?:\n[^\n]+)*?)(?:\n[A-Z][a-z]+:|\nDías|$)/i', $text, $matches)) {
             $address = trim(preg_replace('/\s+/', ' ', $matches[1]));
+            // Remove common OCR artifacts (line breaks in the middle of words)
+            $address = preg_replace('/([a-z])\s+([A-Z])/i', '$1 $2', $address);
             $info['service_address'] = $address;
         }
 
@@ -96,20 +109,23 @@ class EnsaBillParser extends BaseDocumentParser
             $info['service_number'] = trim($matches[1]);
         }
 
-        // Extract billing dates (both dates are after the labels section)
+        // Extract billing dates (labels on separate lines, then dates)
         if (preg_match('/Desde:[\s\n]*Hasta:[\s\n]*(\d{2}\/\d{2}\/\d{4})[\s\n]+(\d{2}\/\d{2}\/\d{4})/i', $text, $matches)) {
             $info['billing_period_start'] = $matches[1];
             $info['billing_period_end'] = $matches[2];
         }
 
-        // Extract issue date
+        // Extract issue date and convert to YYYY-MM-DD format
         if (preg_match('/Emisión:\s*(\d{2}\s+de\s+\w+\s+de\s+\d{4})/i', $text, $matches)) {
-            $info['issue_date'] = $matches[1];
+            $info['issue_date'] = $this->parseEnsaDate($matches[1]);
         }
 
         // Extract due date (handle both formats: "14 de Octubre de 2026" and "14/oct/2026")
-        if (preg_match('/Vencimiento:\s*[\n\s]*(\d{2}(?:\s+de\s+\w+)?(?:\s+de\s+\d{4})?|[\d\/]+)/i', $text, $matches)) {
-            $info['due_date'] = trim($matches[1]);
+        if (preg_match('/Vencimiento:\s*[\n\s]*(\d{2}\s+de\s+\w+\s+de\s+\d{4})/i', $text, $matches)) {
+            $info['due_date'] = $this->parseEnsaDate($matches[1]);
+        } elseif (preg_match('/Vencimiento:\s*[\n\s]*(\d{2})\/\w+\/(\d{4})/i', $text, $matches)) {
+            // Fallback for "14/oct/2026" format - just use provided parts
+            $info['due_date'] = $matches[2].'-'.str_pad($matches[1], 2, '0', STR_PAD_LEFT);
         }
 
         // Extract meter number (includes alphanumeric)
@@ -210,6 +226,64 @@ class EnsaBillParser extends BaseDocumentParser
         }
 
         return $charges;
+    }
+
+    /**
+     * Parse ENSA date format: "14 de Octubre de 2026" to "2026-10-14"
+     */
+    private function parseEnsaDate(string $dateStr): ?string
+    {
+        $dateStr = trim($dateStr);
+
+        // Pattern: "DD de MONTH de YYYY"
+        if (preg_match('/^(\d{2})\s+de\s+(\w+)\s+de\s+(\d{4})$/i', $dateStr, $matches)) {
+            $day = $matches[1];
+            $monthName = $matches[2];
+            $year = $matches[3];
+
+            $month = $this->monthNameToNumber($monthName);
+            if ($month) {
+                return $year.'-'.$month.'-'.$day;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Convert month name to number
+     */
+    private function monthNameToNumber(string $monthName): ?string
+    {
+        $months = [
+            'ene' => '01', 'enero' => '01',
+            'feb' => '02', 'febrero' => '02',
+            'mar' => '03', 'marzo' => '03',
+            'abr' => '04', 'abril' => '04',
+            'may' => '05', 'mayo' => '05',
+            'jun' => '06', 'junio' => '06',
+            'jul' => '07', 'julio' => '07',
+            'ago' => '08', 'agosto' => '08',
+            'sep' => '09', 'sept' => '09', 'septiembre' => '09',
+            'oct' => '10', 'octubre' => '10',
+            'nov' => '11', 'noviembre' => '11',
+            'dic' => '12', 'diciembre' => '12',
+        ];
+
+        $lowerMonth = strtolower(trim($monthName));
+
+        // Exact match first
+        if (isset($months[$lowerMonth])) {
+            return $months[$lowerMonth];
+        }
+
+        // Try first 3 characters
+        $shortMonth = substr($lowerMonth, 0, 3);
+        if (isset($months[$shortMonth])) {
+            return $months[$shortMonth];
+        }
+
+        return null;
     }
 
     /**

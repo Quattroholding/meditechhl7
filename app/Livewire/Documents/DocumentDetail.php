@@ -81,7 +81,7 @@ class DocumentDetail extends Component
             }
 
             // Handle different document types
-            if ($this->document->document_type === DocumentType::ELECTRICITY_BILL) {
+            if ($this->document->document_type === DocumentType::ENSA) {
                 // For electricity bills, store the bill data
                 $this->billData = $extractedData;
             } elseif ($this->isGenericDocument()) {
@@ -127,7 +127,7 @@ class DocumentDetail extends Component
                 $this->document->document_type->value,
                 [
                     DocumentType::INVENTORY->value,
-                    DocumentType::ELECTRICITY_BILL->value,
+                    DocumentType::ENSA->value,
                 ]
             );
     }
