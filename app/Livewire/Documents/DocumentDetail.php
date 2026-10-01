@@ -98,6 +98,7 @@ class DocumentDetail extends Component
                     }
                 }
 
+                $this->items = $items;
                 $this->selectedItems = array_fill(0, count($items), true);
 
                 // Calculate totals
