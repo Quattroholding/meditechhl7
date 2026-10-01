@@ -87,7 +87,7 @@
                 <!-- Services Section - Max 4 per page -->
                 <div class="content-section rx-section">
                     <div class="section-header">{{ $serviceTypeTitle }}</div>
-                    <div class="section-content">
+                    <div class="section-content" style="min-height: 620px">
 
                         @foreach($pageServices as $index => $service)
                             @php $service = (object) $service; @endphp

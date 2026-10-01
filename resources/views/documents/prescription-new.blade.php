@@ -50,7 +50,7 @@ $medicationPages = array_chunk($allMedications, $medicationsPerPage);
                 <!-- Rx Section (Medicamentos) - Max 4 per page -->
                 <div class="content-section rx-section">
                     <div class="section-header">Rx</div>
-                    <div class="section-content">
+                    <div class="section-content" style="min-height: 620px">
                         @foreach($pageMedications as $index => $medication)
                             @php $medication = (object) $medication; @endphp
                             <div class="medication-item">
