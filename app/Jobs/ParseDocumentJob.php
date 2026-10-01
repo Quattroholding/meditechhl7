@@ -4,8 +4,9 @@ namespace App\Jobs;
 
 use App\Enums\DocumentType;
 use App\Models\DocumentUpload;
-use App\Services\DocumentParsers\ElectricityBillParser;
+use App\Services\DocumentParsers\EnsaBillParser;
 use App\Services\DocumentParsers\GenericDocumentParser;
+use App\Services\DocumentParsers\IdaanBillParser;
 use App\Services\DocumentParsers\InventoryDocumentParser;
 use App\Services\GoogleDocumentAIService;
 use Illuminate\Bus\Queueable;
@@ -193,9 +194,8 @@ class ParseDocumentJob implements ShouldQueue
     {
         return match ($type) {
             DocumentType::INVENTORY => new InventoryDocumentParser,
-            DocumentType::ELECTRICITY_BILL => new ElectricityBillParser,
-            DocumentType::WATER_BILL => new GenericDocumentParser,
-            DocumentType::GAS_BILL => new GenericDocumentParser,
+            DocumentType::ENSA => new EnsaBillParser,
+            DocumentType::IDAAN => new IdaanBillParser,
             default => new GenericDocumentParser,
         };
     }
