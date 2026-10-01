@@ -131,7 +131,10 @@ class ProcessApprovedDocumentJob implements ShouldQueue
             DocumentType::ELECTRICITY_BILL => new ElectricityBillProcessor,
             DocumentType::WATER_BILL => new SaveReferenceDocumentProcessor,
             DocumentType::GAS_BILL => new SaveReferenceDocumentProcessor,
-            default => new SaveReferenceDocumentProcessor,
+            DocumentType::ENSA => new SaveReferenceDocumentProcessor,
+            DocumentType::NATURGY => new SaveReferenceDocumentProcessor,
+            DocumentType::IDAAN => new SaveReferenceDocumentProcessor,
+            DocumentType::OTRO => new SaveReferenceDocumentProcessor,
         };
     }
 }
