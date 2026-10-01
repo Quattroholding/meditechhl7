@@ -103,52 +103,12 @@
     @elseif ($document->document_type->value === 'naturgy')
         @include('livewire.documents.document-detail-naturgy')
     @else
-        @include('livewire.documents.document-detail-otros')
+        <!-- IA-Processed Document -->
+        @include('livewire.documents.document-detail-ia')
     @endif
 
     <!-- Totals (Inventory Documents) -->
-    @if ($document->document_type->value === 'inventory')
-    <div class="row mb-6">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Notas (Opcional)</h5>
-                </div>
-                <div class="card-body">
-                    <textarea
-                        wire:model="notes"
-                        placeholder="Añade notas sobre este documento..."
-                        rows="4"
-                        class="form-control"
-                        @disabled($isApproving)
-                    ></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Resumen Financiero</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-3">
-                        <span>Subtotal:</span>
-                        <strong>${{ number_format($subtotal, 2, '.', ',') }}</strong>
-                    </div>
-                    <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
-                        <span>Impuesto Total:</span>
-                        <strong>${{ number_format($totalTax, 2, '.', ',') }}</strong>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-lg font-semibold">Total Factura:</span>
-                        <strong class="text-lg text-primary">${{ number_format($totalInvoice, 2, '.', ',') }}</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    @else
+    @if (!$document->document_type->value === 'inventory')
     <!-- Notes Section (Utility Bills) -->
     <div class="card mb-6">
         <div class="card-header">

@@ -94,19 +94,39 @@
         <hr>
 
         <div class="row">
-            <div class="col-md-3 offset-md-6">
-                <div class="mb-2">
-                    <div class="d-flex justify-content-between">
-                        <span>Subtotal:</span>
-                        <strong>B/. {{ number_format($billData['subtotal'] ?? 0, 2) }}</strong>
+            <div class="col-md-6 offset-md-3">
+                <div class="card border-info">
+                    <div class="card-header bg-info-light">
+                        <h6 class="card-title mb-0">Desglose de Pagos</h6>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="mb-2">
-                    <div class="d-flex justify-content-between border-top pt-2">
-                        <span>Total:</span>
-                        <strong class="text-danger">B/. {{ number_format($billData['total_amount'] ?? 0, 2) }}</strong>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Total IDAAN (Agua + Alcantarillado):</span>
+                                <strong class="text-primary">B/. {{ number_format($billData['total_idaan'] ?? $billData['total_amount'] ?? 0, 2) }}</strong>
+                            </div>
+                        </div>
+                        @if ($billData['total_aseo'] ?? null)
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between border-top pt-2">
+                                <span>Total ASEO (Limpieza):</span>
+                                <strong class="text-secondary">B/. {{ number_format($billData['total_aseo'], 2) }}</strong>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-2 border-top">
+                            <div class="d-flex justify-content-between">
+                                <span class="font-weight-bold">Total a Pagar:</span>
+                                <strong class="text-danger h5">B/. {{ number_format(($billData['total_idaan'] ?? $billData['total_amount'] ?? 0) + ($billData['total_aseo'] ?? 0), 2) }}</strong>
+                            </div>
+                        </div>
+                        @else
+                        <div class="mt-3 pt-2 border-top">
+                            <div class="d-flex justify-content-between">
+                                <span class="font-weight-bold">Total a Pagar:</span>
+                                <strong class="text-danger h5">B/. {{ number_format($billData['total_idaan'] ?? $billData['total_amount'] ?? 0, 2) }}</strong>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

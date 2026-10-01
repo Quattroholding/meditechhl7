@@ -4,10 +4,11 @@ namespace App\Jobs;
 
 use App\Enums\DocumentType;
 use App\Models\DocumentUpload;
+use App\Services\DocumentParsers\AnthropicDocumentParser;
 use App\Services\DocumentParsers\EnsaBillParser;
-use App\Services\DocumentParsers\GenericDocumentParser;
 use App\Services\DocumentParsers\IdaanBillParser;
 use App\Services\DocumentParsers\InventoryDocumentParser;
+use App\Services\DocumentParsers\NaturgyBillParser;
 use App\Services\GoogleDocumentAIService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -178,9 +179,10 @@ class ParseDocumentJob implements ShouldQueue
     {
         return match ($type) {
             DocumentType::INVENTORY => new InventoryDocumentParser,
-            DocumentType::ENSA => new EnsaBillParser,
-            DocumentType::IDAAN => new IdaanBillParser,
-            default => new GenericDocumentParser,
+            DocumentType::ENSA => new AnthropicDocumentParser,
+            DocumentType::IDAAN => new AnthropicDocumentParser,
+            DocumentType::NATURGY => new AnthropicDocumentParser,
+            default => new AnthropicDocumentParser,
         };
     }
 

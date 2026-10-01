@@ -17,6 +17,8 @@ class DocumentDetail extends Component
 
     public array $selectedItems = [];
 
+    public array $items = [];
+
     public ?string $notes = null;
 
     public ?string $rejectionReason = null;
@@ -74,11 +76,8 @@ class DocumentDetail extends Component
                 return;
             }
 
-            // Decode extracted_data
-            $extractedData = $this->document->parseResult->extracted_data;
-            if (is_string($extractedData)) {
-                $extractedData = json_decode($extractedData, true);
-            }
+            // Decode extracted_data (handle double-encoded JSON)
+            $extractedData = $this->decodeExtractedData($this->document->parseResult->extracted_data);
 
             // Handle different document types
             if ($this->document->document_type === DocumentType::INVENTORY) {
@@ -103,13 +102,10 @@ class DocumentDetail extends Component
 
                 // Calculate totals
                 $this->calculateTotals($items);
-            } elseif (in_array($this->document->document_type->value, ['ensa', 'idaan', 'naturgy'])) {
-                // For utility bills (electricity, water, gas), store the bill data
-                $this->billData = $extractedData;
             } else {
-                // For generic documents, prepare editable fields
-                $this->genericData = $extractedData;
-                $this->editableFields = $this->buildEditableFields($extractedData);
+                // For non-inventory documents (utility bills, AI-processed), store the bill data
+                // This includes: ensa, idaan, naturgy, otro, and any AI-processed documents
+                $this->billData = $extractedData;
             }
 
         } catch (\Exception $e) {
@@ -119,6 +115,21 @@ class DocumentDetail extends Component
             );
             abort(500, 'Error al cargar el documento: '.$e->getMessage());
         }
+    }
+
+    private function decodeExtractedData($data): array
+    {
+        if (is_string($data)) {
+            $decoded = json_decode($data, true);
+            // Check if we got a string back (double-encoded JSON)
+            if (is_string($decoded)) {
+                $decoded = json_decode($decoded, true);
+            }
+
+            return is_array($decoded) ? $decoded : [];
+        }
+
+        return is_array($data) ? $data : [];
     }
 
     private function isGenericDocument(): bool
@@ -174,6 +185,32 @@ class DocumentDetail extends Component
             ]);
         } catch (\Exception $e) {
             \Log::error('Failed to persist generic fields', ['error' => $e->getMessage()]);
+        }
+    }
+
+    public function updatedItems(): void
+    {
+        // Recalculate totals when any item property changes
+        $this->calculateTotals($this->items);
+
+        // Auto-save changes to database
+        if ($this->document && $this->document->document_type === DocumentType::INVENTORY) {
+            try {
+                $this->document->parseResult->update([
+                    'extracted_data' => json_encode([
+                        'items' => $this->items,
+                        'confidence' => $this->document->parseResult->confidence_score ?? 0.9,
+                        'subtotal' => $this->subtotal,
+                        'total_tax' => $this->totalTax,
+                        'total' => $this->totalInvoice,
+                    ]),
+                    'manually_edited' => true,
+                    'edited_by_user_id' => auth()->id(),
+                    'edited_at' => now(),
+                ]);
+            } catch (\Exception $e) {
+                \Log::error('Failed to auto-save items', ['error' => $e->getMessage()]);
+            }
         }
     }
 
@@ -260,14 +297,14 @@ class DocumentDetail extends Component
         foreach ($items as $index => $item) {
             $quantity = (float) ($item['quantity'] ?? 0);
             $unitCost = (float) ($item['unit_cost'] ?? 0);
-            $discount = (float) ($item['discount'] ?? 0);
-            $tax = (float) ($item['tax'] ?? 0);
+            $discountUnitAmount = (float) ($item['discount_amount'] ?? 0);
+            $taxAmount = (float) ($item['tax_amount'] ?? 0);
 
-            // Total = (quantity * unit_cost) - (quantity * discount per unit)
-            $itemTotal = ($quantity * $unitCost) - ($quantity * $discount);
-            $this->itemTotals[$index] = $itemTotal;
-            $this->subtotal += $itemTotal;
-            $this->totalTax += $tax;
+            // Item subtotal = (quantity * unit_cost) - (quantity * discount_unit_amount)
+            $itemSubtotal = ($quantity * $unitCost) - ($quantity * $discountUnitAmount);
+            $this->itemTotals[$index] = $itemSubtotal;
+            $this->subtotal += $itemSubtotal;
+            $this->totalTax += $taxAmount;
         }
 
         $this->totalInvoice = $this->subtotal + $this->totalTax;
@@ -531,7 +568,7 @@ class DocumentDetail extends Component
         if ($result['success']) {
             // Don't redirect yet, let polling detect when job completes
             $message = match ($this->document->document_type) {
-                DocumentType::ELECTRICITY_BILL => 'Factura aprobada. Procesando...',
+                DocumentType::ENSA => 'Factura aprobada. Procesando...',
                 default => 'Documento aprobado. Procesando...',
             };
 
@@ -640,15 +677,8 @@ class DocumentDetail extends Component
     {
         $parseResult = $this->document?->parseResult;
 
-        // Decode extracted_data if stored as JSON string
-        $extractedData = [];
-        if ($parseResult?->extracted_data) {
-            $data = $parseResult->extracted_data;
-            if (is_string($data)) {
-                $data = json_decode($data, true);
-            }
-            $extractedData = is_array($data) ? $data : [];
-        }
+        // Decode extracted_data (handle double-encoded JSON)
+        $extractedData = $parseResult ? $this->decodeExtractedData($parseResult->extracted_data) : [];
 
         $items = $extractedData['items'] ?? [];
 

@@ -36,7 +36,8 @@ class IdaanBillParser extends BaseDocumentParser
             $consumption = $this->extractConsumption($text);
             $waterCharge = $this->extractWaterCharge($text);
             $sewerCharge = $this->extractSewerCharge($text);
-            $totalAmount = $this->extractTotalAmount($text);
+            $totalIdaan = $this->extractTotalIdaan($text);
+            $totalAseo = $this->extractTotalAseo($text);
 
             // Validate key fields
             if (! $billNumber) {
@@ -70,7 +71,9 @@ class IdaanBillParser extends BaseDocumentParser
                 'consumption_m3' => $consumption,
                 'water_charge' => $waterCharge,
                 'sewer_charge' => $sewerCharge,
-                'total_amount' => $totalAmount,
+                'total_amount' => $totalIdaan,
+                'total_idaan' => $totalIdaan,
+                'total_aseo' => $totalAseo,
             ]);
 
         } catch (\Exception $e) {
@@ -118,7 +121,16 @@ class IdaanBillParser extends BaseDocumentParser
      */
     private function extractCustomerName(string $text): ?string
     {
-        // Pattern: "Sr(a):" followed by name (usually on next line or same line)
+        // Pattern: "Sr(a):" followed by name on next line or same line
+        if (preg_match('/Sr\s*\(\s*a\s*\)\s*:\s*\n\s*([^\n]+)/i', $text, $matches)) {
+            $name = trim($matches[1]);
+            // Remove trailing colons or common artifacts
+            $name = preg_replace('/[\s:;]+$/', '', $name);
+
+            return $name ?: null;
+        }
+
+        // Fallback: name on same line
         if (preg_match('/Sr\s*\(\s*a\s*\)\s*:\s*([^\n]+)/i', $text, $matches)) {
             $name = trim($matches[1]);
             // Remove trailing colons or common artifacts
@@ -135,7 +147,16 @@ class IdaanBillParser extends BaseDocumentParser
      */
     private function extractAddress(string $text): ?string
     {
-        // Pattern: "Dir:" followed by address
+        // Pattern: "Ref:" followed by address on next lines
+        if (preg_match('/Ref\s*:\s*\n\s*([^\n]+)/i', $text, $matches)) {
+            $address = trim($matches[1]);
+            // Remove trailing artifacts
+            $address = preg_replace('/[\s:;]+$/', '', $address);
+
+            return $address ?: null;
+        }
+
+        // Fallback: "Dir:" followed by address
         if (preg_match('/Dir\s*:\s*([^\n]+)/i', $text, $matches)) {
             $address = trim($matches[1]);
             // Remove trailing artifacts
@@ -157,13 +178,42 @@ class IdaanBillParser extends BaseDocumentParser
             'end' => null,
         ];
 
-        // Pattern: "Desde: 08-Mar-2023" and "Hasta: 08-Abr-2023"
-        if (preg_match('/Desde\s*:\s*(\d{2}-[A-Z][a-z]{2}-\d{4})/i', $text, $matches)) {
-            $period['start'] = $this->parseIdaanDate($matches[1]);
+        $lines = explode("\n", $text);
+
+        foreach ($lines as $i => $line) {
+            if (stripos($line, 'Desde') !== false) {
+                // Check this line and next 2 for date
+                for ($j = $i; $j < min($i + 3, count($lines)); $j++) {
+                    if (preg_match('/(\d{2})-([A-Za-z]+)-(\d{4})/', $lines[$j], $matches)) {
+                        $day = $matches[1];
+                        $monthName = $matches[2];
+                        $year = $matches[3];
+                        $month = $this->monthNameToNumber($monthName);
+                        if ($month) {
+                            $period['start'] = $year.'-'.$month.'-'.$day;
+                            break 2;
+                        }
+                    }
+                }
+            }
         }
 
-        if (preg_match('/Hasta\s*:\s*(\d{2}-[A-Z][a-z]{2}-\d{4})/i', $text, $matches)) {
-            $period['end'] = $this->parseIdaanDate($matches[1]);
+        foreach ($lines as $i => $line) {
+            if (stripos($line, 'Hasta') !== false) {
+                // Check this line and next 2 for date
+                for ($j = $i; $j < min($i + 3, count($lines)); $j++) {
+                    if (preg_match('/(\d{2})-([A-Za-z]+)-(\d{4})/', $lines[$j], $matches)) {
+                        $day = $matches[1];
+                        $monthName = $matches[2];
+                        $year = $matches[3];
+                        $month = $this->monthNameToNumber($monthName);
+                        if ($month) {
+                            $period['end'] = $year.'-'.$month.'-'.$day;
+                            break 2;
+                        }
+                    }
+                }
+            }
         }
 
         return $period;
@@ -174,9 +224,23 @@ class IdaanBillParser extends BaseDocumentParser
      */
     private function extractIssueDate(string $text): ?string
     {
-        // Pattern: "Fecha de Emisión" followed by date (with or without colon)
-        if (preg_match('/Fecha\s+de\s+Emisión\s*:?\s*(\d{2}-[A-Z][a-z]{2}-\d{4})/i', $text, $matches)) {
-            return $this->parseIdaanDate($matches[1]);
+        $lines = explode("\n", $text);
+
+        foreach ($lines as $i => $line) {
+            if (stripos($line, 'Fecha') !== false && stripos($line, 'Emisi') !== false) {
+                // Check next lines for date
+                for ($j = $i; $j < min($i + 3, count($lines)); $j++) {
+                    if (preg_match('/(\d{2})-([A-Za-z]+)-(\d{4})/', $lines[$j], $matches)) {
+                        $day = $matches[1];
+                        $monthName = $matches[2];
+                        $year = $matches[3];
+                        $month = $this->monthNameToNumber($monthName);
+                        if ($month) {
+                            return $year.'-'.$month.'-'.$day;
+                        }
+                    }
+                }
+            }
         }
 
         return null;
@@ -187,33 +251,23 @@ class IdaanBillParser extends BaseDocumentParser
      */
     private function extractDueDate(string $text): ?string
     {
-        // Pattern: "Fecha de Vencimiento" with date (formats like "15May-2023" or "15May--2023")
-        if (preg_match('/Fecha\s+de\s+Vencimiento\s*:?\s*(\d{2})([A-Za-z]{3})-*-?(\d{4})/i', $text, $matches)) {
-            $day = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
-            $monthName = $matches[2];
-            $year = $matches[3];
-            $month = $this->monthNameToNumber($monthName);
+        $lines = explode("\n", $text);
 
-            if ($month) {
-                return $year.'-'.$month.'-'.$day;
+        foreach ($lines as $i => $line) {
+            if (stripos($line, 'Fecha') !== false && stripos($line, 'Vencimiento') !== false) {
+                // Check next lines for date
+                for ($j = $i; $j < min($i + 3, count($lines)); $j++) {
+                    if (preg_match('/(\d{2})-([A-Za-z]+)-(\d{4})/', $lines[$j], $matches)) {
+                        $day = $matches[1];
+                        $monthName = $matches[2];
+                        $year = $matches[3];
+                        $month = $this->monthNameToNumber($monthName);
+                        if ($month) {
+                            return $year.'-'.$month.'-'.$day;
+                        }
+                    }
+                }
             }
-        }
-
-        // Alternative pattern: standard "14-Abr-2023" format
-        if (preg_match('/Fecha\s+de\s+Vencimiento\s*:?\s*(\d{2}-[A-Za-z]+(-|--)\d{4})/i', $text, $matches)) {
-            $date = preg_replace('/--/', '-', $matches[1]);
-
-            return $this->parseIdaanDate($date);
-        }
-
-        // Fallback: look for "15 DE MAYO DEL 2023" format
-        if (preg_match('/(\d{2})\s+DE\s+([A-Z][A-Za-z]+)\s+DEL\s+(\d{4})/i', $text, $matches)) {
-            $monthName = $matches[2];
-            $day = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
-            $year = $matches[3];
-            $monthNum = $this->monthNameToNumber($monthName);
-
-            return $monthNum ? $year.'-'.$monthNum.'-'.$day : null;
         }
 
         return null;
@@ -224,23 +278,37 @@ class IdaanBillParser extends BaseDocumentParser
      */
     private function extractConsumption(string $text): ?float
     {
-        // Pattern: "Consumo Total" or "CONSUMO TOTAL" followed by (M3) and a number
-        if (preg_match('/Consumo\s+Total\s*\([^)]*M3[^)]*\)\s*:?\s*([0-9.]+)/i', $text, $matches)) {
-            return (float) $matches[1];
+        $lines = explode("\n", $text);
+
+        // Look for "Consumo Total" line
+        foreach ($lines as $i => $line) {
+            if (stripos($line, 'Consumo') !== false && stripos($line, 'Total') !== false) {
+                // Check this line and next 3 lines for a number
+                for ($j = $i; $j < min($i + 4, count($lines)); $j++) {
+                    if (preg_match('/([0-9]+[.,][0-9]+|[0-9]+)/', $lines[$j], $matches)) {
+                        // Skip if this looks like a date or measurement unit
+                        if (! preg_match('/\d{2}.*\d{4}/', $lines[$j]) && ! preg_match('/kWh|kwh/i', $lines[$j])) {
+                            $value = str_replace(',', '.', $matches[1]);
+
+                            return (float) $value;
+                        }
+                    }
+                }
+            }
         }
 
-        // Fallback: look for a number near "M3" or "(M3)"
-        if (preg_match('/([0-9]+[.,][0-9]+|[0-9]+)\s*\(?\s*M3?\s*\)?/i', $text, $matches)) {
-            $value = str_replace(',', '.', $matches[1]);
+        // Look for M3 indicator
+        foreach ($lines as $i => $line) {
+            if (stripos($line, 'M3') !== false) {
+                // Check previous and next lines for number
+                for ($j = max(0, $i - 1); $j < min($i + 2, count($lines)); $j++) {
+                    if (preg_match('/([0-9]+[.,][0-9]+|[0-9]+)/', $lines[$j], $matches)) {
+                        $value = str_replace(',', '.', $matches[1]);
 
-            return (float) $value;
-        }
-
-        // Last resort: look for consumption value in "CONSUMO DE AGUA" section
-        if (preg_match('/CONSUMO\s+DE\s+AGUA\s*:?\s*([0-9]+[.,][0-9]+|[0-9]+)\s*(?!días)/i', $text, $matches)) {
-            $value = str_replace(',', '.', $matches[1]);
-
-            return (float) $value;
+                        return (float) $value;
+                    }
+                }
+            }
         }
 
         return null;
@@ -251,11 +319,21 @@ class IdaanBillParser extends BaseDocumentParser
      */
     private function extractWaterCharge(string $text): ?float
     {
-        // Pattern: "CONSUMO DE AGUA" with amount in B/.
-        if (preg_match('/CONSUMO\s+DE\s+AGUA\s*[:\s]+B?\.?\s*([0-9]+[.,][0-9]+|[0-9]+)/i', $text, $matches)) {
-            $value = str_replace(',', '.', $matches[1]);
+        // Split text into lines for easier parsing
+        $lines = explode("\n", $text);
 
-            return (float) $value;
+        // Look for CONSUMO DE AGUA line
+        foreach ($lines as $i => $line) {
+            if (stripos($line, 'CONSUMO') !== false && stripos($line, 'AGUA') !== false) {
+                // Check next 3 lines for the amount
+                for ($j = $i + 1; $j < min($i + 4, count($lines)); $j++) {
+                    if (preg_match('/([0-9]+[.,][0-9]+|[0-9]+)/', $lines[$j], $matches)) {
+                        $value = str_replace(',', '.', $matches[1]);
+
+                        return (float) $value;
+                    }
+                }
+            }
         }
 
         return null;
@@ -266,40 +344,77 @@ class IdaanBillParser extends BaseDocumentParser
      */
     private function extractSewerCharge(string $text): ?float
     {
-        // Pattern: "ALCANTARILLADO" with amount in B/.
-        if (preg_match('/ALCANTARILLADO[^0-9]*[:\s]+B?\.?\s*([0-9]+[.,][0-9]+|[0-9]+)/i', $text, $matches)) {
-            $value = str_replace(',', '.', $matches[1]);
+        // Split text into lines for easier parsing
+        $lines = explode("\n", $text);
 
-            return (float) $value;
+        // Look for ALCANTARILLADO line
+        foreach ($lines as $i => $line) {
+            if (stripos($line, 'ALCANTARILLADO') !== false) {
+                // Check next 3 lines for the amount
+                for ($j = $i + 1; $j < min($i + 4, count($lines)); $j++) {
+                    if (preg_match('/([0-9]+[.,][0-9]+|[0-9]+)/', $lines[$j], $matches)) {
+                        $value = str_replace(',', '.', $matches[1]);
+
+                        return (float) $value;
+                    }
+                }
+            }
         }
 
         return null;
     }
 
     /**
-     * Extract total amount (SALDO A PAGAR or TOTAL FACTURADO)
+     * Extract total amount for IDAAN (SALDO A PAGAR IDAAN)
      */
-    private function extractTotalAmount(string $text): ?float
+    private function extractTotalIdaan(string $text): ?float
     {
-        // Pattern: "SALDO A PAGAR IDAAN B/." with amount
-        if (preg_match('/SALDO\s+A\s+PAGAR\s+[^0-9]*[:\s]+B?\.?\s*([0-9]+[.,][0-9]+|[0-9]+)/i', $text, $matches)) {
-            $value = str_replace(',', '.', $matches[1]);
+        $lines = explode("\n", $text);
 
-            return (float) $value;
+        // Look for "SALDO A PAGAR IDAAN" specifically (not ASEO)
+        foreach ($lines as $i => $line) {
+            if (stripos($line, 'SALDO') !== false && stripos($line, 'PAGAR') !== false && stripos($line, 'IDAAN') !== false && stripos($line, 'ASEO') === false) {
+                // Check this line and next 4 lines for the amount (barcode and other text may be in between)
+                for ($j = $i; $j < min($i + 5, count($lines)); $j++) {
+                    if (preg_match('/([0-9]+[.,][0-9]+|[0-9]+)/', $lines[$j], $matches)) {
+                        $value = str_replace(',', '.', $matches[1]);
+                        // Skip if this looks like a barcode or year
+                        if (! preg_match('/^[A-Z0-9]{20,}$/', $lines[$j]) && ! preg_match('/^\d{4}$/', $value)) {
+                            if ((float) $value > 0) {
+                                return (float) $value;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        // Fallback: "TOTAL FACTURADO IDAAN"
-        if (preg_match('/TOTAL\s+FACTURADO\s+IDAAN\s*[:\s]+B?\.?\s*([0-9]+[.,][0-9]+|[0-9]+)/i', $text, $matches)) {
-            $value = str_replace(',', '.', $matches[1]);
+        return null;
+    }
 
-            return (float) $value;
-        }
+    /**
+     * Extract total amount for ASEO (SALDO A PAGAR ASEO)
+     */
+    private function extractTotalAseo(string $text): ?float
+    {
+        $lines = explode("\n", $text);
 
-        // Last resort: look for total after "TOTAL FACTURACIÓN TERCEROS"
-        if (preg_match('/TOTAL\s+FACTURACIÓN\s+TERCEROS\s*[:\s]+B?\.?\s*([0-9]+[.,][0-9]+|[0-9]+)/i', $text, $matches)) {
-            $value = str_replace(',', '.', $matches[1]);
-
-            return (float) $value;
+        // Look for "SALDO A PAGAR ASEO" specifically
+        foreach ($lines as $i => $line) {
+            if (stripos($line, 'SALDO') !== false && stripos($line, 'PAGAR') !== false && stripos($line, 'ASEO') !== false) {
+                // Check this line and next 4 lines for the amount (barcode and other text may be in between)
+                for ($j = $i; $j < min($i + 5, count($lines)); $j++) {
+                    if (preg_match('/([0-9]+[.,][0-9]+|[0-9]+)/', $lines[$j], $matches)) {
+                        $value = str_replace(',', '.', $matches[1]);
+                        // Skip if this looks like a barcode or year
+                        if (! preg_match('/^[A-Z0-9]{20,}$/', $lines[$j]) && ! preg_match('/^\d{4}$/', $value)) {
+                            if ((float) $value > 0) {
+                                return (float) $value;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         return null;
@@ -334,6 +449,7 @@ class IdaanBillParser extends BaseDocumentParser
     private function monthNameToNumber(string $monthName): ?string
     {
         $months = [
+            // Spanish
             'ene' => '01', 'enero' => '01',
             'feb' => '02', 'febrero' => '02',
             'mar' => '03', 'marzo' => '03',
@@ -346,6 +462,19 @@ class IdaanBillParser extends BaseDocumentParser
             'oct' => '10', 'octubre' => '10',
             'nov' => '11', 'noviembre' => '11',
             'dic' => '12', 'diciembre' => '12',
+            // English
+            'jan' => '01', 'january' => '01',
+            'feb' => '02', 'february' => '02',
+            'mar' => '03', 'march' => '03',
+            'apr' => '04', 'april' => '04',
+            'may' => '05',
+            'jun' => '06', 'june' => '06',
+            'jul' => '07', 'july' => '07',
+            'aug' => '08', 'august' => '08',
+            'sep' => '09', 'sept' => '09', 'september' => '09',
+            'oct' => '10', 'october' => '10',
+            'nov' => '11', 'november' => '11',
+            'dec' => '12', 'december' => '12',
         ];
 
         $lowerMonth = strtolower(trim($monthName));
