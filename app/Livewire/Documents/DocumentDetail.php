@@ -81,14 +81,7 @@ class DocumentDetail extends Component
             }
 
             // Handle different document types
-            if ($this->document->document_type === DocumentType::ENSA) {
-                // For electricity bills, store the bill data
-                $this->billData = $extractedData;
-            } elseif ($this->isGenericDocument()) {
-                // For generic documents, prepare editable fields
-                $this->genericData = $extractedData;
-                $this->editableFields = $this->buildEditableFields($extractedData);
-            } else {
+            if ($this->document->document_type === DocumentType::INVENTORY) {
                 // For inventory documents, process items
                 $items = $extractedData['items'] ?? [];
 
@@ -109,6 +102,13 @@ class DocumentDetail extends Component
 
                 // Calculate totals
                 $this->calculateTotals($items);
+            } elseif (in_array($this->document->document_type->value, ['ensa', 'idaan', 'naturgy'])) {
+                // For utility bills (electricity, water, gas), store the bill data
+                $this->billData = $extractedData;
+            } else {
+                // For generic documents, prepare editable fields
+                $this->genericData = $extractedData;
+                $this->editableFields = $this->buildEditableFields($extractedData);
             }
 
         } catch (\Exception $e) {
@@ -127,7 +127,9 @@ class DocumentDetail extends Component
                 $this->document->document_type->value,
                 [
                     DocumentType::INVENTORY->value,
-                    DocumentType::ENSA->value,
+                    'ensa',
+                    'idaan',
+                    'naturgy',
                 ]
             );
     }

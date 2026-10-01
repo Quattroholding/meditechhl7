@@ -101,54 +101,19 @@ class ParseDocumentJob implements ShouldQueue
             $document->parseResult()->delete(); // Delete any previous result
 
             // Build extracted data array - support both structured (inventory) and generic data
-            $extractedDataArray = [
-                'items' => $parseResult['items'] ?? [],
-                'confidence' => $parseResult['confidence'],
-                'subtotal' => $parseResult['subtotal'] ?? 0,
-                'total_tax' => $parseResult['total_tax'] ?? 0,
-                'total' => $parseResult['total'] ?? 0,
-                'invoice_number' => $parseResult['invoice_number'] ?? null,
-                'invoice_date' => $parseResult['invoice_date'] ?? null,
-                // ENSA/Electricity bill fields
-                'bill_number' => $parseResult['bill_number'] ?? null,
-                'customer_name' => $parseResult['customer_name'] ?? null,
-                'customer_address' => $parseResult['customer_address'] ?? null,
-                'service_address' => $parseResult['service_address'] ?? null,
-                'service_number' => $parseResult['service_number'] ?? null,
-                'billing_period_start' => $parseResult['billing_period_start'] ?? null,
-                'billing_period_end' => $parseResult['billing_period_end'] ?? null,
-                'issue_date' => $parseResult['issue_date'] ?? null,
-                'due_date' => $parseResult['due_date'] ?? null,
-                'meter_number' => $parseResult['meter_number'] ?? null,
-                'consumption_kwh' => $parseResult['consumption_kwh'] ?? 0,
-                'consumption_type' => $parseResult['consumption_type'] ?? null,
-                'discounts' => $parseResult['discounts'] ?? 0,
-                'taxes' => $parseResult['taxes'] ?? 0,
-                'previous_balance' => $parseResult['previous_balance'] ?? 0,
-                'amount_paid' => $parseResult['amount_paid'] ?? 0,
-                'balance' => $parseResult['balance'] ?? 0,
-                'charges' => $parseResult['charges'] ?? [],
-            ];
-
-            // Include generic fields if present
-            if (! empty($parseResult['full_text'])) {
-                $extractedDataArray['full_text'] = $parseResult['full_text'];
-            }
-            if (! empty($parseResult['tables'])) {
-                $extractedDataArray['tables'] = $parseResult['tables'];
-            }
-            if (! empty($parseResult['entities'])) {
-                $extractedDataArray['entities'] = $parseResult['entities'];
-            }
-            if (! empty($parseResult['key_value_pairs'])) {
-                $extractedDataArray['key_value_pairs'] = $parseResult['key_value_pairs'];
-            }
-            if (! empty($parseResult['numeric_fields'])) {
-                $extractedDataArray['numeric_fields'] = $parseResult['numeric_fields'];
-            }
-            if (! empty($parseResult['lines'])) {
-                $extractedDataArray['lines'] = $parseResult['lines'];
-            }
+            // Start with all parser results, then add overrides for consistency
+            $extractedDataArray = array_merge(
+                // Copy all parser results
+                $parseResult,
+                // Explicit overrides for standard fields
+                [
+                    'items' => $parseResult['items'] ?? [],
+                    'confidence' => $parseResult['confidence'],
+                    'subtotal' => $parseResult['subtotal'] ?? 0,
+                    'total_tax' => $parseResult['total_tax'] ?? 0,
+                    'total' => $parseResult['total'] ?? 0,
+                ]
+            );
 
             $document->parseResult()->create([
                 'raw_response' => json_encode($googleAIResponse),
