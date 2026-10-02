@@ -118,7 +118,8 @@ class InventoryAiDocumentParser extends BaseDocumentParser
             // Debug: log the actual text being sent
             Log::info('InventoryAiDocumentParser: Extracted text from Google Document AI', [
                 'text_length' => strlen($text),
-                'first_200_chars' => substr($text, 0, 200),
+                'first_500_chars' => substr($text, 0, 500),
+                'last_200_chars' => substr($text, -200),
                 'has_content' => strlen($text) > 0 && strlen(trim($text)) > 0,
                 'is_empty_or_whitespace' => strlen(trim($text)) === 0,
             ]);
@@ -202,107 +203,40 @@ class InventoryAiDocumentParser extends BaseDocumentParser
     private function buildPrompt(string $text): string
     {
         return <<<'PROMPT'
-Eres un parser especializado en facturas de inventario farmacéutico de Panamá.
+Extract data from this pharmacy invoice document. Return ONLY valid JSON (no markdown, no explanations).
 
-CONTEXTO:
-- Proveedores: Reprico, Impaduel, Haseth, y similares
-- Productos: Medicamentos con presentaciones (tabletas, cápsulas, jarabes, etc.)
-- Formato: Facturas electrónicas DGI de Panamá
+Find and extract:
+- supplier_name: Company issuing the invoice
+- invoice_number: Invoice number
+- invoice_date: Date in YYYY-MM-DD format
+- items: List of products with: sku, name, quantity (number), unit_cost (number), base_price (number), discount_amount (number), tax_amount (number), unit_type ("internal" or "presentation"), internal_units_per_presentation (number, default 1), is_gift (boolean)
+- subtotal: Sum of (quantity × unit_cost - discount_amount) for all items
+- total_tax: Sum of all taxes
+- total_invoice: subtotal + total_tax
+- batch_info: Array of batch information
 
-REGLAS DE EXTRACCIÓN:
+Rules:
+1. For each product line, extract SKU, name, quantity, unit price, discounts, and taxes
+2. If description contains patterns like "CAJA X 30", set internal_units_per_presentation=30, unit_type="presentation"
+3. If unit_cost=0 and quantity>0, it's a gift: set is_gift=true
+4. Include ALL items, even gifts and bonus items
+5. Calculate or extract totals from the document
 
-1. METADATA (siempre extraer):
-   - supplier_name: Empresa emisora de la factura
-   - invoice_number: Número de factura
-   - invoice_date: Fecha en formato YYYY-MM-DD
-
-2. ITEMS (extraer TODOS los productos):
-
-   Para cada producto:
-   - sku: Código del producto
-   - name: Nombre completo incluyendo concentración (ej: "CONCOR 5.00 mg")
-   - quantity: Cantidad (número, puede ser decimal)
-   - unit_cost: Costo por unidad (número decimal)
-   - base_price: Precio de venta por unidad (si diferente de unit_cost, sino usar unit_cost)
-   - discount_amount: Descuento POR UNIDAD en valor absoluto (número)
-   - tax_amount: Impuesto/ITBMS para esta línea (número)
-   - unit_type: "internal" o "presentation"
-   - internal_units_per_presentation: Factor de conversión (número, default 1)
-   - is_gift: true si es un regalo/bonificación del proveedor
-
-3. DETECCIÓN DE FACTOR DE CONVERSIÓN:
-
-   Si la descripción contiene patrones como:
-   - "CAJA X 30 TABLETAS" → internal_units_per_presentation = 30, unit_type = "presentation"
-   - "FRASCO X 120 ML" → internal_units_per_presentation = 120, unit_type = "presentation"
-   - "BLISTER X 10 CAPS" → internal_units_per_presentation = 10, unit_type = "presentation"
-   - "SOBRE X 24 SOBRES" → internal_units_per_presentation = 24, unit_type = "presentation"
-
-   Extrae el número y establece unit_type = "presentation"
-   Si no hay patrón, usa internal_units_per_presentation = 1, unit_type = "internal"
-
-4. MANEJO DE DESCUENTOS:
-
-   Si el descuento aparece como porcentaje:
-   - Calcula: discount_amount = (unit_cost * porcentaje / 100)
-
-   Si aparece como monto:
-   - Usa el monto directamente como discount_amount
-
-5. REGALOS Y BONIFICACIONES (MUY IMPORTANTE):
-
-   En facturas de Impaduel y otros proveedores, verás items repetidos donde:
-   - El primero tiene cantidad > 0 y unit_cost > 0 (compra regular)
-   - El segundo tiene cantidad > 0 pero unit_cost = 0 (REGALO del proveedor)
-
-   Ejemplo:
-   - "001-470242 - WELLBUTRIN XL" Cantidad: 10, Costo: 82.68 → item regular
-   - "002-470242 - WELLBUTRIN XL" Cantidad: 1, Costo: 0.00 → REGALO
-
-   DEBES INCLUIR AMBOS ITEMS:
-   - El primero con is_gift = false
-   - El segundo con is_gift = true
-
-   NO filtres ni ignores items con costo $0.00, son regalos legítimos que entran al inventario.
-
-6. INFORMACIÓN DE LOTE (opcional):
-   - Si hay "Lote y Fvenc.WE7G 30-11-2025", extrae batch_code y expiration_date
-   - Almacena en batch_info
-
-7. TOTALES:
-   - subtotal: Suma de (cantidad × costo_unitario - descuento) para TODOS los items
-   - total_tax: Suma de todos los impuestos
-   - total_invoice: subtotal + total_tax
-
-FORMATO DE SALIDA:
-
-Retorna SOLO JSON válido (sin markdown, sin explicaciones):
-
+Return JSON object matching this structure:
 {
-  "supplier_name": "string o null",
-  "invoice_number": "string o null",
-  "invoice_date": "YYYY-MM-DD o null",
+  "supplier_name": null,
+  "invoice_number": null,
+  "invoice_date": null,
   "items": [
-    {
-      "sku": "string",
-      "name": "string",
-      "quantity": number,
-      "unit_cost": number,
-      "base_price": number,
-      "discount_amount": number,
-      "tax_amount": number,
-      "unit_type": "internal" o "presentation",
-      "internal_units_per_presentation": number,
-      "is_gift": boolean
-    }
+    {"sku": "", "name": "", "quantity": 0, "unit_cost": 0, "base_price": 0, "discount_amount": 0, "tax_amount": 0, "unit_type": "internal", "internal_units_per_presentation": 1, "is_gift": false}
   ],
-  "subtotal": number,
-  "total_tax": number,
-  "total_invoice": number,
+  "subtotal": 0,
+  "total_tax": 0,
+  "total_invoice": 0,
   "batch_info": []
 }
 
-DOCUMENTO A ANALIZAR:
+INVOICE TEXT:
 
 PROMPT;
 
