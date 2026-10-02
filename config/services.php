@@ -104,7 +104,7 @@ return [
     ],
 
     'claude' => [
-        'api_key' => env('CLAUDE_API_KEY'),
+        'api_key' => env('CLAUDE_API_KEY') ?: env('ANTHROPIC_API_KEY'),
         'api_url' => env('CLAUDE_API_URL', 'https://api.anthropic.com/v1'),
         'api_version' => env('CLAUDE_API_VERSION', '2023-06-01'),
         'default_model' => env('CLAUDE_DEFAULT_MODEL', 'claude-sonnet-4-6'),
