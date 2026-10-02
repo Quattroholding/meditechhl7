@@ -79,7 +79,9 @@
 
             <div class="mt-2">
                 <!-- Drag & Drop Zone -->
-                <label for="files" class="block border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors cursor-pointer hover:border-blue-400 hover:bg-blue-50">
+                <label for="files"
+                       id="dropZone"
+                       class="block border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors cursor-pointer hover:border-blue-400 hover:bg-blue-50">
                     <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                         <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-8l-3.172-3.172a4 4 0 00-5.656 0L28 28M9 20h.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
@@ -99,6 +101,58 @@
                         class="hidden"
                     />
                 </label>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const dropZone = document.getElementById('dropZone');
+                        const fileInput = document.getElementById('files');
+
+                        // Prevenir comportamiento por defecto en todo el documento
+                        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                            document.body.addEventListener(eventName, preventDefaults, false);
+                        });
+
+                        function preventDefaults(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+
+                        // Resaltar cuando se arrastra sobre la zona
+                        dropZone.addEventListener('dragenter', () => {
+                            dropZone.style.borderColor = '#3b82f6';
+                            dropZone.style.backgroundColor = '#eff6ff';
+                            dropZone.style.boxShadow = '0 0 0 2px #3b82f6';
+                        }, false);
+
+                        dropZone.addEventListener('dragover', () => {
+                            dropZone.style.borderColor = '#3b82f6';
+                            dropZone.style.backgroundColor = '#eff6ff';
+                            dropZone.style.boxShadow = '0 0 0 2px #3b82f6';
+                        }, false);
+
+                        // Restaurar cuando se sale o se suelta
+                        dropZone.addEventListener('dragleave', () => {
+                            dropZone.style.borderColor = '';
+                            dropZone.style.backgroundColor = '';
+                            dropZone.style.boxShadow = '';
+                        }, false);
+
+                        // Manejar drop
+                        dropZone.addEventListener('drop', (e) => {
+                            dropZone.style.borderColor = '';
+                            dropZone.style.backgroundColor = '';
+                            dropZone.style.boxShadow = '';
+
+                            const dt = e.dataTransfer;
+                            const files = dt.files;
+                            fileInput.files = files;
+
+                            // Disparar cambio para que Livewire lo detecte
+                            const event = new Event('change', { bubbles: true });
+                            fileInput.dispatchEvent(event);
+                        }, false);
+                    });
+                </script>
 
                 @error('files')
                     <span class="text-red-600 text-sm block mt-2">{{ $message }}</span>
