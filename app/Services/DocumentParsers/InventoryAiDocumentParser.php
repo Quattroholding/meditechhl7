@@ -115,13 +115,20 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 Log::info('InventoryAiDocumentParser: Text truncated for Claude API', ['original_length' => strlen($text)]);
             }
 
-            // Debug: log the actual text being sent
+            // Debug: log the actual text being sent - write to separate file for inspection
+            file_put_contents(
+                storage_path('logs/invoice_text_'.time().'.txt'),
+                "=== EXTRACTED TEXT FROM GOOGLE DOCUMENT AI ===\n".
+                'Length: '.strlen($text)." characters\n".
+                "=== CONTENT ===\n".
+                $text
+            );
+
             Log::info('InventoryAiDocumentParser: Extracted text from Google Document AI', [
                 'text_length' => strlen($text),
-                'first_500_chars' => substr($text, 0, 500),
-                'last_200_chars' => substr($text, -200),
-                'has_content' => strlen($text) > 0 && strlen(trim($text)) > 0,
-                'is_empty_or_whitespace' => strlen(trim($text)) === 0,
+                'has_items_table' => strpos($text, 'Descripción') !== false || strpos($text, 'Producto') !== false,
+                'has_invoice_number' => strpos($text, 'Número') !== false || strpos($text, 'Factura') !== false,
+                'has_supplier' => strpos($text, 'Emisor') !== false,
             ]);
 
             $prompt = $this->buildPrompt($text);
