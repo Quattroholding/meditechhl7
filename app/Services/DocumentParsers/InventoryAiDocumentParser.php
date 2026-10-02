@@ -119,6 +119,11 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 throw new \RuntimeException('Claude API key not configured');
             }
 
+            Log::info('InventoryAiDocumentParser: Preparing to call Claude', [
+                'text_length' => strlen($text),
+                'text_preview' => substr($text, 0, 300),
+            ]);
+
             $prompt = $this->buildPrompt($text);
 
             $response = Http::timeout(self::CLAUDE_TIMEOUT)
@@ -147,6 +152,11 @@ class InventoryAiDocumentParser extends BaseDocumentParser
             if (empty($content)) {
                 throw new \RuntimeException('Empty response from Claude API');
             }
+
+            Log::info('InventoryAiDocumentParser: Claude response received', [
+                'response_length' => strlen($content),
+                'response_preview' => substr($content, 0, 500),
+            ]);
 
             // Extract JSON from response (Claude might include markdown code blocks)
             $json = $this->extractJsonFromContent($content);
