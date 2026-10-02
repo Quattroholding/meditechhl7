@@ -228,10 +228,11 @@ Rules for parsing:
 1. Product code + description might be on separate lines, concatenate them
 2. Numbers use $ or B/. prefix: "$44.27" → 44.27
 3. Quantities are decimal numbers: "6.000000" → 6
-4. If description has "CAJA X 30", set internal_units_per_presentation=30, unit_type="presentation"
-5. If quantity > 0 but unit_cost = 0, it's a gift: is_gift=true
-6. discount_amount: Extract from table or calculate. May show as "Descuento Unitario"
-7. include_gift_items: TRUE - if cost=0, include the item anyway
+4. If description has "CAJA X 30", set internal_units_per_presentation=30, unit_type="internal" (INTERNAL when factor > 1)
+5. If no factor in description, set internal_units_per_presentation=1, unit_type="presentation" (PRESENTATION when factor = 1)
+6. If quantity > 0 but unit_cost = 0, it's a gift: is_gift=true
+7. discount_amount: Extract from table or calculate. May show as "Descuento Unitario"
+8. include_gift_items: TRUE - if cost=0, include the item anyway
 
 Output format:
 {
@@ -299,7 +300,7 @@ PROMPT;
                 'is_gift' => (bool) ($item['is_gift'] ?? false),
             ];
 
-            // Ensure unit_type is valid
+            // Ensure unit_type is valid and consistent with internal_units_per_presentation
             if (! in_array($validatedItem['unit_type'], ['internal', 'presentation'])) {
                 $validatedItem['unit_type'] = 'internal';
             }
@@ -307,6 +308,15 @@ PROMPT;
             // Ensure internal_units_per_presentation >= 1
             if ($validatedItem['internal_units_per_presentation'] < 1) {
                 $validatedItem['internal_units_per_presentation'] = 1;
+            }
+
+            // Auto-correct unit_type based on internal_units_per_presentation
+            // If factor > 1, it's an internal unit (e.g., CAJA X 30 is internal)
+            // If factor = 1, it's a presentation (single unit)
+            if ($validatedItem['internal_units_per_presentation'] > 1) {
+                $validatedItem['unit_type'] = 'internal';
+            } else {
+                $validatedItem['unit_type'] = 'presentation';
             }
 
             // Validate that gifts (cost=0) are marked as is_gift=true
