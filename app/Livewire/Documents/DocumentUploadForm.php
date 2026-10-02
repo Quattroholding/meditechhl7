@@ -22,7 +22,7 @@ class DocumentUploadForm extends Component
     #[Validate('required|exists:branches,id')]
     public ?int $branch_id = null;
 
-    #[Validate('required|string|in:inventory,ensa,naturgy,idaan,otro')]
+    #[Validate('required|string|in:inventory,inventory_ai,ensa,naturgy,idaan,otro')]
     public ?string $document_type = null;
 
     #[Validate('required|file|mimes:pdf|max:10240')]
