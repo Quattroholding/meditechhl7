@@ -6,7 +6,6 @@ use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
 use App\Models\DocumentUpload;
 use App\Services\DocumentProcessors\DiscardDocumentProcessor;
-use App\Services\DocumentProcessors\ElectricityBillProcessor;
 use App\Services\DocumentProcessors\InventoryDocumentProcessor;
 use App\Services\DocumentProcessors\RegisterElectricityBillProcessor;
 use App\Services\DocumentProcessors\RegisterGasBillProcessor;

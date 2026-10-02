@@ -6,7 +6,6 @@ use App\Enums\DocumentType;
 use App\Models\DocumentUpload;
 use App\Services\DocumentParsers\AnthropicDocumentParser;
 use App\Services\DocumentParsers\InventoryAiDocumentParser;
-use App\Services\DocumentParsers\InventoryDocumentParser;
 use App\Services\GoogleDocumentAIService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -64,8 +63,8 @@ class ParseDocumentJob implements ShouldQueue
             }
 
             // Determine extraction engine based on document type and config
-            $extractionEngine = $document->document_type === DocumentType::INVENTORY_AI
-                ? 'pdfparser'  // INVENTORY_AI always uses pdfparser
+            $extractionEngine = $document->document_type === DocumentType::INVENTORY
+                ? 'pdfparser'  // INVENTORY always uses pdfparser
                 : config('app.document_extraction_engine', 'pdfparser');  // Other types use config
 
             if ($extractionEngine === 'pdfparser') {
@@ -274,8 +273,7 @@ class ParseDocumentJob implements ShouldQueue
     private function getParser(DocumentType $type)
     {
         return match ($type) {
-            DocumentType::INVENTORY => new InventoryDocumentParser,
-            DocumentType::INVENTORY_AI => new InventoryAiDocumentParser,
+            DocumentType::INVENTORY => new InventoryAiDocumentParser,
             DocumentType::ENSA => new AnthropicDocumentParser,
             DocumentType::IDAAN => new AnthropicDocumentParser,
             DocumentType::NATURGY => new AnthropicDocumentParser,

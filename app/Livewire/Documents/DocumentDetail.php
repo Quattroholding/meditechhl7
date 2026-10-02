@@ -80,7 +80,7 @@ class DocumentDetail extends Component
             $extractedData = $this->decodeExtractedData($this->document->parseResult->extracted_data);
 
             // Handle different document types
-            if (in_array($this->document->document_type, [DocumentType::INVENTORY, DocumentType::INVENTORY_AI])) {
+            if ($this->document->document_type === DocumentType::INVENTORY) {
                 // For inventory documents, process items
                 $items = $extractedData['items'] ?? [];
 
@@ -139,7 +139,6 @@ class DocumentDetail extends Component
                 $this->document->document_type->value,
                 [
                     DocumentType::INVENTORY->value,
-                    DocumentType::INVENTORY_AI->value,
                     'ensa',
                     'idaan',
                     'naturgy',
@@ -195,7 +194,7 @@ class DocumentDetail extends Component
         $this->calculateTotals($this->items);
 
         // Auto-save changes to database
-        if ($this->document && in_array($this->document->document_type, [DocumentType::INVENTORY, DocumentType::INVENTORY_AI])) {
+        if ($this->document && $this->document->document_type === DocumentType::INVENTORY) {
             try {
                 $this->document->parseResult->update([
                     'extracted_data' => json_encode([
@@ -522,7 +521,7 @@ class DocumentDetail extends Component
         }
 
         // Validate at least one item is selected (only for inventory documents)
-        if (in_array($this->document->document_type, [DocumentType::INVENTORY, DocumentType::INVENTORY_AI]) && ! in_array(true, $this->selectedItems)) {
+        if ($this->document->document_type === DocumentType::INVENTORY && ! in_array(true, $this->selectedItems)) {
             $this->dispatch('showToastr',
                 type: 'error',
                 message: 'Debes seleccionar al menos un item',
