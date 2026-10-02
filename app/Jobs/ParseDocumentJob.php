@@ -63,19 +63,27 @@ class ParseDocumentJob implements ShouldQueue
                 error_log('ParseDocumentJob logging warning: '.$logError->getMessage());
             }
 
-            // For inventory_ai documents, try pdfparser first (better table extraction)
-            // For other types, use Google OCR
-            if ($document->document_type === DocumentType::INVENTORY_AI) {
+            // Determine extraction engine based on document type and config
+            $extractionEngine = $document->document_type === DocumentType::INVENTORY_AI
+                ? 'pdfparser'  // INVENTORY_AI always uses pdfparser
+                : config('app.document_extraction_engine', 'pdfparser');  // Other types use config
+
+            if ($extractionEngine === 'pdfparser') {
                 $googleAIResponse = $this->extractWithPdfParser($document);
                 if (empty($googleAIResponse['document']['text'])) {
-                    // If pdfparser fails, fallback to Google OCR
+                    // If pdfparser fails, fallback to Google OCR for safety
                     Log::info('ParseDocumentJob: pdfparser extraction empty, falling back to Google OCR', [
                         'document_id' => $document->id,
+                        'type' => $document->document_type->value,
                     ]);
                     $googleAIResponse = $this->extractWithGoogleDocumentAI($document);
                 }
             } else {
-                // Use Google Document AI for other types
+                // Use Google Document AI as configured
+                Log::info('ParseDocumentJob: Using Google Document AI as configured', [
+                    'document_id' => $document->id,
+                    'type' => $document->document_type->value,
+                ]);
                 $googleAIResponse = $this->extractWithGoogleDocumentAI($document);
             }
 
