@@ -171,6 +171,9 @@ class ParseDocumentJob implements ShouldQueue
             $pdf = $parser->parseFile($filePath);
             $text = $pdf->getText();
 
+            // Reformat text to make it more readable for Claude
+            $text = $this->reformatPdfText($text);
+
             Log::info('ParseDocumentJob: Extracted text with pdfparser', [
                 'document_id' => $document->id,
                 'text_length' => strlen($text),
@@ -191,6 +194,35 @@ class ParseDocumentJob implements ShouldQueue
 
             return ['document' => ['text' => '', 'mime_type' => 'application/pdf']];
         }
+    }
+
+    /**
+     * Reformat pdfparser text for better Claude parsing
+     * Convert tab-delimited data to more readable format
+     */
+    private function reformatPdfText(string $text): string
+    {
+        // Split by lines
+        $lines = explode("\n", $text);
+        $reformatted = [];
+
+        foreach ($lines as $line) {
+            // If line contains tabs (likely a table row from PDF)
+            if (strpos($line, "\t") !== false) {
+                // Split by tabs and clean up
+                $columns = array_map('trim', explode("\t", $line));
+
+                // Filter empty columns
+                $columns = array_filter($columns);
+
+                // Rejoin with clear separators
+                $reformatted[] = implode(' | ', $columns);
+            } else {
+                $reformatted[] = $line;
+            }
+        }
+
+        return implode("\n", $reformatted);
     }
 
     /**
