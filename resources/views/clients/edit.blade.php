@@ -111,6 +111,75 @@
                             </div>
                         </div>
                     </div>
+
+                    <hr class="my-4">
+
+                    <!-- Características Especiales -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="mb-3 text-primary">Características Especiales</h5>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-xl-6">
+                            <div class="form-check local-forms">
+                                <input type="hidden" name="active" value="0">
+                                <input class="form-check-input" type="checkbox" id="active" name="active" value="1" {{ $data->active ? 'checked' : '' }}>
+                                <label class="form-check-label" for="active">
+                                    Cliente Activo
+                                </label>
+                                <small class="text-muted d-block">Si está marcado, el cliente podrá usar la plataforma</small>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-6">
+                            <div class="form-check local-forms">
+                                <input type="hidden" name="diagnostic_ai_suggestions" value="0">
+                                <input class="form-check-input" type="checkbox" id="diagnostic_ai_suggestions" name="diagnostic_ai_suggestions" value="1" {{ $data->diagnostic_ai_suggestions ? 'checked' : '' }}>
+                                <label class="form-check-label" for="diagnostic_ai_suggestions">
+                                    Sugerencias de Diagnóstico AI
+                                </label>
+                                <small class="text-muted d-block">Habilitar sugerencias de diagnóstico con IA</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-6 col-xl-6">
+                            <div class="form-check local-forms">
+                                <input type="hidden" name="show_consultation_timer" value="0">
+                                <input class="form-check-input" type="checkbox" id="show_consultation_timer" name="show_consultation_timer" value="1" {{ $data->show_consultation_timer ? 'checked' : '' }}>
+                                <label class="form-check-label" for="show_consultation_timer">
+                                    Mostrar Temporizador de Consulta
+                                </label>
+                                <small class="text-muted d-block">Mostrar cronómetro durante las consultas</small>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-6">
+                            <div class="form-check local-forms">
+                                <input type="hidden" name="hemoscreen_only" value="0">
+                                <input class="form-check-input" type="checkbox" id="hemoscreen_only" name="hemoscreen_only" value="1" {{ $data->hemoscreen_only ? 'checked' : '' }}>
+                                <label class="form-check-label" for="hemoscreen_only">
+                                    Solo Hemoscreen
+                                </label>
+                                <small class="text-muted d-block">Restringir a funcionalidades de Hemoscreen únicamente</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-6 col-xl-6">
+                            <div class="form-check local-forms">
+                                <input type="hidden" name="voice_dictation_enabled" value="0">
+                                <input class="form-check-input" type="checkbox" id="voice_dictation_enabled" name="voice_dictation_enabled" value="1" {{ $data->voice_dictation_enabled ? 'checked' : '' }}>
+                                <label class="form-check-label" for="voice_dictation_enabled">
+                                    Dictado por Voz Habilitado
+                                </label>
+                                <small class="text-muted d-block">Permitir el uso de dictado por voz en las consultas</small>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="flex items-center justify-end mt-4">
                         <div class="doctor-submit text-end">
                             <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.edit') }} </button>

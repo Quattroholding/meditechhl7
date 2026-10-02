@@ -50,7 +50,13 @@ class ClientController extends Controller
                 $client->name = $request->name;
                 $client->email = $request->email;
                 $client->whatsapp = $request->phone;
-                $client->active = 1;
+                $client->active = $request->input('active', 1);
+                $client->diagnostic_ai_suggestions = $request->input('diagnostic_ai_suggestions', 0);
+                $client->show_consultation_timer = $request->input('show_consultation_timer', 0);
+                $client->hemoscreen_only = $request->input('hemoscreen_only', 0);
+                $client->enable_virtual_appointments = $request->input('enable_virtual_appointments', 0);
+                $client->zoom_enabled = $request->input('zoom_enabled', 1);
+                $client->voice_dictation_enabled = $request->input('voice_dictation_enabled', 0);
                 $client->package_id = $request->package_id;
                 $client->save();
 

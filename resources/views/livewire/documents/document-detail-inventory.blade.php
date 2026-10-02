@@ -1,7 +1,7 @@
 <!-- Inventory Document Detail Card -->
 <div>
     <div class="card mb-6">
-        <div class="card-header bg-success-light">
+        <div class="card-header ">
             <h5 class="card-title mb-0">
                 <i class="feather icon-package"></i> Artículos Extraídos
             </h5>

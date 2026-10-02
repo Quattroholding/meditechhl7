@@ -52,7 +52,7 @@ $locations_array = is_string($data->presentIllnesses->locations)
 $location = '';
 if (is_array($locations_array)) {
     $translated_locations = array_map(function($loc) {
-        return trans('present_illness.'.$loc);
+        return $loc;
     }, $locations_array);
     $location = implode(', ', $translated_locations);
 }

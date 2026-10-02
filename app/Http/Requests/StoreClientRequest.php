@@ -133,6 +133,15 @@ class StoreClientRequest extends FormRequest
             ],
             'custom_discount_invoices' => ['nullable', 'integer', 'min:1', 'max:24'],
             'custom_discount_reason' => ['nullable', 'string', 'max:500'],
+
+            // Características Especiales
+            'active' => ['nullable', 'boolean'],
+            'diagnostic_ai_suggestions' => ['nullable', 'boolean'],
+            'show_consultation_timer' => ['nullable', 'boolean'],
+            'hemoscreen_only' => ['nullable', 'boolean'],
+            'enable_virtual_appointments' => ['nullable', 'boolean'],
+            'zoom_enabled' => ['nullable', 'boolean'],
+            'voice_dictation_enabled' => ['nullable', 'boolean'],
         ];
     }
 
@@ -222,6 +231,15 @@ class StoreClientRequest extends FormRequest
             'practitioner_given_name' => 'nombres del doctor',
             'practitioner_family_name' => 'apellidos del doctor',
             'practitioner_gender' => 'género del doctor',
+
+            // Características Especiales attributes
+            'active' => 'cliente activo',
+            'diagnostic_ai_suggestions' => 'sugerencias de diagnóstico AI',
+            'show_consultation_timer' => 'mostrar temporizador de consulta',
+            'hemoscreen_only' => 'solo Hemoscreen',
+            'enable_virtual_appointments' => 'habilitar citas virtuales',
+            'zoom_enabled' => 'Zoom habilitado',
+            'voice_dictation_enabled' => 'dictado por voz habilitado',
         ];
     }
 }
