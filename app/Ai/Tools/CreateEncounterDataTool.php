@@ -129,13 +129,41 @@ class CreateEncounterDataTool implements Tool
                 try {
                     $description = $illness['description'] ?? $illness['chief_complaint'] ?? 'Reason for visit';
 
+                    // Normalize locations: ensure it's always an array
+                    $locations = $illness['locations'] ?? null;
+                    if (is_string($locations)) {
+                        // Convert comma-separated string to array
+                        $locations = array_filter(array_map('trim', explode(',', $locations)));
+                    } elseif (! is_array($locations)) {
+                        $locations = null;
+                    }
+
+                    // Normalize severity: ensure it's a valid enum value
+                    $severity = $illness['severity'] ?? null;
+                    if ($severity) {
+                        $severity = strtolower(trim($severity));
+                        // Validate against allowed enum values
+                        $validSeverities = ['mild', 'moderate', 'severe', 'disabling', 'unknown'];
+                        if (! in_array($severity, $validSeverities)) {
+                            // Try to map common variations to valid values
+                            $severityMap = [
+                                'leve' => 'mild',
+                                'moderada' => 'moderate',
+                                'severa' => 'severe',
+                                'grave' => 'disabling',
+                                'incapacitante' => 'disabling',
+                            ];
+                            $severity = $severityMap[$severity] ?? 'unknown';
+                        }
+                    }
+
                     PresentIllness::create([
                         'encounter_id' => $encounter->id,
                         'patient_id' => $encounter->patient_id,
                         'practitioner_id' => $encounter->practitioner_id,
                         'description' => $description,
-                        'locations' => $illness['locations'] ?? null,
-                        'severity' => $illness['severity'] ?? null,
+                        'locations' => $locations,
+                        'severity' => $severity,
                         'duration' => $illness['duration'] ?? null,
                         'onset_date' => $illness['onset_date'] ?? null,
                         'onset' => $illness['onset'] ?? 'gradual',
@@ -146,7 +174,11 @@ class CreateEncounterDataTool implements Tool
                     ]);
                     $created['present_illness']++;
                 } catch (\Exception $e) {
-                    Log::warning('Failed to create present illness', ['error' => $e->getMessage()]);
+                    Log::warning('Failed to create present illness', [
+                        'error' => $e->getMessage(),
+                        'illness_data' => $illness,
+                        'encounter_id' => $encounter->id,
+                    ]);
                 }
             }
         }
@@ -174,7 +206,13 @@ class CreateEncounterDataTool implements Tool
                 try {
                     $value = $vital['value'] ?? null;
                     $unit = $vital['unit'] ?? null;
-                    $code = $vital['code'] ?? $vital['loinc_code'] ?? 'VITAL-'.Str::random(6);
+                    $type = strtolower($vital['type'] ?? $vital['vital_sign_type'] ?? $vital['description'] ?? '');
+                    $code = $vital['code'] ?? $vital['loinc_code'] ?? null;
+
+                    // If no explicit code, map from type name to LOINC code
+                    if (! $code) {
+                        $code = $this->mapVitalSignTypeToLoinc($type);
+                    }
 
                     // Handle blood pressure format (e.g., "150/95" -> separate systolic/diastolic)
                     if (is_string($value) && strpos($value, '/') !== false) {
@@ -223,12 +261,18 @@ class CreateEncounterDataTool implements Tool
                         }
                     }
 
+                    if (! $value || ! $code) {
+                        Log::debug('Skipping vital sign with missing value or code', ['vital' => $vital]);
+
+                        continue;
+                    }
+
                     // Regular vital sign (not blood pressure)
                     VitalSign::create([
                         'encounter_id' => $encounter->id,
                         'patient_id' => $encounter->patient_id,
                         'practitioner_id' => $encounter->practitioner_id,
-                        'value' => $value,
+                        'value' => (float) $value,
                         'unit' => $unit,
                         'note' => $vital['notes'] ?? null,
                         'code' => $code,
@@ -241,7 +285,11 @@ class CreateEncounterDataTool implements Tool
                     ]);
                     $created['vital_signs']++;
                 } catch (\Exception $e) {
-                    Log::warning('Failed to create vital sign', ['error' => $e->getMessage(), 'vital' => $vital]);
+                    Log::warning('Failed to create vital sign', [
+                        'error' => $e->getMessage(),
+                        'vital' => $vital,
+                        'encounter_id' => $encounter->id,
+                    ]);
                 }
             }
         }
@@ -264,6 +312,81 @@ class CreateEncounterDataTool implements Tool
         }
 
         return $created;
+    }
+
+    /**
+     * Map vital sign type names to LOINC codes
+     */
+    private function mapVitalSignTypeToLoinc(string $type): ?string
+    {
+        $type = strtolower(trim($type));
+
+        $loincMap = [
+            // Heart rate / Pulse
+            'heart rate' => '8867-4',
+            'frecuencia cardíaca' => '8867-4',
+            'frecuencia cardiaca' => '8867-4',
+            'pulso' => '8867-4',
+            'taquicardia' => '8867-4',
+            'lpm' => '8867-4',
+            'bpm' => '8867-4',
+
+            // Blood pressure
+            'blood pressure' => '8480-6', // Will be split into systolic/diastolic
+            'presión arterial' => '8480-6',
+            'presion arterial' => '8480-6',
+            'pa' => '8480-6',
+            'tensión arterial' => '8480-6',
+            'sistólica' => '8480-6',
+            'sistolica' => '8480-6',
+
+            // Temperature
+            'temperature' => '8310-5',
+            'temperatura' => '8310-5',
+            'temperatura corporal' => '8310-5',
+            'fiebre' => '8310-5',
+
+            // Respiratory rate
+            'respiratory rate' => '9279-1',
+            'frecuencia respiratoria' => '9279-1',
+            'frecuencia respiratoria' => '9279-1',
+            'respiraciones' => '9279-1',
+            'rpm' => '9279-1',
+
+            // Oxygen saturation
+            'oxygen saturation' => '2708-6',
+            'saturación de oxígeno' => '2708-6',
+            'saturacion de oxigeno' => '2708-6',
+            'spo2' => '2708-6',
+            '%o2' => '2708-6',
+
+            // Weight
+            'weight' => '29463-7',
+            'peso' => '29463-7',
+            'peso corporal' => '29463-7',
+            'kg' => '29463-7',
+
+            // Height
+            'height' => '8302-2',
+            'talla' => '8302-2',
+            'estatura' => '8302-2',
+            'cm' => '8302-2',
+
+            // BMI
+            'bmi' => '39156-5',
+            'imc' => '39156-5',
+            'índice de masa corporal' => '39156-5',
+            'indice de masa corporal' => '39156-5',
+
+            // Blood glucose
+            'blood glucose' => '2345-7',
+            'glucosa' => '2345-7',
+            'glucemia' => '2345-7',
+            'glucemia capilar' => '2345-7',
+            'mg/dl' => '2345-7',
+        ];
+
+        return $loincMap[$type] ?? null;
     }
 
     private function processAssessment(Encounter $encounter, array $data): array
