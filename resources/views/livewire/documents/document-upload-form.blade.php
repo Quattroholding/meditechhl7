@@ -79,25 +79,18 @@
 
             <div class="mt-2">
                 <!-- Drag & Drop Zone -->
-                <div x-data="{ dragging: false }"
-                     @dragover.prevent="dragging = true"
-                     @dragleave.prevent="dragging = false"
-                     @drop.prevent="dragging = false; $refs.fileInput.files = $event.dataTransfer.files; Livewire.dispatch('file-selected', {files: $event.dataTransfer.files})"
-                     :class="{ 'ring-2 ring-blue-500 bg-blue-50': dragging }"
-                     class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors cursor-pointer hover:border-gray-400">
-
+                <label for="files" class="block border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors cursor-pointer hover:border-blue-400 hover:bg-blue-50">
                     <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                         <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-8l-3.172-3.172a4 4 0 00-5.656 0L28 28M9 20h.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
 
                     <p class="mt-2 text-sm text-gray-600">
-                        <span class="font-medium text-blue-600 hover:text-blue-500">Haz click para seleccionar</span>
+                        <span class="font-medium text-blue-600">Haz click para seleccionar</span>
                         o arrastra archivos aquí
                     </p>
                     <p class="text-xs text-gray-500 mt-1">PDF de hasta 10MB cada uno</p>
 
                     <input
-                        x-ref="fileInput"
                         type="file"
                         id="files"
                         wire:model.live="files"
@@ -105,15 +98,7 @@
                         multiple
                         class="hidden"
                     />
-                </div>
-
-                <!-- Click to select -->
-                <script>
-                    document.querySelector('[x-ref="fileInput"]')?.closest('[x-data]')?.addEventListener('click', (e) => {
-                        if (e.target.closest('[x-ref]')) return;
-                        document.querySelector('#files').click();
-                    });
-                </script>
+                </label>
 
                 @error('files')
                     <span class="text-red-600 text-sm block mt-2">{{ $message }}</span>
@@ -136,7 +121,7 @@
                                     </div>
                                     <button
                                         type="button"
-                                        @click="$wire.removeFile({{ $index }})"
+                                        wire:click="removeFile({{ $index }})"
                                         class="ml-2 text-red-600 hover:text-red-800 text-sm font-medium"
                                     >
                                         Eliminar
@@ -154,7 +139,7 @@
                 type="submit"
                 class="btn btn-primary me-2"
                 wire:loading.attr="disabled"
-                :disabled="!$files || $files.length === 0"
+                @disabled(empty($files))
             >
                 <span wire:loading.remove>
                     @if(count($files ?? []) > 0)

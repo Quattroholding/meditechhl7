@@ -26,7 +26,6 @@ class DocumentUploadForm extends Component
     public ?string $document_type = null;
 
     #[Validate('required|array|min:1|max:10')]
-    #[Validate('*.file|*.mimes:pdf|*.max:10240')]
     public array $files = [];
 
     public ?string $successMessage = null;
