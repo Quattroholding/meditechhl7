@@ -231,7 +231,7 @@ Rules for parsing:
 4. If description has "CAJA X 30", set internal_units_per_presentation=30, unit_type="internal" (INTERNAL when factor > 1)
 5. If no factor in description, set internal_units_per_presentation=1, unit_type="presentation" (PRESENTATION when factor = 1)
 6. unit_cost: Cost per unit (what was paid). base_price: Selling price per unit. If base_price not in document, calculate as: base_price = unit_cost * 1.10
-7. discount_amount: DISCOUNT PER UNIT (not total). Look for "Descuento Unitario" column. Extract the per-unit discount amount.
+7. discount_amount: Total discount for this line item. Extract from "Descuento Unitario" multiplied by quantity, or from "Monto" column if shown.
 8. If quantity > 0 but unit_cost = 0, it's a gift: is_gift=true
 9. include_gift_items: TRUE - if cost=0, include the item anyway
 
@@ -288,29 +288,13 @@ PROMPT;
                 continue;
             }
 
-            // Normalize discount to per-unit amount
-            // If Claude returned total line discount, divide by quantity to get per-unit
-            $discountPerUnit = 0;
-            if ($discount && $discount > 0 && $quantity > 0) {
-                // If discount is suspiciously large relative to unit_cost, it's likely line total
-                // e.g., discount=5.10, quantity=2, unit_cost=8.50 → discount_per_unit = 5.10/2 = 2.55
-                $potentialUnitDiscount = $discount / $quantity;
-                if ($potentialUnitDiscount <= $unitCost) {
-                    // Likely the per-unit discount
-                    $discountPerUnit = round($potentialUnitDiscount, 2);
-                } else {
-                    // Likely the total line discount, convert to per-unit
-                    $discountPerUnit = round($discount / $quantity, 2);
-                }
-            }
-
             $validatedItem = [
                 'sku' => trim((string) $item['sku']),
                 'name' => trim((string) $item['name']),
                 'quantity' => $quantity,
                 'unit_cost' => $unitCost ?? 0,
                 'base_price' => $basePrce ?? $unitCost ?? 0,
-                'discount_amount' => $discountPerUnit,
+                'discount_amount' => $discount ?? 0,
                 'tax_amount' => $tax ?? 0,
                 'unit_type' => $item['unit_type'] ?? 'internal',
                 'internal_units_per_presentation' => (int) ($item['internal_units_per_presentation'] ?? 1),
