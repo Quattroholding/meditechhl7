@@ -138,6 +138,17 @@ class CreateEncounterDataTool implements Tool
                         $locations = null;
                     }
 
+                    // Normalize associated_symptoms: ensure it's an array
+                    $associatedSymptoms = $illness['associated_symptoms'] ?? null;
+                    if (is_string($associatedSymptoms)) {
+                        // If it's a string, leave it as is (model will handle conversion)
+                        $associatedSymptoms = trim($associatedSymptoms);
+                    } elseif (is_array($associatedSymptoms)) {
+                        // If it's already an array, keep it (model will serialize to JSON)
+                        // But we'll convert to string for the text field instead
+                        $associatedSymptoms = implode(', ', array_filter($associatedSymptoms));
+                    }
+
                     // Normalize severity: ensure it's a valid enum value
                     $severity = $illness['severity'] ?? null;
                     if ($severity) {
@@ -168,7 +179,7 @@ class CreateEncounterDataTool implements Tool
                         'onset_date' => $illness['onset_date'] ?? null,
                         'onset' => $illness['onset'] ?? 'gradual',
                         'progression' => $illness['progression'] ?? null,
-                        'associated_symptoms' => $illness['associated_symptoms'] ?? null,
+                        'associated_symptoms' => $associatedSymptoms,
                         'fhir_id' => 'Observation/'.Str::uuid(),
                         'source_system' => 'AI',
                     ]);

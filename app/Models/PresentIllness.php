@@ -16,9 +16,9 @@ class PresentIllness extends BaseModel
         'onset_date' => 'datetime',
         'aggravating_factors' => 'string',
         'alleviating_factors' => 'string',
-        'associated_symptoms' => 'string',
+        'associated_symptoms' => 'array', // Changed from 'string' to 'array' to properly handle JSON data
         'timeline' => 'array',
-        'locations' => 'array',
+        'locations' => 'json', // Use json cast to ensure proper serialization
     ];
 
     // Relaciones
