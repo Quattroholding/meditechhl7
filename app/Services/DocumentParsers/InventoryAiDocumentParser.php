@@ -43,7 +43,14 @@ class InventoryAiDocumentParser extends BaseDocumentParser
             $extractedData = $this->analyzeWithClaude($text);
 
             if (empty($extractedData) || empty($extractedData['items'])) {
-                $this->addError('No se pudieron extraer items del documento');
+                $itemsCount = count($extractedData['items'] ?? []);
+                $this->addError("No se pudieron extraer items del documento (items encontrados: {$itemsCount})");
+
+                Log::warning('InventoryAiDocumentParser: No items extracted', [
+                    'extracted_data_keys' => array_keys($extractedData ?? []),
+                    'items_count' => $itemsCount,
+                    'text_length' => strlen($text),
+                ]);
 
                 return $this->getResultWithMetadata($googleAIResponse, [
                     'items' => [],
@@ -154,12 +161,18 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 throw new \RuntimeException('Claude response is not valid JSON');
             }
 
+            Log::info('Claude API call successful', [
+                'items_count' => count($parsed['items'] ?? []),
+                'has_metadata' => isset($parsed['supplier_name']),
+            ]);
+
             return $parsed;
 
         } catch (\Exception $e) {
             Log::error('Claude API call failed', [
                 'error' => $e->getMessage(),
                 'code' => $e->getCode(),
+                'content_preview' => substr($content ?? '', 0, 200),
             ]);
             throw $e;
         }
