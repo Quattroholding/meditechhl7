@@ -7,12 +7,6 @@ use Illuminate\Support\Facades\Log;
 
 class InventoryAiDocumentParser extends BaseDocumentParser
 {
-    private const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
-
-    private const CLAUDE_MODEL = 'claude-opus-4-5-20251101';
-
-    private const CLAUDE_TIMEOUT = 120; // seconds
-
     private const MAX_TEXT_LENGTH = 50000; // Claude's practical limit
 
     public function parse(array $googleAIResponse): array
@@ -113,102 +107,73 @@ class InventoryAiDocumentParser extends BaseDocumentParser
     private function analyzeWithClaude(string $text): array
     {
         try {
-            $apiKey = config('services.claude.api_key');
-
-            if (! $apiKey) {
-                throw new \RuntimeException('Claude API key not configured');
+            // Truncate text if too large (keep first 10000 chars + last 2000 chars to preserve important info)
+            if (strlen($text) > 12000) {
+                $firstPart = substr($text, 0, 10000);
+                $lastPart = substr($text, -2000);
+                $text = $firstPart."\n\n[... documento truncado ...]\n\n".$lastPart;
+                Log::info('InventoryAiDocumentParser: Text truncated for Claude API', ['original_length' => strlen($text)]);
             }
-
-            Log::info('InventoryAiDocumentParser: Preparing to call Claude', [
-                'text_length' => strlen($text),
-                'text_preview' => substr($text, 0, 300),
-            ]);
 
             $prompt = $this->buildPrompt($text);
 
-            $response = Http::timeout(self::CLAUDE_TIMEOUT)
-                ->withHeaders([
-                    'x-api-key' => $apiKey,
-                    'anthropic-version' => '2023-06-01',
-                ])
-                ->post(self::CLAUDE_API_URL, [
-                    'model' => self::CLAUDE_MODEL,
-                    'max_tokens' => 2048,
-                    'messages' => [
-                        [
-                            'role' => 'user',
-                            'content' => $prompt,
-                        ],
+            $response = Http::withHeaders([
+                'x-api-key' => config('services.claude.api_key'),
+                'anthropic-version' => '2023-06-01',
+            ])->post('https://api.anthropic.com/v1/messages', [
+                'model' => 'claude-opus-4-5-20251101',
+                'max_tokens' => 1024,
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => $prompt,
                     ],
+                ],
+            ]);
+
+            if ($response->failed()) {
+                Log::error('Claude API error', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
                 ]);
 
-            if (! $response->successful()) {
-                throw new \RuntimeException('Claude API error: '.$response->status().' - '.$response->body());
+                return [];
             }
 
-            $data = $response->json();
-            $content = $data['content'][0]['text'] ?? '';
+            $responseData = $response->json();
+            $responseText = $responseData['content'][0]['text'] ?? '';
 
-            if (empty($content)) {
-                throw new \RuntimeException('Empty response from Claude API');
+            if (empty($responseText)) {
+                Log::error('Claude API: Empty response', ['response' => $responseData]);
+
+                return [];
             }
 
-            Log::info('InventoryAiDocumentParser: Claude response received', [
-                'response_length' => strlen($content),
-                'response_preview' => substr($content, 0, 500),
-            ]);
+            // Extract JSON from response
+            if (preg_match('/\{[\s\S]*}/', $responseText, $matches)) {
+                $jsonStr = $matches[0];
+                $data = json_decode($jsonStr, true);
 
-            // Extract JSON from response (Claude might include markdown code blocks)
-            $json = $this->extractJsonFromContent($content);
+                if (is_array($data)) {
+                    Log::info('InventoryAiDocumentParser: Successfully extracted data', ['items_count' => count($data['items'] ?? [])]);
 
-            if (! $json) {
-                throw new \RuntimeException('Could not parse JSON from Claude response');
+                    return $data;
+                } else {
+                    Log::error('InventoryAiDocumentParser: Invalid JSON', ['json' => $jsonStr]);
+                }
+            } else {
+                Log::error('InventoryAiDocumentParser: No JSON found in response', ['response' => $responseText]);
             }
 
-            $parsed = json_decode($json, true);
-
-            if (! is_array($parsed)) {
-                throw new \RuntimeException('Claude response is not valid JSON');
-            }
-
-            Log::info('Claude API call successful', [
-                'items_count' => count($parsed['items'] ?? []),
-                'has_metadata' => isset($parsed['supplier_name']),
-            ]);
-
-            return $parsed;
-
+            return [];
         } catch (\Exception $e) {
-            Log::error('Claude API call failed', [
-                'error' => $e->getMessage(),
-                'code' => $e->getCode(),
-                'content_preview' => substr($content ?? '', 0, 200),
+            Log::error('InventoryAiDocumentParser error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
-            throw $e;
-        }
-    }
 
-    /**
-     * Extract JSON from Claude response (handles markdown code blocks)
-     */
-    private function extractJsonFromContent(string $content): ?string
-    {
-        // Try to find JSON wrapped in markdown code blocks
-        if (preg_match('/```(?:json)?\s*(\{.*?\})\s*```/s', $content, $matches)) {
-            return $matches[1];
+            return [];
         }
-
-        // Try to find JSON starting with { and ending with }
-        if (preg_match('/(\{.*\})/s', $content, $matches)) {
-            return $matches[1];
-        }
-
-        // Return as-is if it looks like JSON
-        if (trim($content)[0] === '{') {
-            return trim($content);
-        }
-
-        return null;
     }
 
     /**
