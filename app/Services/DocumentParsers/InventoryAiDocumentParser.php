@@ -209,7 +209,7 @@ class InventoryAiDocumentParser extends BaseDocumentParser
      */
     private function buildPrompt(string $text): string
     {
-        return <<<'PROMPT'
+        $prompt = <<<'PROMPT'
 Extract pharmacy invoice data. Return ONLY valid JSON object, nothing else.
 
 The text is from a scanned invoice document. Some information may be fragmented across lines.
