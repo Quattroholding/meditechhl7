@@ -117,6 +117,11 @@ class InventoryAiDocumentParser extends BaseDocumentParser
 
             $prompt = $this->buildPrompt($text);
 
+            Log::info('InventoryAiDocumentParser: Sending to Claude', [
+                'text_length' => strlen($text),
+                'prompt_length' => strlen($prompt),
+            ]);
+
             $response = Http::withHeaders([
                 'x-api-key' => config('services.claude.api_key'),
                 'anthropic-version' => '2023-06-01',
@@ -143,6 +148,10 @@ class InventoryAiDocumentParser extends BaseDocumentParser
             $responseData = $response->json();
             $responseText = $responseData['content'][0]['text'] ?? '';
 
+            Log::info('InventoryAiDocumentParser: Claude raw response', [
+                'response' => substr($responseText, 0, 500),
+            ]);
+
             if (empty($responseText)) {
                 Log::error('Claude API: Empty response', ['response' => $responseData]);
 
@@ -155,7 +164,10 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 $data = json_decode($jsonStr, true);
 
                 if (is_array($data)) {
-                    Log::info('InventoryAiDocumentParser: Successfully extracted data', ['items_count' => count($data['items'] ?? [])]);
+                    Log::info('InventoryAiDocumentParser: Successfully extracted data', [
+                        'items_count' => count($data['items'] ?? []),
+                        'extracted_json' => substr(json_encode($data), 0, 500),
+                    ]);
 
                     return $data;
                 } else {
