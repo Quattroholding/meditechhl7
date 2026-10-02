@@ -69,11 +69,65 @@ Before processing, apply these common corrections to handle Whisper transcriptio
    - If "1000mg 2 veces al día" is mentioned with diabetes → likely Metformina 1000mg
    - Search for medications using the corrected names
 
+## IMPORTANT: Present Illness Extraction Rules
+
+When extracting present_illness, you MUST populate ALL of these fields if information is present:
+
+1. **description** (ALWAYS required): Full text description of the illness
+2. **locations** (CRITICAL - Extract if any body parts mentioned):
+   - Search for explicit body part mentions: "Ojos", "pecho", "brazo", "cabeza", etc.
+   - Search for system mentions: "respiratorio", "cardiovascular", "digestivo"
+   - If no specific location but systemic symptoms: include "sistémico"
+   - Format as array: ["location1", "location2"]
+
+3. **severity** (CRITICAL - Extract if intensity described):
+   - Look for words: severa, leve, moderada, grave, incapacitante
+   - Map to: severe, mild, moderate, severe, disabling
+   - Map Spanish to English: leve→mild, moderada→moderate, severa→severe, incapacitante→disabling
+
+4. **duration** (CRITICAL - Extract if time period mentioned):
+   - Look for temporal phrases: "hace X", "por X tiempo", "durante X", "el último X"
+   - Normalize: "hace 2 años" → "2 años", "por un mes" → "1 mes"
+   - Keep time units: años, meses, semanas, días, horas
+
+5. **onset**: sudden or gradual - only if mentioned
+6. **progression**: improving, stable, or worsening - only if mentioned
+7. **associated_symptoms**: list of related symptoms found in description
+
+RULE: DO NOT omit fields - if information is present in transcription, extract it. If not present, omit the field.
+
 ## Processing Guidelines
 
 ### SUBJECTIVE (S)
 - Extract the chief complaint/reason for visit
-- Identify present illness details (description, location, severity, duration, onset, progression, associated symptoms)
+- Identify present illness details with EXPLICIT extraction of:
+
+  **LOCATIONS**: Anatomical body regions mentioned. Examples:
+    - "Ojos: exoftalmos" → locations: ["ojos"]
+    - "Dolor en pecho y brazo izquierdo" → locations: ["pecho", "brazo izquierdo"]
+    - "Systemic symptoms" or affects whole body → locations: ["sistémico"]
+    - If multiple body regions mentioned in a symptom, list ALL of them
+
+  **DURATION**: Time period mentions. Examples:
+    - "diagnosed with Graves hace 2 años" → duration: "2 años"
+    - "symptoms for the last month" → duration: "1 mes"
+    - "started 3 days ago" → duration: "3 días"
+    - Look for temporal markers: "hace", "during", "for", "since", "el último mes"
+
+  **SEVERITY**: Clinical intensity indicators:
+    - "severa" / "severe" / "serious" → severity: "severe"
+    - "leve" / "mild" / "ligero" → severity: "mild"
+    - "moderada" / "moderate" → severity: "moderate"
+
+  **ONSET**: How symptoms started:
+    - "suddenly" / "de repente" → onset: "sudden"
+    - "gradually" / "poco a poco" / "progresivamente" → onset: "gradual"
+
+  **PROGRESSION**: How symptoms are evolving:
+    - "mejorando" / "improving" → progression: "improving"
+    - "estable" / "stable" / "sin cambios" → progression: "stable"
+    - "empeorando" / "worsening" → progression: "worsening"
+
 - Note any general observations about the patient's presentation
 
 ### OBJECTIVE (O)
