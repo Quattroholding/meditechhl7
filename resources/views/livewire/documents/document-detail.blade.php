@@ -37,7 +37,7 @@
                     <div class="mb-3">
                         <label class="text-sm text-gray-600">Tipo</label>
                         <p class="font-semibold">
-                            <span class="badge bg-{{ $document->document_type->value === 'inventory' ? 'primary' : 'secondary' }}">
+                            <span class="badge bg-{{ in_array($document->document_type->value, ['inventory', 'inventory_ai']) ? 'primary' : 'secondary' }}">
                                 {{ $document->document_type->label() }}
                             </span>
                         </p>
@@ -94,7 +94,7 @@
     </div>
 
     <!-- Document Detail - Include based on Type -->
-    @if ($document->document_type->value === 'inventory')
+    @if (in_array($document->document_type->value, ['inventory', 'inventory_ai']))
         @include('livewire.documents.document-detail-inventory')
     @else
         <!-- IA-Processed Document -->
@@ -102,7 +102,7 @@
     @endif
 
     <!-- Totals (Inventory Documents) -->
-    @if (!$document->document_type->value === 'inventory')
+    @if (!in_array($document->document_type->value, ['inventory', 'inventory_ai']))
     <!-- Notes Section (Utility Bills) -->
     <div class="card mb-6">
         <div class="card-header">
