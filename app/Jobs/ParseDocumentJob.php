@@ -184,6 +184,7 @@ class ParseDocumentJob implements ShouldQueue
             DocumentType::NATURGY => new AnthropicDocumentParser,
             default => new AnthropicDocumentParser,
         };
+
     }
 
     /**
