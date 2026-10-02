@@ -230,9 +230,10 @@ Rules for parsing:
 3. Quantities are decimal numbers: "6.000000" → 6
 4. If description has "CAJA X 30", set internal_units_per_presentation=30, unit_type="internal" (INTERNAL when factor > 1)
 5. If no factor in description, set internal_units_per_presentation=1, unit_type="presentation" (PRESENTATION when factor = 1)
-6. If quantity > 0 but unit_cost = 0, it's a gift: is_gift=true
-7. discount_amount: Extract from table or calculate. May show as "Descuento Unitario"
-8. include_gift_items: TRUE - if cost=0, include the item anyway
+6. unit_cost: Cost per unit (what was paid). base_price: Selling price per unit. If base_price not in document, calculate as: base_price = unit_cost * 1.10
+7. discount_amount: TOTAL DISCOUNT FOR THE LINE (quantity * discount_per_unit). Extract from "Descuento Unitario" and multiply by quantity.
+8. If quantity > 0 but unit_cost = 0, it's a gift: is_gift=true
+9. include_gift_items: TRUE - if cost=0, include the item anyway
 
 Output format:
 {
@@ -317,6 +318,14 @@ PROMPT;
                 $validatedItem['unit_type'] = 'internal';
             } else {
                 $validatedItem['unit_type'] = 'presentation';
+            }
+
+            // Auto-correct base_price if invalid
+            // base_price should be >= unit_cost and make sense relative to unit_cost
+            // If missing or illogical, calculate as unit_cost * 1.10 (10% markup)
+            if ($validatedItem['base_price'] <= $validatedItem['unit_cost'] ||
+                $validatedItem['base_price'] > $validatedItem['unit_cost'] * 2) {
+                $validatedItem['base_price'] = round($validatedItem['unit_cost'] * 1.10, 2);
             }
 
             // Validate that gifts (cost=0) are marked as is_gift=true
