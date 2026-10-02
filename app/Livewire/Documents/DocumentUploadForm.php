@@ -25,8 +25,9 @@ class DocumentUploadForm extends Component
     #[Validate('required|string|in:inventory,ensa,naturgy,idaan,otro')]
     public ?string $document_type = null;
 
-    #[Validate('required|file|mimes:pdf|max:10240')]
-    public $file = null;
+    #[Validate('required|array|min:1|max:10')]
+    #[Validate('*.file|*.mimes:pdf|*.max:10240')]
+    public array $files = [];
 
     public ?string $successMessage = null;
 
@@ -64,6 +65,13 @@ class DocumentUploadForm extends Component
         }
     }
 
+    public function removeFile(int $index): void
+    {
+        unset($this->files[$index]);
+        // Reindex array
+        $this->files = array_values($this->files);
+    }
+
     public function uploadDocument(): void
     {
         $this->errorMessage = null;
@@ -78,38 +86,65 @@ class DocumentUploadForm extends Component
                 throw new \Exception('Cliente no válido');
             }
 
-            // Store the file and get the path
+            // Process each file
             $diskName = config('filesystems.default', 'local');
-            $filePath = $this->file->store("documents/{$this->client_id}", $diskName);
+            $uploadedCount = 0;
 
-            if (! $filePath) {
-                throw new \Exception('No se pudo guardar el archivo. Verifica los permisos de almacenamiento.');
+            foreach ($this->files as $file) {
+                try {
+                    // Store the file and get the path
+                    $filePath = $file->store("documents/{$this->client_id}", $diskName);
+
+                    if (! $filePath) {
+                        throw new \Exception('No se pudo guardar el archivo. Verifica los permisos de almacenamiento.');
+                    }
+
+                    Log::info('Document file stored', [
+                        'path' => $filePath,
+                        'disk' => $diskName,
+                        'size' => $file->getSize(),
+                        'name' => $file->getClientOriginalName(),
+                    ]);
+
+                    $documentUpload = DocumentUpload::create([
+                        'client_id' => $this->client_id,
+                        'branch_id' => $this->branch_id,
+                        'document_type' => DocumentType::tryFrom($this->document_type),
+                        'status' => 'pending',
+                        'file_path' => $filePath,
+                        'original_filename' => $file->getClientOriginalName(),
+                        'file_size' => $file->getSize(),
+                        'mime_type' => $file->getMimeType(),
+                        'uploaded_by_user_id' => auth()->id(),
+                    ]);
+
+                    // Dispatch parse job for this document
+                    ParseDocumentJob::dispatch($documentUpload->id);
+                    $uploadedCount++;
+
+                } catch (\Throwable $fileError) {
+                    Log::error('Error processing single document', [
+                        'filename' => $file->getClientOriginalName(),
+                        'error' => $fileError->getMessage(),
+                    ]);
+
+                    // Continue with next file
+                    continue;
+                }
             }
 
-            Log::info('Document file stored', [
-                'path' => $filePath,
-                'disk' => $diskName,
-                'size' => $this->file->getSize(),
-                'name' => $this->file->getClientOriginalName(),
-            ]);
-
-            $documentUpload = DocumentUpload::create([
-                'client_id' => $this->client_id,
-                'branch_id' => $this->branch_id,
-                'document_type' => DocumentType::tryFrom($this->document_type),
-                'status' => 'pending',
-                'file_path' => $filePath,
-                'original_filename' => $this->file->getClientOriginalName(),
-                'file_size' => $this->file->getSize(),
-                'mime_type' => $this->file->getMimeType(),
-                'uploaded_by_user_id' => auth()->id(),
-            ]);
-
-            ParseDocumentJob::dispatch($documentUpload->id);
-
+            // Reset form
             $this->reset();
-            $this->successMessage = 'Documento subido correctamente. El procesamiento ha comenzado.';
-            $this->dispatch('documentUploaded');
+
+            // Show success message with count
+            if ($uploadedCount > 0) {
+                $this->successMessage = $uploadedCount === 1
+                    ? 'Documento subido correctamente. El procesamiento ha comenzado.'
+                    : "{$uploadedCount} documentos subidos correctamente. El procesamiento ha comenzado.";
+                $this->dispatch('documentUploaded');
+            } else {
+                throw new \Exception('No se pudieron procesar los archivos.');
+            }
 
         } catch (\Throwable $e) {
             Log::error('Document upload error', [

@@ -73,42 +73,105 @@
             @enderror
         </div>
 
-        <!-- File Upload -->
+        <!-- File Upload (Multiple) -->
         <div>
-            <label for="file" class="block text-sm font-medium text-gray-700 mb-2">Archivo PDF</label>
-            <input
-                type="file"
-                id="file"
-                wire:model.defer="file"
-                accept=".pdf"
-                class="w-full block text-sm text-gray-500
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-md file:border-0
-                  file:text-sm file:font-semibold
-                  file:bg-blue-50 file:text-blue-700
-                  hover:file:bg-blue-100"
-            />
-            @error('file')
-                <span class="text-red-600 text-sm block mt-1">{{ $message }}</span>
-            @enderror
+            <label for="files" class="block text-sm font-medium text-gray-700 mb-2">Archivos PDF (máximo 10)</label>
+
+            <div class="mt-2">
+                <!-- Drag & Drop Zone -->
+                <div x-data="{ dragging: false }"
+                     @dragover.prevent="dragging = true"
+                     @dragleave.prevent="dragging = false"
+                     @drop.prevent="dragging = false; $refs.fileInput.files = $event.dataTransfer.files; Livewire.dispatch('file-selected', {files: $event.dataTransfer.files})"
+                     :class="{ 'ring-2 ring-blue-500 bg-blue-50': dragging }"
+                     class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors cursor-pointer hover:border-gray-400">
+
+                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-8l-3.172-3.172a4 4 0 00-5.656 0L28 28M9 20h.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+
+                    <p class="mt-2 text-sm text-gray-600">
+                        <span class="font-medium text-blue-600 hover:text-blue-500">Haz click para seleccionar</span>
+                        o arrastra archivos aquí
+                    </p>
+                    <p class="text-xs text-gray-500 mt-1">PDF de hasta 10MB cada uno</p>
+
+                    <input
+                        x-ref="fileInput"
+                        type="file"
+                        id="files"
+                        wire:model.live="files"
+                        accept=".pdf"
+                        multiple
+                        class="hidden"
+                    />
+                </div>
+
+                <!-- Click to select -->
+                <script>
+                    document.querySelector('[x-ref="fileInput"]')?.closest('[x-data]')?.addEventListener('click', (e) => {
+                        if (e.target.closest('[x-ref]')) return;
+                        document.querySelector('#files').click();
+                    });
+                </script>
+
+                @error('files')
+                    <span class="text-red-600 text-sm block mt-2">{{ $message }}</span>
+                @enderror
+
+                @if($files && count($files) > 0)
+                    <div class="mt-4">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos seleccionados ({{ count($files) }}/10)</h3>
+                        <ul class="space-y-2">
+                            @foreach($files as $index => $file)
+                                <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center gap-2 flex-1">
+                                        <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm0 2h12v10H4V5z" />
+                                        </svg>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-gray-900 truncate">{{ $file->getClientOriginalName() }}</p>
+                                            <p class="text-xs text-gray-500">{{ round($file->getSize() / 1024 / 1024, 2) }} MB</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        @click="$wire.removeFile({{ $index }})"
+                                        class="ml-2 text-red-600 hover:text-red-800 text-sm font-medium"
+                                    >
+                                        Eliminar
+                                    </button>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            </div>
         </div>
-        <div class="flex items-center justify-end mt-4">
-        <!-- Submit Button -->
-        <button
-            type="submit"
-            class="btn btn-primary me-2"
-            wire:loading.attr="disabled"
-        >
-            <span wire:loading.remove>Subir Documento</span>
-            <span wire:loading class="flex items-center justify-center gap-2">
-                <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Subiendo...
-            </span>
-        </button>
-        <a class="btn btn-secondary me-2" href="{{ route('patient.index') }}">  {{ __('button.cancel') }}</a>
+        <div class="flex items-center justify-end mt-6">
+            <!-- Submit Button -->
+            <button
+                type="submit"
+                class="btn btn-primary me-2"
+                wire:loading.attr="disabled"
+                :disabled="!$files || $files.length === 0"
+            >
+                <span wire:loading.remove>
+                    @if(count($files ?? []) > 0)
+                        Subir {{ count($files) }} {{ count($files) === 1 ? 'documento' : 'documentos' }}
+                    @else
+                        Selecciona archivos para subir
+                    @endif
+                </span>
+                <span wire:loading class="flex items-center justify-center gap-2">
+                    <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Procesando...
+                </span>
+            </button>
+            <a class="btn btn-secondary me-2" href="{{ route('patient.index') }}">{{ __('button.cancel') }}</a>
         </div>
     </form>
 </div>
