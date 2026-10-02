@@ -106,10 +106,10 @@ class InventoryAiDocumentParser extends BaseDocumentParser
     private function analyzeWithClaude(string $text): array
     {
         try {
-            $apiKey = config('services.anthropic.api_key');
+            $apiKey = config('services.claude.api_key');
 
             if (! $apiKey) {
-                throw new \RuntimeException('Anthropic API key not configured');
+                throw new \RuntimeException('Claude API key not configured');
             }
 
             $prompt = $this->buildPrompt($text);
