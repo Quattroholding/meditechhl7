@@ -210,39 +210,42 @@ class InventoryAiDocumentParser extends BaseDocumentParser
     private function buildPrompt(string $text): string
     {
         return <<<'PROMPT'
-Analiza el siguiente documento de factura de inventario farmacéutico de Panamá y extrae la información en formato JSON válido.
+Extract pharmacy invoice data. Return ONLY valid JSON object, nothing else.
 
-El documento es una factura electrónica DGI de proveedores como Reprico, Impaduel, Haseth, etc.
+The text is from a scanned invoice document. Some information may be fragmented across lines.
 
-Extrae estos campos si están disponibles:
-- supplier_name: Nombre de la empresa que emite la factura (Emisor)
-- invoice_number: Número de factura
-- invoice_date: Fecha de emisión (formato YYYY-MM-DD)
-- items: Array de productos con estructura: {sku, name, quantity, unit_cost, base_price, discount_amount, tax_amount, unit_type, internal_units_per_presentation, is_gift}
-  - sku: Código del producto
-  - name: Nombre del producto (incluir concentración si existe)
-  - quantity: Cantidad (número)
-  - unit_cost: Costo por unidad (número decimal)
-  - base_price: Precio de venta por unidad (número decimal)
-  - discount_amount: Descuento (número decimal, 0 si no hay)
-  - tax_amount: Impuesto/ITBMS (número decimal, 0 si no hay)
-  - unit_type: "internal" o "presentation"
-  - internal_units_per_presentation: Si es "CAJA X 30", poner 30; si es "FRASCO X 120", poner 120; default 1
-  - is_gift: true si unit_cost=0 (regalos/bonificaciones), false en otro caso
-- subtotal: Suma de (quantity × unit_cost - discount_amount) para todos los items
-- total_tax: Suma de todos los impuestos
-- total_invoice: subtotal + total_tax
-- batch_info: Array vacío (no extraer ahora)
+Extract:
+- supplier_name: Company name (look for "Emisor:")
+- invoice_number: Invoice number (look for "Número:" or "No. Factura")
+- invoice_date: Date in YYYY-MM-DD (look for "Fecha" or date like "28/8/2024")
+- items: Array of products. For each item find: sku, name, quantity, unit_cost, base_price, discount_amount, tax_amount, unit_type, internal_units_per_presentation, is_gift
+- subtotal: Total before tax (look for "Subtotal" or "Monto Base")
+- total_tax: Tax amount (look for "ITBMS" or "Impuesto")
+- total_invoice: Final total (look for "Total" or "Total Neto")
+- batch_info: Empty array
 
-IMPORTANTE:
-1. Retorna SOLO un objeto JSON válido, sin explicaciones adicionales
-2. Usa null para campos que no encuentres
-3. Convierte números: "1,562" → 1562, "B/. 253.49" → 253.49
-4. Convierte fechas al formato YYYY-MM-DD
-5. INCLUIR TODOS LOS ITEMS, incluso los que tengan cost=0 (son regalos)
-6. Extrae ITBMS/impuestos bajo cualquier nombre
+Rules for parsing:
+1. Product code + description might be on separate lines, concatenate them
+2. Numbers use $ or B/. prefix: "$44.27" → 44.27
+3. Quantities are decimal numbers: "6.000000" → 6
+4. If description has "CAJA X 30", set internal_units_per_presentation=30, unit_type="presentation"
+5. If quantity > 0 but unit_cost = 0, it's a gift: is_gift=true
+6. discount_amount: Extract from table or calculate. May show as "Descuento Unitario"
+7. include_gift_items: TRUE - if cost=0, include the item anyway
 
-DOCUMENTO A ANALIZAR:
+Output format:
+{
+  "supplier_name": null,
+  "invoice_number": null,
+  "invoice_date": null,
+  "items": [],
+  "subtotal": 0,
+  "total_tax": 0,
+  "total_invoice": 0,
+  "batch_info": []
+}
+
+INVOICE TEXT:
 
 PROMPT;
 
