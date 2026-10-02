@@ -115,6 +115,14 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 Log::info('InventoryAiDocumentParser: Text truncated for Claude API', ['original_length' => strlen($text)]);
             }
 
+            // Debug: log the actual text being sent
+            Log::info('InventoryAiDocumentParser: Extracted text from Google Document AI', [
+                'text_length' => strlen($text),
+                'first_200_chars' => substr($text, 0, 200),
+                'has_content' => strlen($text) > 0 && strlen(trim($text)) > 0,
+                'is_empty_or_whitespace' => strlen(trim($text)) === 0,
+            ]);
+
             $prompt = $this->buildPrompt($text);
 
             Log::info('InventoryAiDocumentParser: Sending to Claude', [
