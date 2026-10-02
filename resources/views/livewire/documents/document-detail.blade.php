@@ -96,12 +96,6 @@
     <!-- Document Detail - Include based on Type -->
     @if ($document->document_type->value === 'inventory')
         @include('livewire.documents.document-detail-inventory')
-    @elseif ($document->document_type->value === 'ensa')
-        @include('livewire.documents.document-detail-ensa')
-    @elseif ($document->document_type->value === 'idaan')
-        @include('livewire.documents.document-detail-idaan')
-    @elseif ($document->document_type->value === 'naturgy')
-        @include('livewire.documents.document-detail-naturgy')
     @else
         <!-- IA-Processed Document -->
         @include('livewire.documents.document-detail-ia')
