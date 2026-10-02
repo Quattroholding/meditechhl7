@@ -14,6 +14,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Smalot\PdfParser\Parser as PdfParser;
 
 class ParseDocumentJob implements ShouldQueue
 {
@@ -61,35 +63,20 @@ class ParseDocumentJob implements ShouldQueue
                 error_log('ParseDocumentJob logging warning: '.$logError->getMessage());
             }
 
-            // Initialize Google Document AI service
-            if (! GoogleDocumentAIService::isConfigured()) {
-                throw new \RuntimeException('Google Document AI is not configured');
-            }
-
-            try {
-                $service = new GoogleDocumentAIService;
-                $diskName = config('filesystems.default', 'local');
-                $googleAIResponse = $service->parseDocument($document->file_path, $diskName);
-            } catch (\Exception $e) {
-                $errorMsg = $e->getMessage();
-
-                // Check if it's an entity_types configuration error
-                if (strpos($errorMsg, 'entity_types') !== false || strpos($errorMsg, 'INVALID_ARGUMENT') !== false) {
-                    Log::error('GoogleDocumentAI Configuration Error', [
-                        'error' => $errorMsg,
-                        'file' => $document->file_path,
-                        'hint' => 'Processor may be "Custom Extractor" instead of "Form Parser". Create a Form Parser processor in Google Cloud Console.',
+            // For inventory_ai documents, try pdfparser first (better table extraction)
+            // For other types, use Google OCR
+            if ($document->document_type === DocumentType::INVENTORY_AI) {
+                $googleAIResponse = $this->extractWithPdfParser($document);
+                if (empty($googleAIResponse['document']['text'])) {
+                    // If pdfparser fails, fallback to Google OCR
+                    Log::info('ParseDocumentJob: pdfparser extraction empty, falling back to Google OCR', [
+                        'document_id' => $document->id,
                     ]);
-                } else {
-                    Log::error('GoogleDocumentAI Error', [
-                        'error' => $errorMsg,
-                        'file' => $document->file_path,
-                    ]);
+                    $googleAIResponse = $this->extractWithGoogleDocumentAI($document);
                 }
-
-                // Use mock response for testing if Google AI fails
-                // This allows development/testing without a properly configured processor
-                $googleAIResponse = $this->createMockResponse($document);
+            } else {
+                // Use Google Document AI for other types
+                $googleAIResponse = $this->extractWithGoogleDocumentAI($document);
             }
 
             // Get parser for document type
@@ -171,6 +158,77 @@ class ParseDocumentJob implements ShouldQueue
     }
 
     /**
+     * Extract text from PDF using pdfparser library
+     * Better for table extraction than Google OCR
+     */
+    private function extractWithPdfParser(DocumentUpload $document): array
+    {
+        try {
+            $diskName = config('filesystems.default', 'local');
+            $filePath = Storage::disk($diskName)->path($document->file_path);
+
+            $parser = new PdfParser;
+            $pdf = $parser->parseFile($filePath);
+            $text = $pdf->getText();
+
+            Log::info('ParseDocumentJob: Extracted text with pdfparser', [
+                'document_id' => $document->id,
+                'text_length' => strlen($text),
+            ]);
+
+            return [
+                'document' => [
+                    'mime_type' => 'application/pdf',
+                    'text' => $text,
+                    'pages' => [],
+                ],
+            ];
+        } catch (\Exception $e) {
+            Log::warning('ParseDocumentJob: pdfparser extraction failed', [
+                'document_id' => $document->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return ['document' => ['text' => '', 'mime_type' => 'application/pdf']];
+        }
+    }
+
+    /**
+     * Extract text using Google Document AI service
+     */
+    private function extractWithGoogleDocumentAI(DocumentUpload $document): array
+    {
+        try {
+            if (! GoogleDocumentAIService::isConfigured()) {
+                throw new \RuntimeException('Google Document AI is not configured');
+            }
+
+            $service = new GoogleDocumentAIService;
+            $diskName = config('filesystems.default', 'local');
+
+            return $service->parseDocument($document->file_path, $diskName);
+        } catch (\Exception $e) {
+            $errorMsg = $e->getMessage();
+
+            // Check if it's an entity_types configuration error
+            if (str_contains($errorMsg, 'entity_types') || str_contains($errorMsg, 'INVALID_ARGUMENT')) {
+                Log::error('GoogleDocumentAI Configuration Error', [
+                    'error' => $errorMsg,
+                    'file' => $document->file_path,
+                    'hint' => 'Processor may be "Custom Extractor" instead of "Form Parser". Create a Form Parser processor in Google Cloud Console.',
+                ]);
+            } else {
+                Log::error('GoogleDocumentAI Error', [
+                    'error' => $errorMsg,
+                    'file' => $document->file_path,
+                ]);
+            }
+
+            return ['document' => ['text' => '', 'mime_type' => 'application/pdf']];
+        }
+    }
+
+    /**
      * Get parser based on document type
      */
     private function getParser(DocumentType $type)
@@ -184,49 +242,5 @@ class ParseDocumentJob implements ShouldQueue
             default => new AnthropicDocumentParser,
         };
 
-    }
-
-    /**
-     * Create mock response for testing when Google AI fails
-     * This response structure matches what Google Document AI Form Parser returns
-     */
-    private function createMockResponse(DocumentUpload $document): array
-    {
-        return [
-            'document' => [
-                'mime_type' => 'application/pdf',
-                'text' => 'Mock response - PDF not processed',
-                'pages' => [
-                    [
-                        'page_number' => 0,
-                        'tables' => [
-                            [
-                                'body' => [
-                                    // Header row
-                                    [
-                                        'cells' => [
-                                            ['normalizedText' => 'SKU'],
-                                            ['normalizedText' => 'Nombre'],
-                                            ['normalizedText' => 'Cantidad'],
-                                            ['normalizedText' => 'Costo Unitario'],
-                                        ],
-                                    ],
-                                    // Sample data row for testing
-                                    [
-                                        'cells' => [
-                                            ['normalizedText' => 'TEST-001'],
-                                            ['normalizedText' => 'Producto de Prueba'],
-                                            ['normalizedText' => '10'],
-                                            ['normalizedText' => '25.50'],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                'entities' => [],
-            ],
-        ];
     }
 }
