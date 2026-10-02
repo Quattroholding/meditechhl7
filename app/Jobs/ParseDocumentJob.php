@@ -205,7 +205,7 @@ class ParseDocumentJob implements ShouldQueue
 
     /**
      * Reformat pdfparser text for better Claude parsing
-     * Convert tab-delimited data to more readable format
+     * Convert tab-delimited and compacted data to more readable format
      */
     private function reformatPdfText(string $text): string
     {
@@ -224,12 +224,57 @@ class ParseDocumentJob implements ShouldQueue
 
                 // Rejoin with clear separators
                 $reformatted[] = implode(' | ', $columns);
+            } elseif ($this->looksLikeInvoiceItemRow($line)) {
+                // This line appears to contain invoice items (code + description + amounts)
+                // Attempt to insert separators to make it more readable
+                $reformatted[] = $this->separateCompactedItemRow($line);
             } else {
                 $reformatted[] = $line;
             }
         }
 
         return implode("\n", $reformatted);
+    }
+
+    /**
+     * Check if line looks like an invoice item row (SKU + description + amounts)
+     */
+    private function looksLikeInvoiceItemRow(string $line): bool
+    {
+        // Look for patterns that indicate an item row:
+        // - Contains a SKU code (alphanumeric, often with dashes)
+        // - Contains at least 2 currency amounts ($ or B/.)
+        // - Contains numbers (for quantities and prices)
+
+        // Count currency symbols
+        $currencyCount = substr_count($line, '$') + substr_count($line, 'B/.');
+
+        // Check for decimal numbers (quantities, prices)
+        $hasDecimals = preg_match('/\d+\.\d+/', $line);
+
+        // Check for alphanumeric code at start (SKU)
+        $hasCode = preg_match('/^[A-Z0-9\-]{3,}/', trim($line));
+
+        return $currencyCount >= 2 && $hasDecimals && $hasCode;
+    }
+
+    /**
+     * Separate compacted item row by inserting newlines at key positions
+     */
+    private function separateCompactedItemRow(string $line): string
+    {
+        // Insert newlines before currency amounts to break the row into logical parts
+        // Pattern: "SKUDESC1234.5678 $ 12.34 $ 56.78" becomes:
+        // "SKU | DESC | 1234.5678 | $ 12.34 | $ 56.78"
+
+        // First, let's insert pipes before currency amounts
+        $line = preg_replace('/\s+(\$|B\/.)/i', ' | $1', $line);
+
+        // Insert pipes before large decimal numbers (likely quantities like 2.000000)
+        // But only if preceded by a non-numeric character
+        $line = preg_replace('/([A-Za-z])\s*(\d+\.\d{3,})/i', '$1 | $2', $line);
+
+        return trim($line);
     }
 
     /**

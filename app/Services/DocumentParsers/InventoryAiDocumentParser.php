@@ -213,27 +213,29 @@ class InventoryAiDocumentParser extends BaseDocumentParser
 Extract pharmacy invoice data. Return ONLY valid JSON object, nothing else.
 
 The text is from a scanned invoice document. Some information may be fragmented across lines.
+Fields may be separated by pipes (|) when extracted from PDF tables.
 
 Extract:
 - supplier_name: Company name (look for "Emisor:")
 - invoice_number: Invoice number (look for "Número:" or "No. Factura")
-- invoice_date: Date in YYYY-MM-DD (look for "Fecha" or date like "28/8/2024")
-- items: Array of products. For each item find: sku, name, quantity, unit_cost, base_price, discount_amount, tax_amount, unit_type, internal_units_per_presentation, is_gift
-- subtotal: Total before tax (look for "Subtotal" or "Monto Base")
-- total_tax: Tax amount (look for "ITBMS" or "Impuesto")
+- invoice_date: Date in YYYY-MM-DD format (look for "Fecha de emisión" or date like "30/7/2024")
+- items: Array of products. For each item line find: sku, name, quantity, unit_cost, base_price, discount_amount, tax_amount, unit_type, internal_units_per_presentation, is_gift
+- subtotal: Total before tax (look for "Subtotal" or "Monto Base" or "Subtotal |")
+- total_tax: Tax amount (look for "ITBMS" with value after "|" symbol, or "Impuesto")
 - total_invoice: Final total (look for "Total" or "Total Neto")
-- batch_info: Empty array
+- batch_info: Empty array (batch extraction not needed for now)
 
 Rules for parsing:
-1. Product code + description might be on separate lines, concatenate them
-2. Numbers use $ or B/. prefix: "$44.27" → 44.27
-3. Quantities are decimal numbers: "6.000000" → 6
-4. If description has "CAJA X 30", set internal_units_per_presentation=30, unit_type="internal" (INTERNAL when factor > 1)
-5. If no factor in description, set internal_units_per_presentation=1, unit_type="presentation" (PRESENTATION when factor = 1)
-6. unit_cost: Cost per unit (what was paid). base_price: Selling price per unit. If base_price not in document, calculate as: base_price = unit_cost * 1.10
-7. discount_amount: The VALUE in the "Descuento Unitario" column - extract EXACTLY what you see there. Do NOT multiply by quantity. Just copy the number.
-8. If quantity > 0 but unit_cost = 0, it's a gift: is_gift=true
-9. include_gift_items: TRUE - if cost=0, include the item anyway
+1. Product rows may contain: SKU | Description | Quantity | Unit Price | Discount | Amount | Tax | Value
+2. SKU is alphanumeric code (e.g., "PFI-BG-640")
+3. Numbers use $ or B/. prefix: "$44.27" → 44.27, remove currency symbols
+4. Quantities are decimal numbers: "2.000000" → 2
+5. If description has "CAJA X NN" or "FRASCO X NN", extract NN as internal_units_per_presentation, set unit_type="internal"
+6. If no multiplier/factor in description, set internal_units_per_presentation=1, unit_type="presentation"
+7. unit_cost: Cost per unit in document. base_price: Selling price. If base_price missing, calculate: base_price = unit_cost × 1.10
+8. discount_amount: Extract value from "Descuento" column as-is. Do NOT multiply by quantity. Just copy the number shown.
+9. If quantity > 0 but unit_cost = 0, set is_gift=true, include the item anyway
+10. Lines may be concatenated with pipes (|) - split and interpret each part logically
 
 Output format:
 {
