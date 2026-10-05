@@ -33,6 +33,10 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                     'subtotal' => 0,
                     'total_tax' => 0,
                     'total' => 0,
+                    'model_used' => null,
+                    'input_tokens' => null,
+                    'output_tokens' => null,
+                    'processing_cost_cents' => null,
                 ]);
             }
 
@@ -61,6 +65,10 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                     'subtotal' => 0,
                     'total_tax' => 0,
                     'total' => 0,
+                    'model_used' => $this->modelUsed,
+                    'input_tokens' => $this->inputTokens,
+                    'output_tokens' => $this->outputTokens,
+                    'processing_cost_cents' => $this->processingCostCents,
                 ]);
             }
 
@@ -111,6 +119,10 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 'subtotal' => 0,
                 'total_tax' => 0,
                 'total' => 0,
+                'model_used' => $this->modelUsed,
+                'input_tokens' => $this->inputTokens,
+                'output_tokens' => $this->outputTokens,
+                'processing_cost_cents' => $this->processingCostCents,
             ]);
         }
     }
@@ -468,35 +480,39 @@ PROMPT;
      */
     private function calculateProcessingCost(string $model, int $inputTokens, int $outputTokens): int
     {
-        // Pricing as of October 2026
+        // Pricing as of October 2026 - prices are in dollars
         $pricing = [
             'claude-sonnet-5' => [
-                'input' => 0.003, // $3 per million input tokens
-                'output' => 0.015, // $15 per million output tokens
+                'input' => 3, // $3 per million input tokens
+                'output' => 15, // $15 per million output tokens
+            ],
+            'claude-sonnet-4-5' => [
+                'input' => 3, // $3 per million input tokens (same as sonnet-5)
+                'output' => 15, // $15 per million output tokens (same as sonnet-5)
             ],
             'claude-opus-4-5-20251101' => [
-                'input' => 0.015, // $15 per million input tokens
-                'output' => 0.075, // $75 per million output tokens
+                'input' => 15, // $15 per million input tokens
+                'output' => 75, // $75 per million output tokens
             ],
             'claude-opus-4' => [
-                'input' => 0.015,
-                'output' => 0.075,
+                'input' => 15,
+                'output' => 75,
             ],
             'claude-haiku-4-5' => [
-                'input' => 0.00080, // $0.80 per million input tokens
-                'output' => 0.004, // $4 per million output tokens
+                'input' => 0.80, // $0.80 per million input tokens
+                'output' => 4, // $4 per million output tokens
             ],
             'claude-haiku-4' => [
-                'input' => 0.00025,
-                'output' => 0.00125,
+                'input' => 0.25,
+                'output' => 1.25,
             ],
         ];
 
         $modelPricing = $pricing[$model] ?? $pricing['claude-sonnet-5'];
 
-        // Calculate cost per million tokens, then convert to cents
-        $costDollars = ($inputTokens * $modelPricing['input'] / 1000000) +
-                       ($outputTokens * $modelPricing['output'] / 1000000);
+        // Calculate cost: (tokens / million) * price_per_million = cost_in_dollars
+        $costDollars = (($inputTokens * $modelPricing['input']) +
+                        ($outputTokens * $modelPricing['output'])) / 1000000;
 
         return (int) round($costDollars * 100);
     }
