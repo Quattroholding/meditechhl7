@@ -121,7 +121,6 @@ class CostCenterModal extends Component
     public function getBranchesProperty()
     {
         return Branch::where('client_id', auth()->user()->getCurrentClient()->id)
-            ->where('status', 'active')
             ->orderBy('name')
             ->get();
     }
