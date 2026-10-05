@@ -96,7 +96,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified', 'fir
         ->name('accounting.dashboard');
 
     Route::get('/accounting-client', [DashboardController::class, 'accountingClient'])
-        ->middleware('permission:dashboard.accounting')
+        ->middleware('permission:dashboard.accounting-client')
         ->name('accounting-client.dashboard');
 
     Route::get('/hemoscreen', [HemoScreenStandaloneWebController::class, 'index'])
