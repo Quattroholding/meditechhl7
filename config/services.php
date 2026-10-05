@@ -107,7 +107,10 @@ return [
         'api_key' => env('CLAUDE_API_KEY') ?: env('ANTHROPIC_API_KEY'),
         'api_url' => env('CLAUDE_API_URL', 'https://api.anthropic.com/v1'),
         'api_version' => env('CLAUDE_API_VERSION', '2023-06-01'),
-        'default_model' => env('CLAUDE_DEFAULT_MODEL', 'claude-sonnet-4-6'),
+        // Recomendado: claude-sonnet-5 (remplazo de claude-3-5-sonnet)
+        // Para ahorrar: claude-haiku-4-5 (más barato)
+        // Para máxima calidad: claude-opus-4-5 (más caro, mejor para análisis complejos)
+        'default_model' => env('CLAUDE_DEFAULT_MODEL', 'claude-sonnet-5'),
         'default_max_tokens' => env('CLAUDE_DEFAULT_MAX_TOKENS', 4096),
         'timeout' => env('CLAUDE_TIMEOUT', 60),
         'diagnostics_suggestions_enabled' => env('CLAUDE_DIAGNOSTICS_SUGGESTIONS_ENABLED', true),

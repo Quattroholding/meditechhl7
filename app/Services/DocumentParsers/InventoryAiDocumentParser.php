@@ -140,9 +140,9 @@ class InventoryAiDocumentParser extends BaseDocumentParser
 
             $response = Http::withHeaders([
                 'x-api-key' => config('services.claude.api_key'),
-                'anthropic-version' => '2023-06-01',
-            ])->post('https://api.anthropic.com/v1/messages', [
-                'model' => 'claude-opus-4-5-20251101',
+                'anthropic-version' => config('services.claude.api_version', '2023-06-01'),
+            ])->post(config('services.claude.api_url', 'https://api.anthropic.com/v1').'/messages', [
+                'model' => config('services.claude.default_model', 'claude-opus-4-5-20251101'),
                 'max_tokens' => 4096,
                 'messages' => [
                     [

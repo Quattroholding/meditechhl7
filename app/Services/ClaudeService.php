@@ -857,20 +857,37 @@ EOT;
      */
     private function calculateCost(string $service, string $model, array $usage): int
     {
-        // Pricing as of 2026 (adjust as needed)
+        // Pricing as of October 2026
+        // Reference: https://www.anthropic.com/pricing/claude
         $pricing = [
             'claude' => [
-                'claude-sonnet-4-6' => [
+                // Claude Sonnet 5 - Recommended balance of speed and intelligence
+                'claude-sonnet-5' => [
                     'input' => 0.003, // $3 per million input tokens
                     'output' => 0.015, // $15 per million output tokens
+                ],
+                // Claude Opus 4.5 - Most capable, best for complex analysis
+                'claude-opus-4-5-20251101' => [
+                    'input' => 0.015, // $15 per million input tokens
+                    'output' => 0.075, // $75 per million output tokens
                 ],
                 'claude-opus-4' => [
                     'input' => 0.015, // $15 per million input tokens
                     'output' => 0.075, // $75 per million output tokens
                 ],
+                // Claude Haiku 4.5 - Fast and cheap, good for simple tasks
+                'claude-haiku-4-5' => [
+                    'input' => 0.00080, // $0.80 per million input tokens
+                    'output' => 0.004, // $4 per million output tokens
+                ],
                 'claude-haiku-4' => [
                     'input' => 0.00025, // $0.25 per million input tokens
                     'output' => 0.00125, // $1.25 per million output tokens
+                ],
+                // Legacy model - should not be used
+                'claude-sonnet-4-6' => [
+                    'input' => 0.003, // fallback to sonnet 5 pricing
+                    'output' => 0.015,
                 ],
             ],
             'openai-whisper' => [
@@ -883,7 +900,7 @@ EOT;
         $cost = 0;
 
         if ($service === 'claude') {
-            $modelPricing = $pricing['claude'][$model] ?? $pricing['claude']['claude-sonnet-4-6'];
+            $modelPricing = $pricing['claude'][$model] ?? $pricing['claude']['claude-sonnet-5'];
             $inputTokens = $usage['input_tokens'] ?? 0;
             $outputTokens = $usage['output_tokens'] ?? 0;
 
