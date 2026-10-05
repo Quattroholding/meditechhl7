@@ -20,6 +20,10 @@ class DocumentParseResult extends BaseModel
         'manually_edited',
         'edited_by_user_id',
         'edited_at',
+        'model_used',
+        'input_tokens',
+        'output_tokens',
+        'processing_cost_cents',
     ];
 
     protected $casts = [
@@ -32,6 +36,9 @@ class DocumentParseResult extends BaseModel
         'has_errors' => 'boolean',
         'manually_edited' => 'boolean',
         'edited_at' => 'datetime',
+        'input_tokens' => 'integer',
+        'output_tokens' => 'integer',
+        'processing_cost_cents' => 'integer',
     ];
 
     // ===== Relationships =====
