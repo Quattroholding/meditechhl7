@@ -1,135 +1,118 @@
 @if($isModal)
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            {{-- Header --}}
-            <div class="sticky top-0 bg-gray-100 px-6 py-4 border-b flex justify-between items-center">
+            <div class="sticky top-0 bg-light px-6 py-4 border-b d-flex justify-content-between align-items-center">
                 <h3 class="text-lg font-bold">
-                    {{ $this->paymentMethod ? 'Editar Método de Pago' : 'Nuevo Método de Pago' }}
+                    {{ $this->paymentMethod ? __('treasury.payment_method.edit_title') : __('treasury.payment_method.create_title') }}
                 </h3>
                 <button
+                    type="button"
                     wire:click="$dispatch('closeModal')"
                     class="text-gray-500 hover:text-gray-700"
+                    style="border: none; background: none; cursor: pointer;"
                 >
-                    ✕
+                    ×
                 </button>
             </div>
 
-            {{-- Form --}}
-            <form wire:submit.prevent="save" class="p-6 space-y-4">
+            <form wire:submit.prevent="save" class="p-6">
 @else
-    <form wire:submit.prevent="save" class="space-y-4">
+    <form wire:submit.prevent="save">
 @endif
-            {{-- Name --}}
-            <div>
-                <label class="block text-sm font-medium mb-1">Nombre del Método *</label>
-                <input
-                    type="text"
-                    wire:model="name"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Ej: Transferencia Bancaria"
-                />
-                @error('name')
-                    <span class="text-red-600 text-xs">{{ $message }}</span>
-                @enderror
-            </div>
-
-            {{-- Destination Type --}}
-            <div>
-                <label class="block text-sm font-medium mb-1">Tipo de Destino *</label>
-                <select
-                    wire:model="destination_type"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="bank">Banco</option>
-                    <option value="cash">Caja</option>
-                </select>
-                @error('destination_type')
-                    <span class="text-red-600 text-xs">{{ $message }}</span>
-                @enderror
-            </div>
-
-            {{-- Bank Selection (conditional) --}}
-            @if ($destination_type === 'bank')
-                <div>
-                    <label class="block text-sm font-medium mb-1">Banco por Defecto *</label>
-                    <select
-                        wire:model="default_bank_id"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="">Seleccionar banco...</option>
-                        @foreach ($banks as $bank)
-                            <option value="{{ $bank->id }}">
-                                {{ $bank->bank_name }} - {{ $bank->account_number }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('default_bank_id')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
+                <div class="row">
+                    <!-- Name -->
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="name" :value="__('treasury.payment_method.name')" required="true"/>
+                            <x-text-input wire:model="name" id="name" class="block mt-1 w-full" type="text" name="name" placeholder="Ej: Transferencia Bancaria"/>
+                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
-            @endif
 
-            {{-- Cash Register Selection (conditional) --}}
-            @if ($destination_type === 'cash')
-                <div>
-                    <label class="block text-sm font-medium mb-1">Caja por Defecto *</label>
-                    <select
-                        wire:model="default_cash_register_id"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="">Seleccionar caja...</option>
-                        @foreach ($cashRegisters as $register)
-                            <option value="{{ $register->id }}">
-                                {{ $register->name }} ({{ $register->branch->name }})
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('default_cash_register_id')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
+                <div class="row">
+                    <!-- Destination Type -->
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="destination_type" :value="__('treasury.payment_method.destination_type')" required="true"/>
+                            <x-select-input wire:model="destination_type" id="destination_type" name="destination_type" :options="[
+                                'bank' => __('treasury.payment_method.types.bank'),
+                                'cash' => __('treasury.payment_method.types.cash'),
+                            ]" :selected="['bank']" class="block w-full"/>
+                            <x-input-error :messages="$errors->get('destination_type')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
-            @endif
 
-            {{-- Status --}}
-            <div>
-                <label class="block text-sm font-medium mb-1">Estado</label>
-                <select
-                    wire:model="status"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="active">Activo</option>
-                    <option value="inactive">Inactivo</option>
-                </select>
-            </div>
+                <!-- Bank Selection (conditional) -->
+                @if ($destination_type === 'bank')
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-block local-forms">
+                                <x-input-label for="default_bank_id" :value="__('treasury.payment_method.default_bank')" required="true"/>
+                                <select wire:model="default_bank_id" id="default_bank_id" class="form-control">
+                                    <option value="">{{ __('generic.select') }}</option>
+                                    @foreach ($banks as $bank)
+                                        <option value="{{ $bank->id }}">
+                                            {{ $bank->bank_name }} - {{ $bank->account_number }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('default_bank_id')" class="mt-2" />
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
-            {{-- Actions --}}
-            <div class="flex justify-end gap-2 pt-4 border-t">
-                @if($isModal)
-                    <button
-                        type="button"
-                        wire:click="$dispatch('closeModal')"
-                        class="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                    >
-                        Cancelar
-                    </button>
+                <!-- Cash Register Selection (conditional) -->
+                @if ($destination_type === 'cash')
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-block local-forms">
+                                <x-input-label for="default_cash_register_id" :value="__('treasury.payment_method.default_cash_register')" required="true"/>
+                                <select wire:model="default_cash_register_id" id="default_cash_register_id" class="form-control">
+                                    <option value="">{{ __('generic.select') }}</option>
+                                    @foreach ($cashRegisters as $register)
+                                        <option value="{{ $register->id }}">
+                                            {{ $register->name }} ({{ $register->branch->name }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('default_cash_register_id')" class="mt-2" />
+                            </div>
+                        </div>
+                    </div>
                 @endif
-                @if ($this->paymentMethod)
-                    <button
-                        type="button"
-                        wire:click="delete"
-                        wire:confirm="¿Está seguro de que desea eliminar este método de pago?"
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    >
-                        Eliminar
+
+                <div class="row">
+                    <!-- Status -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="status" :value="__('generic.status')"/>
+                            <x-select-input wire:model="status" id="status" name="status" :options="[
+                                'active' => __('generic.active'),
+                                'inactive' => __('generic.inactive'),
+                            ]" :selected="['active']" class="block w-full"/>
+                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doctor-submit text-end">
+                    @if ($this->paymentMethod)
+                        <button type="button" wire:click="delete" wire:confirm="{{ __('treasury.payment_method.confirm_delete') }}" class="btn btn-danger me-2">
+                            {{ __('button.delete') }}
+                        </button>
+                    @endif
+                    <button type="submit" class="btn btn-primary me-2">
+                        {{ __('button.save') }}
                     </button>
-                @endif
-                <button
-                    type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                    Guardar
-                </button>
-            </div>
+                    @if($isModal)
+                        <button type="button" wire:click="$dispatch('closeModal')" class="btn btn-secondary">
+                            {{ __('button.cancel') }}
+                        </button>
+                    @endif
+                </div>
             </form>
         @if($isModal)
             </div>

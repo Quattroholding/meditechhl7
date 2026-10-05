@@ -1,175 +1,155 @@
 @if($isModal)
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            {{-- Header --}}
-            <div class="sticky top-0 bg-gray-100 px-6 py-4 border-b flex justify-between items-center">
+            <div class="sticky top-0 bg-light px-6 py-4 border-b d-flex justify-content-between align-items-center">
                 <h3 class="text-lg font-bold">
-                    {{ $this->supplier ? 'Editar Proveedor' : 'Nuevo Proveedor' }}
+                    {{ $this->supplier ? __('finance.supplier.edit_title') : __('finance.supplier.create_title') }}
                 </h3>
                 <button
-                    wire:click="$emit('closeModal')"
+                    type="button"
+                    wire:click="$dispatch('closeModal')"
                     class="text-gray-500 hover:text-gray-700"
+                    style="border: none; background: none; cursor: pointer;"
                 >
-                    ✕
+                    ×
                 </button>
             </div>
 
-            {{-- Form --}}
-            <form wire:submit.prevent="save" class="p-6 space-y-4">
+            <form wire:submit.prevent="save" class="p-6">
 @else
-    <form wire:submit.prevent="save" class="space-y-4">
+    <form wire:submit.prevent="save">
 @endif
-            <div class="grid grid-cols-2 gap-4">
-                {{-- RUC --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">RUC *</label>
-                    <input
-                        type="text"
-                        wire:model="ruc"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Ej: 123456789"
-                    />
-                    @error('ruc')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
+                <div class="row">
+                    <!-- RUC -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="ruc" :value="__('finance.supplier.ruc')" required="true"/>
+                            <x-text-input wire:model="ruc" id="ruc" class="block mt-1 w-full" type="text" name="ruc" placeholder="Ej: 123456789"/>
+                            <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <!-- Credit Days -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="credit_days" :value="__('finance.supplier.credit_days')" required="true"/>
+                            <x-text-input wire:model="credit_days" id="credit_days" class="block mt-1 w-full" type="number" name="credit_days" min="0" max="365"/>
+                            <x-input-error :messages="$errors->get('credit_days')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Credit Days --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Días de Crédito *</label>
-                    <input
-                        type="number"
-                        wire:model="credit_days"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        min="0"
-                        max="365"
-                    />
-                    @error('credit_days')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-1">Razón Social *</label>
-                <input
-                    type="text"
-                    wire:model="legal_name"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Ej: Empresa XYZ S.A."
-                />
-                @error('legal_name')
-                    <span class="text-red-600 text-xs">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-1">Nombre Comercial</label>
-                <input
-                    type="text"
-                    wire:model="commercial_name"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Ej: XYZ"
-                />
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                {{-- Email --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Correo Electrónico</label>
-                    <input
-                        type="email"
-                        wire:model="email"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                <div class="row">
+                    <!-- Legal Name -->
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="legal_name" :value="__('finance.supplier.legal_name')" required="true"/>
+                            <x-text-input wire:model="legal_name" id="legal_name" class="block mt-1 w-full" type="text" name="legal_name" placeholder="Ej: Empresa XYZ S.A."/>
+                            <x-input-error :messages="$errors->get('legal_name')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Phone --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Teléfono</label>
-                    <input
-                        type="tel"
-                        wire:model="phone"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                <div class="row">
+                    <!-- Commercial Name -->
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="commercial_name" :value="__('finance.supplier.commercial_name')"/>
+                            <x-text-input wire:model="commercial_name" id="commercial_name" class="block mt-1 w-full" type="text" name="commercial_name" placeholder="Ej: XYZ"/>
+                            <x-input-error :messages="$errors->get('commercial_name')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Persona de Contacto</label>
-                <input
-                    type="text"
-                    wire:model="contact_person"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-            </div>
+                <div class="row">
+                    <!-- Email -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="email" :value="__('generic.email')"/>
+                            <x-text-input wire:model="email" id="email" class="block mt-1 w-full" type="email" name="email"/>
+                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        </div>
+                    </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Dirección</label>
-                <textarea
-                    wire:model="address"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows="2"
-                ></textarea>
-            </div>
+                    <!-- Phone -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="phone" :value="__('generic.phone')"/>
+                            <x-text-input wire:model="phone" id="phone" class="block mt-1 w-full" type="tel" name="phone"/>
+                            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Cuenta Contable CxP *</label>
-                <select
-                    wire:model="accounting_account_id"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="0">Seleccionar cuenta...</option>
-                    @foreach ($accounts as $account)
-                        <option value="{{ $account->id }}">
-                            {{ $account->code }} - {{ $account->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('accounting_account_id')
-                    <span class="text-red-600 text-xs">{{ $message }}</span>
-                @enderror
-            </div>
+                <div class="row">
+                    <!-- Contact Person -->
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="contact_person" :value="__('finance.supplier.contact_person')"/>
+                            <x-text-input wire:model="contact_person" id="contact_person" class="block mt-1 w-full" type="text" name="contact_person"/>
+                            <x-input-error :messages="$errors->get('contact_person')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Estado</label>
-                <select
-                    wire:model="status"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="active">Activo</option>
-                    <option value="inactive">Inactivo</option>
-                </select>
-            </div>
+                <div class="row">
+                    <!-- Address -->
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="address" :value="__('generic.address')"/>
+                            <x-textarea-input wire:model="address" id="address" class="block mt-1 w-full" name="address"/>
+                            <x-input-error :messages="$errors->get('address')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
 
-            {{-- Actions --}}
-            <div class="flex justify-end gap-2 pt-4 border-t">
-                @if($isModal)
-                    <button
-                        type="button"
-                        wire:click="$dispatch('closeModal')"
-                        class="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                    >
-                        Cancelar
+                <div class="row">
+                    <!-- Accounting Account -->
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="accounting_account_id" :value="__('finance.supplier.accounting_account')" required="true"/>
+                            <select wire:model="accounting_account_id" id="accounting_account_id" class="form-control">
+                                <option value="">{{ __('generic.select') }}</option>
+                                @foreach ($accounts as $account)
+                                    <option value="{{ $account->id }}">
+                                        {{ $account->code }} - {{ $account->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('accounting_account_id')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Status -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="status" :value="__('generic.status')"/>
+                            <x-select-input wire:model="status" id="status" name="status" :options="[
+                                'active' => __('generic.active'),
+                                'inactive' => __('generic.inactive'),
+                            ]" :selected="['active']" class="block w-full"/>
+                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doctor-submit text-end">
+                    @if ($this->supplier)
+                        <button type="button" wire:click="delete" wire:confirm="{{ __('finance.supplier.confirm_delete') }}" class="btn btn-danger me-2">
+                            {{ __('button.delete') }}
+                        </button>
+                    @endif
+                    <button type="submit" class="btn btn-primary me-2">
+                        {{ __('button.save') }}
                     </button>
-                @endif
-                @if ($this->supplier)
-                    <button
-                        type="button"
-                        wire:click="delete"
-                        wire:confirm="¿Está seguro de que desea eliminar este proveedor?"
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    >
-                        Eliminar
-                    </button>
-                @endif
-                <button
-                    type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                    Guardar
-                </button>
-            </div>
+                    @if($isModal)
+                        <button type="button" wire:click="$dispatch('closeModal')" class="btn btn-secondary">
+                            {{ __('button.cancel') }}
+                        </button>
+                    @endif
+                </div>
             </form>
         @if($isModal)
             </div>

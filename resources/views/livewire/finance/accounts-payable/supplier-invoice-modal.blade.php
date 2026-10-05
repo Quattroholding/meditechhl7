@@ -1,238 +1,210 @@
 @if($isModal)
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            {{-- Header --}}
-            <div class="sticky top-0 bg-gray-100 px-6 py-4 border-b flex justify-between items-center">
+            <div class="sticky top-0 bg-light px-6 py-4 border-b d-flex justify-content-between align-items-center">
                 <h3 class="text-lg font-bold">
-                    {{ $this->invoice ? 'Editar Factura' : 'Nueva Factura de Proveedor' }}
+                    {{ $this->invoice ? __('finance.invoice.edit_title') : __('finance.invoice.create_title') }}
                 </h3>
                 <button
+                    type="button"
                     wire:click="$dispatch('closeModal')"
                     class="text-gray-500 hover:text-gray-700"
+                    style="border: none; background: none; cursor: pointer;"
                 >
-                    ✕
+                    ×
                 </button>
             </div>
 
-            {{-- Form --}}
-            <form wire:submit.prevent="save" class="p-6 space-y-4">
+            <form wire:submit.prevent="save" class="p-6">
 @else
-    <form wire:submit.prevent="save" class="space-y-4">
+    <form wire:submit.prevent="save">
 @endif
-            {{-- Supplier --}}
-            <div>
-                <label class="block text-sm font-medium mb-1">Proveedor *</label>
-                <select
-                    wire:model="supplier_id"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="0">Seleccionar proveedor...</option>
-                    @foreach ($suppliers as $supplier)
-                        <option value="{{ $supplier->id }}">
-                            {{ $supplier->legal_name }} ({{ $supplier->ruc }})
-                        </option>
-                    @endforeach
-                </select>
-                @error('supplier_id')
-                    <span class="text-red-600 text-xs">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="grid grid-cols-3 gap-4">
-                {{-- Invoice Number --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Número Factura *</label>
-                    <input
-                        type="text"
-                        wire:model="invoice_number"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    @error('invoice_number')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                {{-- Invoice Date --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Fecha Factura *</label>
-                    <input
-                        type="date"
-                        wire:model="invoice_date"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    @error('invoice_date')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                {{-- Received Date --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Fecha Recibida *</label>
-                    <input
-                        type="date"
-                        wire:model="received_date"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    @error('received_date')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                {{-- Due Date --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Fecha Vencimiento *</label>
-                    <input
-                        type="date"
-                        wire:model="due_date"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    @error('due_date')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                {{-- Currency --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Moneda *</label>
-                    <select
-                        wire:model="currency"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="PAB">Panamá (PAB)</option>
-                        <option value="USD">Dólar (USD)</option>
-                    </select>
-                </div>
-            </div>
-
-            {{-- Amounts --}}
-            <div class="space-y-2 p-4 bg-blue-50 rounded-lg">
-                <div class="grid grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Subtotal *</label>
-                        <input
-                            type="number"
-                            step="0.01"
-                            wire:model.live="subtotal"
-                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium mb-1">ITBMS (Impuesto)</label>
-                        <input
-                            type="number"
-                            step="0.01"
-                            wire:model.live="tax_amount"
-                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Total *</label>
-                        <div class="px-3 py-2 bg-gray-100 border rounded-lg text-sm font-semibold">
-                            {{ number_format($this->total_amount, 2) }}
+                <div class="row">
+                    <!-- Supplier -->
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="supplier_id" :value="__('finance.invoice.supplier')" required="true"/>
+                            <select wire:model="supplier_id" id="supplier_id" class="form-control">
+                                <option value="">{{ __('generic.select') }}</option>
+                                @foreach ($suppliers as $supplier)
+                                    <option value="{{ $supplier->id }}">
+                                        {{ $supplier->legal_name }} ({{ $supplier->ruc }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('supplier_id')" class="mt-2" />
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {{-- Cost Center --}}
-            <div>
-                <label class="block text-sm font-medium mb-1">Centro de Costo</label>
-                <select
-                    wire:model="cost_center_id"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="">Sin centro de costo específico</option>
-                    @foreach ($costCenters as $center)
-                        <option value="{{ $center->id }}">
-                            {{ $center->code }} - {{ $center->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                <div class="row">
+                    <!-- Invoice Number -->
+                    <div class="col-12 col-md-4">
+                        <div class="input-block local-forms">
+                            <x-input-label for="invoice_number" :value="__('finance.invoice.number')" required="true"/>
+                            <x-text-input wire:model="invoice_number" id="invoice_number" class="block mt-1 w-full" type="text" name="invoice_number"/>
+                            <x-input-error :messages="$errors->get('invoice_number')" class="mt-2" />
+                        </div>
+                    </div>
 
-            {{-- Cost Distribution --}}
-            <div>
-                <div class="flex items-center justify-between mb-2">
-                    <label class="block text-sm font-medium">Distribución de Costos</label>
-                    <button
-                        type="button"
-                        wire:click="addDistribution"
-                        class="text-sm text-blue-600 hover:text-blue-900"
-                    >
-                        + Agregar
-                    </button>
+                    <!-- Invoice Date -->
+                    <div class="col-12 col-md-4">
+                        <div class="input-block local-forms">
+                            <x-input-label for="invoice_date" :value="__('finance.invoice.invoice_date')" required="true"/>
+                            <x-text-input wire:model="invoice_date" id="invoice_date" class="block mt-1 w-full" type="date" name="invoice_date"/>
+                            <x-input-error :messages="$errors->get('invoice_date')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <!-- Received Date -->
+                    <div class="col-12 col-md-4">
+                        <div class="input-block local-forms">
+                            <x-input-label for="received_date" :value="__('finance.invoice.received_date')" required="true"/>
+                            <x-text-input wire:model="received_date" id="received_date" class="block mt-1 w-full" type="date" name="received_date"/>
+                            <x-input-error :messages="$errors->get('received_date')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
 
-                @if (! empty($distributions))
-                    <div class="space-y-2">
-                        @foreach ($distributions as $index => $dist)
-                            <div class="flex gap-2 items-start">
-                                <select
-                                    wire:model.live="distributions.{{ $index }}.cost_center_id"
-                                    class="flex-1 px-3 py-2 border rounded-lg"
-                                >
-                                    <option value="0">Seleccionar...</option>
-                                    @foreach ($costCenters as $center)
-                                        <option value="{{ $center->id }}">
-                                            {{ $center->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                <div class="row">
+                    <!-- Due Date -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="due_date" :value="__('finance.invoice.due_date')" required="true"/>
+                            <x-text-input wire:model="due_date" id="due_date" class="block mt-1 w-full" type="date" name="due_date"/>
+                            <x-input-error :messages="$errors->get('due_date')" class="mt-2" />
+                        </div>
+                    </div>
 
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    max="100"
-                                    wire:model.live="distributions.{{ $index }}.percentage"
-                                    placeholder="%"
-                                    class="w-20 px-3 py-2 border rounded-lg"
-                                />
+                    <!-- Currency -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="currency" :value="__('finance.invoice.currency')" required="true"/>
+                            <x-select-input wire:model="currency" id="currency" name="currency" :options="[
+                                'PAB' => __('finance.currency.pab'),
+                                'USD' => __('finance.currency.usd'),
+                            ]" :selected="['USD']" class="block w-full"/>
+                            <x-input-error :messages="$errors->get('currency')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
 
-                                <button
-                                    type="button"
-                                    wire:click="removeDistribution({{ $index }})"
-                                    class="text-red-600 hover:text-red-900"
-                                >
-                                    ✕
+                <!-- Amounts Section -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-light" role="alert">
+                            <div class="row">
+                                <div class="col-12 col-md-4">
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="subtotal" :value="__('finance.invoice.subtotal')" required="true"/>
+                                        <x-text-input wire:model.live="subtotal" id="subtotal" class="block mt-1 w-full" type="number" name="subtotal" step="0.01"/>
+                                        <x-input-error :messages="$errors->get('subtotal')" class="mt-2" />
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-4">
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="tax_amount" :value="__('finance.invoice.tax')"/>
+                                        <x-text-input wire:model.live="tax_amount" id="tax_amount" class="block mt-1 w-full" type="number" name="tax_amount" step="0.01"/>
+                                        <x-input-error :messages="$errors->get('tax_amount')" class="mt-2" />
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-4">
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="total" :value="__('finance.invoice.total')" required="true"/>
+                                        <div class="form-control" style="background-color: #f8f9fa; cursor: not-allowed;">
+                                            {{ number_format($this->total_amount, 2) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Cost Center -->
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="cost_center_id" :value="__('finance.invoice.cost_center')"/>
+                            <select wire:model="cost_center_id" id="cost_center_id" class="form-control">
+                                <option value="">{{ __('finance.invoice.no_cost_center') }}</option>
+                                @foreach ($costCenters as $center)
+                                    <option value="{{ $center->id }}">
+                                        {{ $center->code }} - {{ $center->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('cost_center_id')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost Distribution -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <x-input-label :value="__('finance.invoice.cost_distribution')"/>
+                                <button type="button" wire:click="addDistribution" class="btn btn-sm btn-outline-primary">
+                                    {{ __('button.add') }}
                                 </button>
                             </div>
-                        @endforeach
+
+                            @if (! empty($distributions))
+                                <div class="space-y-2">
+                                    @foreach ($distributions as $index => $dist)
+                                        <div class="row">
+                                            <div class="col-12 col-md-9">
+                                                <select wire:model.live="distributions.{{ $index }}.cost_center_id" class="form-control">
+                                                    <option value="">{{ __('generic.select') }}</option>
+                                                    @foreach ($costCenters as $center)
+                                                        <option value="{{ $center->id }}">
+                                                            {{ $center->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="col-12 col-md-2">
+                                                <x-text-input type="number" step="0.01" max="100" wire:model.live="distributions.{{ $index }}.percentage" placeholder="%"/>
+                                            </div>
+
+                                            <div class="col-12 col-md-1">
+                                                <button type="button" wire:click="removeDistribution({{ $index }})" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
                     </div>
-                @endif
-            </div>
+                </div>
 
-            {{-- Notes --}}
-            <div>
-                <label class="block text-sm font-medium mb-1">Notas</label>
-                <textarea
-                    wire:model="notes"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows="3"
-                ></textarea>
-            </div>
+                <div class="row">
+                    <!-- Notes -->
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="notes" :value="__('generic.notes')"/>
+                            <x-textarea-input wire:model="notes" id="notes" class="block mt-1 w-full" name="notes"/>
+                            <x-input-error :messages="$errors->get('notes')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
 
-            {{-- Actions --}}
-            <div class="flex justify-end gap-2 pt-4 border-t">
-                @if($isModal)
-                    <button
-                        type="button"
-                        wire:click="$dispatch('closeModal')"
-                        class="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                    >
-                        Cancelar
+                <div class="doctor-submit text-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        {{ __('button.save') }}
                     </button>
-                @endif
-                <button
-                    type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                    Guardar
-                </button>
-            </div>
+                    @if($isModal)
+                        <button type="button" wire:click="$dispatch('closeModal')" class="btn btn-secondary">
+                            {{ __('button.cancel') }}
+                        </button>
+                    @endif
+                </div>
             </form>
         @if($isModal)
             </div>

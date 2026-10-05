@@ -1,87 +1,68 @@
 @if($isModal)
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg max-w-5xl w-full max-h-[95vh] overflow-y-auto">
-            {{-- Header --}}
-            <div class="sticky top-0 bg-gray-100 px-6 py-4 border-b flex justify-between items-center">
+            <div class="sticky top-0 bg-light px-6 py-4 border-b d-flex justify-content-between align-items-center">
                 <h3 class="text-lg font-bold">
-                    {{ $this->entry ? 'Editar Asiento Contable' : 'Nuevo Asiento Contable' }}
+                    {{ $this->entry ? __('accounting.journal_entry.edit_title') : __('accounting.journal_entry.create_title') }}
                 </h3>
                 <button
+                    type="button"
                     wire:click="$dispatch('closeModal')"
                     class="text-gray-500 hover:text-gray-700"
+                    style="border: none; background: none; cursor: pointer;"
                 >
-                    ✕
+                    ×
                 </button>
             </div>
 
-            {{-- Form --}}
-            <form wire:submit.prevent="save" class="p-6 space-y-4">
+            <form wire:submit.prevent="save" class="p-6">
 @else
-    <form wire:submit.prevent="save" class="space-y-4">
+    <form wire:submit.prevent="save">
 @endif
-            {{-- Header Section --}}
-            <div class="grid grid-cols-2 gap-4">
-                {{-- Entry Date --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Fecha del Asiento *</label>
-                    <input
-                        type="date"
-                        wire:model="entry_date"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    @error('entry_date')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
+                <div class="row">
+                    <!-- Entry Date -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="entry_date" :value="__('accounting.journal_entry.date')" required="true"/>
+                            <x-text-input wire:model="entry_date" id="entry_date" class="block mt-1 w-full" type="date" name="entry_date"/>
+                            <x-input-error :messages="$errors->get('entry_date')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <!-- Document Type -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="document_type" :value="__('accounting.journal_entry.document_type')" required="true"/>
+                            <x-select-input wire:model="document_type" id="document_type" name="document_type" :options="[
+                                'manual' => __('accounting.journal_entry.types.manual'),
+                                'invoice' => __('accounting.journal_entry.types.invoice'),
+                                'payment' => __('accounting.journal_entry.types.payment'),
+                                'adjustment' => __('accounting.journal_entry.types.adjustment'),
+                            ]" :selected="[null]" class="block w-full"/>
+                            <x-input-error :messages="$errors->get('document_type')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Document Type --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Tipo de Documento *</label>
-                    <select
-                        wire:model="document_type"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="">Seleccionar tipo...</option>
-                        <option value="manual">Manual</option>
-                        <option value="invoice">Factura</option>
-                        <option value="payment">Pago</option>
-                        <option value="adjustment">Ajuste</option>
-                    </select>
-                    @error('document_type')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
+                <div class="row">
+                    <!-- Document Number -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="document_number" :value="__('accounting.journal_entry.document_number')" required="true"/>
+                            <x-text-input wire:model="document_number" id="document_number" class="block mt-1 w-full" type="text" name="document_number" placeholder="Ej: DOC-001"/>
+                            <x-input-error :messages="$errors->get('document_number')" class="mt-2" />
+                        </div>
+                    </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                {{-- Document Number --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Número de Documento *</label>
-                    <input
-                        type="text"
-                        wire:model="document_number"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Ej: DOC-001"
-                    />
-                    @error('document_number')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
+                    <!-- Description -->
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="description" :value="__('accounting.journal_entry.description')" required="true"/>
+                            <x-text-input wire:model="description" id="description" class="block mt-1 w-full" type="text" name="description" placeholder="Descripción del asiento"/>
+                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
-
-                {{-- Description --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Descripción *</label>
-                    <input
-                        type="text"
-                        wire:model="description"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Descripción del asiento"
-                    />
-                    @error('description')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
 
             {{-- Lines Section --}}
             <div class="border-t pt-4">
@@ -224,35 +205,21 @@
                 @enderror
             </div>
 
-            {{-- Actions --}}
-            <div class="flex justify-end gap-2 pt-4 border-t">
-                @if($isModal)
-                    <button
-                        type="button"
-                        wire:click="$dispatch('closeModal')"
-                        class="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                    >
-                        Cancelar
+                <div class="doctor-submit text-end">
+                    @if ($this->entry && $this->entry->isDraft())
+                        <button type="button" wire:click="delete" wire:confirm="{{ __('accounting.journal_entry.confirm_delete') }}" class="btn btn-danger me-2">
+                            {{ __('button.delete') }}
+                        </button>
+                    @endif
+                    <button type="submit" @if(!$isBalanced) disabled @endif class="btn btn-primary me-2" @if(!$isBalanced) style="opacity: 0.5; cursor: not-allowed;" @endif>
+                        {{ __('button.save') }}
                     </button>
-                @endif
-                @if ($this->entry && $this->entry->isDraft())
-                    <button
-                        type="button"
-                        wire:click="delete"
-                        wire:confirm="¿Está seguro de que desea eliminar este asiento?"
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    >
-                        Eliminar
-                    </button>
-                @endif
-                <button
-                    type="submit"
-                    @if(!$isBalanced) disabled @endif
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    Guardar
-                </button>
-            </div>
+                    @if($isModal)
+                        <button type="button" wire:click="$dispatch('closeModal')" class="btn btn-secondary">
+                            {{ __('button.cancel') }}
+                        </button>
+                    @endif
+                </div>
             </form>
         @if($isModal)
             </div>
