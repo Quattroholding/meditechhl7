@@ -98,7 +98,7 @@ class CashRegisterModal extends Component
     public function getBranchesProperty()
     {
         return Branch::where('client_id', auth()->user()->getCurrentClient()->id)
-            ->where('status', 'active')
+            ->where('active', 1)
             ->orderBy('name')
             ->get();
     }
@@ -106,7 +106,7 @@ class CashRegisterModal extends Component
     public function getUsersProperty()
     {
         return User::where('client_id', auth()->user()->getCurrentClient()->id)
-            ->where('status', 'active')
+            ->where('active', 1)
             ->orderBy('name')
             ->get();
     }
