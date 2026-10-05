@@ -22,11 +22,11 @@ class DocumentUploadForm extends Component
     #[Validate('required|exists:branches,id')]
     public ?int $branch_id = null;
 
-    #[Validate('required|string|in:inventory,ensa,naturgy,idaan,otro')]
-    public ?string $document_type = null;
-
     #[Validate('required|array|min:1|max:10')]
     public array $files = [];
+
+    // Document type for each file (parallel array to $files)
+    public array $fileTypes = [];
 
     public ?string $successMessage = null;
 
@@ -67,8 +67,10 @@ class DocumentUploadForm extends Component
     public function removeFile(int $index): void
     {
         unset($this->files[$index]);
-        // Reindex array
+        unset($this->fileTypes[$index]);
+        // Reindex arrays
         $this->files = array_values($this->files);
+        $this->fileTypes = array_values($this->fileTypes);
     }
 
     public function uploadDocument(): void
@@ -79,6 +81,19 @@ class DocumentUploadForm extends Component
         try {
             $this->validate();
 
+            // Validar que cada archivo tenga un tipo de documento asignado
+            foreach ($this->files as $index => $file) {
+                if (empty($this->fileTypes[$index])) {
+                    throw new \Exception("El documento '{$file->getClientOriginalName()}' no tiene tipo seleccionado.");
+                }
+
+                // Validar que sea un tipo válido
+                $validTypes = array_map(fn ($case) => $case->value, DocumentType::cases());
+                if (! in_array($this->fileTypes[$index], $validTypes)) {
+                    throw new \Exception("Tipo de documento inválido para '{$file->getClientOriginalName()}'.");
+                }
+            }
+
             // Verificar que el cliente existe
             $client = Client::find($this->client_id);
             if (! $client) {
@@ -88,8 +103,10 @@ class DocumentUploadForm extends Component
             // Process each file
             $diskName = config('filesystems.default', 'local');
             $uploadedCount = 0;
+            $delaySeconds = 0; // Delay progresivo: 0s para el primero, 120s para el segundo, etc.
+            $delayIncrement = 120; // 2 minutos entre cada job
 
-            foreach ($this->files as $file) {
+            foreach ($this->files as $index => $file) {
                 try {
                     // Store the file and get the path
                     $filePath = $file->store("documents/{$this->client_id}", $diskName);
@@ -103,12 +120,13 @@ class DocumentUploadForm extends Component
                         'disk' => $diskName,
                         'size' => $file->getSize(),
                         'name' => $file->getClientOriginalName(),
+                        'type' => $this->fileTypes[$index],
                     ]);
 
                     $documentUpload = DocumentUpload::create([
                         'client_id' => $this->client_id,
                         'branch_id' => $this->branch_id,
-                        'document_type' => DocumentType::tryFrom($this->document_type),
+                        'document_type' => DocumentType::tryFrom($this->fileTypes[$index]),
                         'status' => 'pending',
                         'file_path' => $filePath,
                         'original_filename' => $file->getClientOriginalName(),
@@ -117,9 +135,18 @@ class DocumentUploadForm extends Component
                         'uploaded_by_user_id' => auth()->id(),
                     ]);
 
-                    // Dispatch parse job for this document
-                    ParseDocumentJob::dispatch($documentUpload->id);
+                    // Dispatch parse job with progressive delay (2 minutes between jobs)
+                    ParseDocumentJob::dispatch($documentUpload->id)
+                        ->delay(now()->addSeconds($delaySeconds));
+
+                    Log::info('Parse job dispatched', [
+                        'document_id' => $documentUpload->id,
+                        'delay_seconds' => $delaySeconds,
+                        'filename' => $file->getClientOriginalName(),
+                    ]);
+
                     $uploadedCount++;
+                    $delaySeconds += $delayIncrement;
 
                 } catch (\Throwable $fileError) {
                     Log::error('Error processing single document', [
@@ -139,7 +166,7 @@ class DocumentUploadForm extends Component
             if ($uploadedCount > 0) {
                 $this->successMessage = $uploadedCount === 1
                     ? 'Documento subido correctamente. El procesamiento ha comenzado.'
-                    : "{$uploadedCount} documentos subidos correctamente. El procesamiento ha comenzado.";
+                    : "{$uploadedCount} documentos subidos correctamente. El procesamiento comenzará en intervalos de 2 minutos.";
                 $this->dispatch('documentUploaded');
             } else {
                 throw new \Exception('No se pudieron procesar los archivos.');

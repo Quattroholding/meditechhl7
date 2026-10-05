@@ -55,23 +55,6 @@
             @enderror
         </div>
 
-        <!-- Tipo de Documento -->
-        <div>
-            <label for="document_type" class="block text-sm font-medium text-gray-700 mb-2">Tipo de Documento</label>
-            <select
-                id="document_type"
-                wire:model.defer="document_type"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-                <option value="">Selecciona un tipo</option>
-                @foreach ($documentTypes as $type)
-                    <option value="{{ $type->value }}">{{ $type->label() }}</option>
-                @endforeach
-            </select>
-            @error('document_type')
-                <span class="text-red-600 text-sm block mt-1">{{ $message }}</span>
-            @enderror
-        </div>
 
         <!-- File Upload (Multiple) -->
         <div>
@@ -160,11 +143,12 @@
 
                 @if($files && count($files) > 0)
                     <div class="mt-4">
-                        <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos seleccionados ({{ count($files) }}/10)</h3>
-                        <ul class="space-y-2">
+                        <h3 class="text-sm font-medium text-gray-700 mb-3">Archivos seleccionados ({{ count($files) }}/10)</h3>
+                        <div class="space-y-3">
                             @foreach($files as $index => $file)
-                                <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                    <div class="flex items-center gap-2 flex-1">
+                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <!-- Nombre de archivo y tamaño -->
+                                    <div class="flex items-center gap-3 mb-3">
                                         <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm0 2h12v10H4V5z" />
                                         </svg>
@@ -172,17 +156,35 @@
                                             <p class="text-sm font-medium text-gray-900 truncate">{{ $file->getClientOriginalName() }}</p>
                                             <p class="text-xs text-gray-500">{{ round($file->getSize() / 1024 / 1024, 2) }} MB</p>
                                         </div>
+                                        <button
+                                            type="button"
+                                            wire:click="removeFile({{ $index }})"
+                                            class="text-red-600 hover:text-red-800 text-sm font-medium"
+                                        >
+                                            ✕
+                                        </button>
                                     </div>
-                                    <button
-                                        type="button"
-                                        wire:click="removeFile({{ $index }})"
-                                        class="ml-2 text-red-600 hover:text-red-800 text-sm font-medium"
-                                    >
-                                        Eliminar
-                                    </button>
-                                </li>
+
+                                    <!-- Tipo de documento para este archivo -->
+                                    <div class="ml-8">
+                                        <label for="fileType_{{ $index }}" class="block text-xs font-medium text-gray-700 mb-1">Tipo de Documento</label>
+                                        <select
+                                            id="fileType_{{ $index }}"
+                                            wire:model.defer="fileTypes.{{ $index }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                        >
+                                            <option value="">-- Selecciona un tipo --</option>
+                                            @foreach ($documentTypes as $type)
+                                                <option value="{{ $type->value }}">{{ $type->label() }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error("fileTypes.{$index}")
+                                            <span class="text-red-600 text-xs block mt-1">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
                             @endforeach
-                        </ul>
+                        </div>
                     </div>
                 @endif
             </div>
