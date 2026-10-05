@@ -4,139 +4,98 @@
             {{-- Header --}}
             <div class="sticky top-0 bg-gray-100 px-6 py-4 border-b flex justify-between items-center">
                 <h3 class="text-lg font-bold">
-                    {{ $this->costCenter ? 'Editar Centro de Costo' : 'Nuevo Centro de Costo' }}
+                    {{ $this->costCenter ? __('finance.cost_centers.edit') : __('finance.cost_centers.create') }}
                 </h3>
-                <button
-                    wire:click="$dispatch('closeModal')"
-                    class="text-gray-500 hover:text-gray-700"
-                >
+                <button wire:click="$dispatch('closeModal')" class="text-gray-500 hover:text-gray-700">
                     ✕
                 </button>
             </div>
 
             {{-- Form --}}
-            <form wire:submit.prevent="save" class="p-6 space-y-4">
+            <form wire:submit.prevent="save" class="p-6">
 @else
-    <form wire:submit.prevent="save" class="space-y-4">
+    <form wire:submit.prevent="save">
 @endif
-            <div class="grid grid-cols-2 gap-4">
-                {{-- Code --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Código *</label>
-                    <input
-                        type="text"
-                        wire:model="code"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Ej: CC-001"
-                    />
-                    @error('code')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
+                <div class="row">
+                    {{-- Code --}}
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="code" :value="__('finance.cost_centers.code')" required="true"/>
+                            <x-text-input wire:model="code" id="code" class="block mt-1 w-full" type="text" name="code"/>
+                            <x-input-error :messages="$errors->get('code')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    {{-- Name --}}
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="name" :value="__('finance.cost_centers.name')" required="true"/>
+                            <x-text-input wire:model="name" id="name" class="block mt-1 w-full" type="text" name="name"/>
+                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Name --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Nombre *</label>
-                    <input
-                        type="text"
-                        wire:model="name"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Ej: Consultorios"
-                    />
-                    @error('name')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-
-            {{-- Description --}}
-            <div>
-                <label class="block text-sm font-medium mb-1">Descripción</label>
-                <textarea
-                    wire:model="description"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows="2"
-                    placeholder="Descripción opcional..."
-                ></textarea>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                {{-- Branch --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Sucursal *</label>
-                    <select
-                        wire:model="branch_id"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="">Seleccionar sucursal...</option>
-                        @foreach ($branches as $branch)
-                            <option value="{{ $branch->id }}">
-                                {{ $branch->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('branch_id')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
+                {{-- Description --}}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="description" :value="__('finance.cost_centers.description')"/>
+                            <x-textarea-input wire:model="description" id="description" class="block mt-1 w-full" name="description"/>
+                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Speciality --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Especialidad</label>
-                    <select
-                        wire:model="medical_speciality_id"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="">Seleccionar especialidad...</option>
-                        @foreach ($specialities as $speciality)
-                            <option value="{{ $speciality->id }}">
-                                {{ $speciality->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                <div class="row">
+                    {{-- Branch --}}
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="branch_id" :value="__('finance.cost_centers.branch')" required="true"/>
+                            <x-select-input wire:model="branch_id" id="branch_id" name="branch_id" :options="$branches->pluck('name', 'id')->toArray()" :selected="[$this->branch_id]" class="block w-full"/>
+                            <x-input-error :messages="$errors->get('branch_id')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    {{-- Speciality --}}
+                    <div class="col-12 col-md-6">
+                        <div class="input-block local-forms">
+                            <x-input-label for="medical_speciality_id" :value="__('finance.cost_centers.speciality')"/>
+                            <x-select-input wire:model="medical_speciality_id" id="medical_speciality_id" name="medical_speciality_id" :options="$specialities->pluck('name', 'id')->toArray()" :selected="[$this->medical_speciality_id]" class="block w-full"/>
+                            <x-input-error :messages="$errors->get('medical_speciality_id')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            {{-- Status --}}
-            <div>
-                <label class="block text-sm font-medium mb-1">Estado</label>
-                <select
-                    wire:model="status"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="active">Activo</option>
-                    <option value="inactive">Inactivo</option>
-                </select>
-            </div>
+                {{-- Status --}}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-block local-forms">
+                            <x-input-label for="status" :value="__('finance.cost_centers.status')"/>
+                            <x-select-input wire:model="status" id="status" name="status" :options="['active' => __('general.active'), 'inactive' => __('general.inactive')]" :selected="[$this->status]" class="block w-full"/>
+                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
 
-            {{-- Actions --}}
-            <div class="flex justify-end gap-2 pt-4 border-t">
-                @if($isModal)
-                    <button
-                        type="button"
-                        wire:click="$dispatch('closeModal')"
-                        class="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                    >
-                        Cancelar
-                    </button>
-                @endif
-                @if ($this->costCenter)
-                    <button
-                        type="button"
-                        wire:click="delete"
-                        wire:confirm="¿Está seguro de que desea eliminar este centro de costo?"
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    >
-                        Eliminar
-                    </button>
-                @endif
-                <button
-                    type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                    Guardar
-                </button>
-            </div>
+                {{-- Actions --}}
+                <div class="flex items-center justify-end mt-4">
+                    <div class="doctor-submit text-end">
+                        @if($isModal)
+                            <button type="button" wire:click="$dispatch('closeModal')" class="btn btn-secondary me-2">
+                                {{ __('button.cancel') }}
+                            </button>
+                        @endif
+                        @if ($this->costCenter)
+                            <button type="button" wire:click="delete" wire:confirm="{{ __('finance.cost_centers.delete_confirmation') }}" class="btn btn-danger me-2">
+                                {{ __('button.delete') }}
+                            </button>
+                        @endif
+                        <button type="submit" class="btn btn-primary me-2">
+                            {{ $this->costCenter ? __('button.update') : __('button.save') }}
+                        </button>
+                    </div>
+                </div>
             </form>
         @if($isModal)
             </div>
