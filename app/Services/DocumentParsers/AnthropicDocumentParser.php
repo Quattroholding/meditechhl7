@@ -14,7 +14,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
 
     private int $outputTokens = 0;
 
-    private int $processingCostCents = 0;
+    private float $processingCostUsd = 0.0;
 
     /**
      * Parse document using Claude AI to intelligently extract fields
@@ -38,7 +38,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
                     'model_used' => null,
                     'input_tokens' => null,
                     'output_tokens' => null,
-                    'processing_cost_cents' => null,
+                    'processing_cost_usd' => null,
                 ]);
             }
 
@@ -53,7 +53,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
                     'model_used' => $this->modelUsed,
                     'input_tokens' => $this->inputTokens,
                     'output_tokens' => $this->outputTokens,
-                    'processing_cost_cents' => $this->processingCostCents,
+                    'processing_cost_usd' => $this->processingCostUsd,
                 ]);
             }
 
@@ -68,7 +68,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
                     'model_used' => $this->modelUsed,
                     'input_tokens' => $this->inputTokens,
                     'output_tokens' => $this->outputTokens,
-                    'processing_cost_cents' => $this->processingCostCents,
+                    'processing_cost_usd' => $this->processingCostUsd,
                 ]
             ));
 
@@ -80,7 +80,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
                 'model_used' => $this->modelUsed,
                 'input_tokens' => $this->inputTokens,
                 'output_tokens' => $this->outputTokens,
-                'processing_cost_cents' => $this->processingCostCents,
+                'processing_cost_usd' => $this->processingCostUsd,
             ]);
         }
     }
@@ -134,7 +134,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
             $this->outputTokens = (int) ($usage['output_tokens'] ?? 0);
 
             // Calculate cost based on model
-            $this->processingCostCents = $this->calculateProcessingCost(
+            $this->processingCostUsd = $this->calculateProcessingCost(
                 $this->modelUsed,
                 $this->inputTokens,
                 $this->outputTokens
@@ -145,7 +145,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
                 'input_tokens' => $this->inputTokens,
                 'output_tokens' => $this->outputTokens,
                 'total_tokens' => $this->inputTokens + $this->outputTokens,
-                'cost_cents' => $this->processingCostCents,
+                'cost_cents' => $this->processingCostUsd,
             ]);
 
             if (empty($responseText)) {
@@ -277,13 +277,13 @@ PROMPT.$text;
         $this->modelUsed = null;
         $this->inputTokens = 0;
         $this->outputTokens = 0;
-        $this->processingCostCents = 0;
+        $this->processingCostUsd = 0;
     }
 
     /**
      * Calculate processing cost based on model and token usage
      */
-    private function calculateProcessingCost(string $model, int $inputTokens, int $outputTokens): int
+    private function calculateProcessingCost(string $model, int $inputTokens, int $outputTokens): float
     {
         // Pricing as of October 2026 - prices are in dollars
         $pricing = [
@@ -319,6 +319,6 @@ PROMPT.$text;
         $costDollars = (($inputTokens * $modelPricing['input']) +
                         ($outputTokens * $modelPricing['output'])) / 1000000;
 
-        return (int) round($costDollars * 100);
+        return round($costDollars, 4);
     }
 }

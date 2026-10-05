@@ -124,7 +124,7 @@ class ParseDocumentJob implements ShouldQueue
                 'model_used' => $parseResult['model_used'] ?? null,
                 'input_tokens' => $parseResult['input_tokens'] ?? null,
                 'output_tokens' => $parseResult['output_tokens'] ?? null,
-                'processing_cost_cents' => $parseResult['processing_cost_cents'] ?? null,
+                'processing_cost_usd' => $parseResult['processing_cost_usd'] ?? null,
             ]);
 
             // Update document status
@@ -140,7 +140,7 @@ class ParseDocumentJob implements ShouldQueue
                     'model_used' => $parseResult['model_used'] ?? null,
                     'input_tokens' => $parseResult['input_tokens'] ?? null,
                     'output_tokens' => $parseResult['output_tokens'] ?? null,
-                    'processing_cost_cents' => $parseResult['processing_cost_cents'] ?? null,
+                    'processing_cost_usd' => $parseResult['processing_cost_usd'] ?? null,
                 ]);
             } catch (\Throwable $logError) {
                 error_log('ParseDocumentJob logging warning: '.$logError->getMessage());

@@ -23,7 +23,7 @@ class DocumentParseResult extends BaseModel
         'model_used',
         'input_tokens',
         'output_tokens',
-        'processing_cost_cents',
+        'processing_cost_usd',
     ];
 
     protected $casts = [
@@ -38,7 +38,7 @@ class DocumentParseResult extends BaseModel
         'edited_at' => 'datetime',
         'input_tokens' => 'integer',
         'output_tokens' => 'integer',
-        'processing_cost_cents' => 'integer',
+        'processing_cost_usd' => 'float',
     ];
 
     // ===== Relationships =====

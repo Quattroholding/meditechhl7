@@ -16,7 +16,7 @@ class InventoryAiDocumentParser extends BaseDocumentParser
 
     private int $outputTokens = 0;
 
-    private int $processingCostCents = 0;
+    private float $processingCostUsd = 0.0;
 
     public function parse(array $googleAIResponse): array
     {
@@ -36,7 +36,7 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                     'model_used' => null,
                     'input_tokens' => null,
                     'output_tokens' => null,
-                    'processing_cost_cents' => null,
+                    'processing_cost_usd' => null,
                 ]);
             }
 
@@ -68,7 +68,7 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                     'model_used' => $this->modelUsed,
                     'input_tokens' => $this->inputTokens,
                     'output_tokens' => $this->outputTokens,
-                    'processing_cost_cents' => $this->processingCostCents,
+                    'processing_cost_usd' => $this->processingCostUsd,
                 ]);
             }
 
@@ -107,7 +107,7 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 'model_used' => $this->modelUsed,
                 'input_tokens' => $this->inputTokens,
                 'output_tokens' => $this->outputTokens,
-                'processing_cost_cents' => $this->processingCostCents,
+                'processing_cost_usd' => $this->processingCostUsd,
             ]);
 
         } catch (\Exception $e) {
@@ -122,7 +122,7 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 'model_used' => $this->modelUsed,
                 'input_tokens' => $this->inputTokens,
                 'output_tokens' => $this->outputTokens,
-                'processing_cost_cents' => $this->processingCostCents,
+                'processing_cost_usd' => $this->processingCostUsd,
             ]);
         }
     }
@@ -199,7 +199,7 @@ class InventoryAiDocumentParser extends BaseDocumentParser
             $this->outputTokens = (int) ($usage['output_tokens'] ?? 0);
 
             // Calculate cost based on model
-            $this->processingCostCents = $this->calculateProcessingCost(
+            $this->processingCostUsd = $this->calculateProcessingCost(
                 $this->modelUsed,
                 $this->inputTokens,
                 $this->outputTokens
@@ -210,7 +210,7 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 'input_tokens' => $this->inputTokens,
                 'output_tokens' => $this->outputTokens,
                 'total_tokens' => $this->inputTokens + $this->outputTokens,
-                'cost_cents' => $this->processingCostCents,
+                'cost_cents' => $this->processingCostUsd,
             ]);
 
             Log::info('InventoryAiDocumentParser: Claude raw response', [
@@ -241,7 +241,7 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                             'model' => $this->modelUsed,
                             'input_tokens' => $this->inputTokens,
                             'output_tokens' => $this->outputTokens,
-                            'cost_cents' => $this->processingCostCents,
+                            'cost_cents' => $this->processingCostUsd,
                         ],
                     ];
                 } else {
@@ -478,7 +478,7 @@ PROMPT;
      * @param  int  $outputTokens  Output tokens used
      * @return int Cost in cents (hundredths of USD)
      */
-    private function calculateProcessingCost(string $model, int $inputTokens, int $outputTokens): int
+    private function calculateProcessingCost(string $model, int $inputTokens, int $outputTokens): float
     {
         // Pricing as of October 2026 - prices are in dollars
         $pricing = [
@@ -514,6 +514,6 @@ PROMPT;
         $costDollars = (($inputTokens * $modelPricing['input']) +
                         ($outputTokens * $modelPricing['output'])) / 1000000;
 
-        return (int) round($costDollars * 100);
+        return round($costDollars, 4);
     }
 }
