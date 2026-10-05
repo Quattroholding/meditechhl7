@@ -121,6 +121,10 @@ class ParseDocumentJob implements ShouldQueue
                 )),
                 'batch_info' => ! empty($parseResult['batch_info']) ? json_encode($parseResult['batch_info']) : null,
                 'additional_fields' => ! empty($parseResult['additional_fields']) ? json_encode($parseResult['additional_fields']) : null,
+                'model_used' => $parseResult['model_used'] ?? null,
+                'input_tokens' => $parseResult['input_tokens'] ?? null,
+                'output_tokens' => $parseResult['output_tokens'] ?? null,
+                'processing_cost_cents' => $parseResult['processing_cost_cents'] ?? null,
             ]);
 
             // Update document status
@@ -133,6 +137,10 @@ class ParseDocumentJob implements ShouldQueue
                     'confidence' => $parseResult['confidence'],
                     'warnings' => count($parseResult['warnings'] ?? []),
                     'errors' => count($parseResult['errors'] ?? []),
+                    'model_used' => $parseResult['model_used'] ?? null,
+                    'input_tokens' => $parseResult['input_tokens'] ?? null,
+                    'output_tokens' => $parseResult['output_tokens'] ?? null,
+                    'processing_cost_cents' => $parseResult['processing_cost_cents'] ?? null,
                 ]);
             } catch (\Throwable $logError) {
                 error_log('ParseDocumentJob logging warning: '.$logError->getMessage());

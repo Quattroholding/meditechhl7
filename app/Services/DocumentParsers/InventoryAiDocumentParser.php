@@ -9,6 +9,15 @@ class InventoryAiDocumentParser extends BaseDocumentParser
 {
     private const MAX_TEXT_LENGTH = 50000; // Claude's practical limit
 
+    // Track API usage for cost calculations
+    private ?string $modelUsed = null;
+
+    private int $inputTokens = 0;
+
+    private int $outputTokens = 0;
+
+    private int $processingCostCents = 0;
+
     public function parse(array $googleAIResponse): array
     {
         $this->reset();
@@ -34,7 +43,8 @@ class InventoryAiDocumentParser extends BaseDocumentParser
             }
 
             // Call Claude API
-            $extractedData = $this->analyzeWithClaude($text);
+            $claudeResponse = $this->analyzeWithClaude($text);
+            $extractedData = $claudeResponse['data'] ?? [];
 
             if (empty($extractedData) || empty($extractedData['items'])) {
                 $itemsCount = count($extractedData['items'] ?? []);
@@ -86,6 +96,10 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 'supplier_name' => $extractedData['supplier_name'] ?? null,
                 'batch_info' => $extractedData['batch_info'] ?? [],
                 'detected_format' => 'ai_parsed',
+                'model_used' => $this->modelUsed,
+                'input_tokens' => $this->inputTokens,
+                'output_tokens' => $this->outputTokens,
+                'processing_cost_cents' => $this->processingCostCents,
             ]);
 
         } catch (\Exception $e) {
@@ -138,11 +152,13 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 'prompt_length' => strlen($prompt),
             ]);
 
+            $model = config('services.claude.default_model', 'claude-opus-4-5-20251101');
+
             $response = Http::withHeaders([
                 'x-api-key' => config('services.claude.api_key'),
                 'anthropic-version' => config('services.claude.api_version', '2023-06-01'),
             ])->post(config('services.claude.api_url', 'https://api.anthropic.com/v1').'/messages', [
-                'model' => config('services.claude.default_model', 'claude-opus-4-5-20251101'),
+                'model' => $model,
                 'max_tokens' => 4096,
                 'messages' => [
                     [
@@ -163,6 +179,27 @@ class InventoryAiDocumentParser extends BaseDocumentParser
 
             $responseData = $response->json();
             $responseText = $responseData['content'][0]['text'] ?? '';
+
+            // Extract and store usage information
+            $usage = $responseData['usage'] ?? [];
+            $this->modelUsed = $model;
+            $this->inputTokens = (int) ($usage['input_tokens'] ?? 0);
+            $this->outputTokens = (int) ($usage['output_tokens'] ?? 0);
+
+            // Calculate cost based on model
+            $this->processingCostCents = $this->calculateProcessingCost(
+                $this->modelUsed,
+                $this->inputTokens,
+                $this->outputTokens
+            );
+
+            Log::info('InventoryAiDocumentParser: Claude API usage', [
+                'model' => $this->modelUsed,
+                'input_tokens' => $this->inputTokens,
+                'output_tokens' => $this->outputTokens,
+                'total_tokens' => $this->inputTokens + $this->outputTokens,
+                'cost_cents' => $this->processingCostCents,
+            ]);
 
             Log::info('InventoryAiDocumentParser: Claude raw response', [
                 'response' => substr($responseText, 0, 500),
@@ -185,7 +222,16 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                         'extracted_json' => substr(json_encode($data), 0, 500),
                     ]);
 
-                    return $data;
+                    // Return data with usage information
+                    return [
+                        'data' => $data,
+                        'usage' => [
+                            'model' => $this->modelUsed,
+                            'input_tokens' => $this->inputTokens,
+                            'output_tokens' => $this->outputTokens,
+                            'cost_cents' => $this->processingCostCents,
+                        ],
+                    ];
                 } else {
                     Log::error('InventoryAiDocumentParser: Invalid JSON', ['json' => $jsonStr]);
                 }
@@ -410,5 +456,48 @@ PROMPT;
         }
 
         return min(0.95, max(0.6, $score));
+    }
+
+    /**
+     * Calculate processing cost in cents based on model and token usage
+     *
+     * @param  string  $model  Claude model used
+     * @param  int  $inputTokens  Input tokens used
+     * @param  int  $outputTokens  Output tokens used
+     * @return int Cost in cents (hundredths of USD)
+     */
+    private function calculateProcessingCost(string $model, int $inputTokens, int $outputTokens): int
+    {
+        // Pricing as of October 2026
+        $pricing = [
+            'claude-sonnet-5' => [
+                'input' => 0.003, // $3 per million input tokens
+                'output' => 0.015, // $15 per million output tokens
+            ],
+            'claude-opus-4-5-20251101' => [
+                'input' => 0.015, // $15 per million input tokens
+                'output' => 0.075, // $75 per million output tokens
+            ],
+            'claude-opus-4' => [
+                'input' => 0.015,
+                'output' => 0.075,
+            ],
+            'claude-haiku-4-5' => [
+                'input' => 0.00080, // $0.80 per million input tokens
+                'output' => 0.004, // $4 per million output tokens
+            ],
+            'claude-haiku-4' => [
+                'input' => 0.00025,
+                'output' => 0.00125,
+            ],
+        ];
+
+        $modelPricing = $pricing[$model] ?? $pricing['claude-sonnet-5'];
+
+        // Calculate cost per million tokens, then convert to cents
+        $costDollars = ($inputTokens * $modelPricing['input'] / 1000000) +
+                       ($outputTokens * $modelPricing['output'] / 1000000);
+
+        return (int) round($costDollars * 100);
     }
 }
