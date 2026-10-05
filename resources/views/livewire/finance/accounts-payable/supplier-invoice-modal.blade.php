@@ -6,7 +6,7 @@
                 {{ $this->invoice ? 'Editar Factura' : 'Nueva Factura de Proveedor' }}
             </h3>
             <button
-                wire:click="$emit('closeModal')"
+                wire:click="$dispatch('closeModal')"
                 class="text-gray-500 hover:text-gray-700"
             >
                 ✕
@@ -212,10 +212,10 @@
             </div>
 
             {{-- Actions --}}
-            <div class="flex justify-end gap-2 pt-4">
+            <div class="flex justify-end gap-2 pt-4 border-t">
                 <button
                     type="button"
-                    wire:click="$emit('closeModal')"
+                    wire:click="$dispatch('closeModal')"
                     class="px-4 py-2 border rounded-lg hover:bg-gray-50"
                 >
                     Cancelar

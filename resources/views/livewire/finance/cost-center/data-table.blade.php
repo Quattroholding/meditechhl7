@@ -1,10 +1,18 @@
-<div>
-    <div class="row">
+<div class="page-wrapper">
+    <div class="row content">
+        @component('components.page-header')
+            @slot('title')
+                Centros de Costo
+            @endslot
+            @slot('li_1')
+                Módulo Financiero
+            @endslot
+        @endcomponent
         <div class="col-sm-12">
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header', ['show_create' => auth()->user()->can('cost-centers.create'), 'title' => 'Centros de Costo', 'li_1' => route('finance.cost-centers.create')])
+                    @component('components.table-header', ['show_create' => auth()->user()->can('cost-centers.create'), 'title' => '', 'li_1' => route('finance.cost-centers.create')])
                         @slot('filters')
                             <div class="d-flex flex-wrap gap-2">
                                 <div class="input-block local-forms mb-0">

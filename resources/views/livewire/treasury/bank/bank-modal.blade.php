@@ -3,10 +3,10 @@
         {{-- Header --}}
         <div class="sticky top-0 bg-gray-100 px-6 py-4 border-b flex justify-between items-center">
             <h3 class="text-lg font-bold">
-                {{ $this->supplier ? 'Editar Proveedor' : 'Nuevo Proveedor' }}
+                {{ $this->bank ? 'Editar Banco' : 'Nuevo Banco' }}
             </h3>
             <button
-                wire:click="$emit('closeModal')"
+                wire:click="$dispatch('closeModal')"
                 class="text-gray-500 hover:text-gray-700"
             >
                 ✕
@@ -15,102 +15,72 @@
 
         {{-- Form --}}
         <form wire:submit.prevent="save" class="p-6 space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-                {{-- RUC --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">RUC *</label>
-                    <input
-                        type="text"
-                        wire:model="ruc"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Ej: 123456789"
-                    />
-                    @error('ruc')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                {{-- Credit Days --}}
-                <div>
-                    <label class="block text-sm font-medium mb-1">Días de Crédito *</label>
-                    <input
-                        type="number"
-                        wire:model="credit_days"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        min="0"
-                        max="365"
-                    />
-                    @error('credit_days')
-                        <span class="text-red-600 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-
+            {{-- Bank Name --}}
             <div>
-                <label class="block text-sm font-medium mb-1">Razón Social *</label>
+                <label class="block text-sm font-medium mb-1">Nombre del Banco *</label>
                 <input
                     type="text"
-                    wire:model="legal_name"
+                    wire:model="bank_name"
                     class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Ej: Empresa XYZ S.A."
+                    placeholder="Ej: Banco Latinoamericano"
                 />
-                @error('legal_name')
+                @error('bank_name')
                     <span class="text-red-600 text-xs">{{ $message }}</span>
                 @enderror
             </div>
 
+            {{-- Account Number --}}
             <div>
-                <label class="block text-sm font-medium mb-1">Nombre Comercial</label>
+                <label class="block text-sm font-medium mb-1">Número de Cuenta *</label>
                 <input
                     type="text"
-                    wire:model="commercial_name"
+                    wire:model="account_number"
                     class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Ej: XYZ"
+                    placeholder="Ej: 123456789"
                 />
+                @error('account_number')
+                    <span class="text-red-600 text-xs">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                {{-- Email --}}
+                {{-- Account Type --}}
                 <div>
-                    <label class="block text-sm font-medium mb-1">Correo Electrónico</label>
-                    <input
-                        type="email"
-                        wire:model="email"
+                    <label class="block text-sm font-medium mb-1">Tipo de Cuenta *</label>
+                    <select
+                        wire:model="account_type"
                         class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                    >
+                        <option value="checking">Cuenta Corriente</option>
+                        <option value="savings">Cuenta de Ahorros</option>
+                        <option value="money_market">Mercado de Dinero</option>
+                        <option value="credit_line">Línea de Crédito</option>
+                    </select>
+                    @error('account_type')
+                        <span class="text-red-600 text-xs">{{ $message }}</span>
+                    @enderror
                 </div>
 
-                {{-- Phone --}}
+                {{-- Currency --}}
                 <div>
-                    <label class="block text-sm font-medium mb-1">Teléfono</label>
-                    <input
-                        type="tel"
-                        wire:model="phone"
+                    <label class="block text-sm font-medium mb-1">Moneda *</label>
+                    <select
+                        wire:model="currency"
                         class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                    >
+                        <option value="PAB">Balboa (PAB)</option>
+                        <option value="USD">Dólar (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                    </select>
+                    @error('currency')
+                        <span class="text-red-600 text-xs">{{ $message }}</span>
+                    @enderror
                 </div>
             </div>
 
+            {{-- Accounting Account --}}
             <div>
-                <label class="block text-sm font-medium mb-1">Persona de Contacto</label>
-                <input
-                    type="text"
-                    wire:model="contact_person"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-1">Dirección</label>
-                <textarea
-                    wire:model="address"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows="2"
-                ></textarea>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-1">Cuenta Contable CxP *</label>
+                <label class="block text-sm font-medium mb-1">Cuenta Contable *</label>
                 <select
                     wire:model="accounting_account_id"
                     class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -127,6 +97,7 @@
                 @enderror
             </div>
 
+            {{-- Status --}}
             <div>
                 <label class="block text-sm font-medium mb-1">Estado</label>
                 <select
@@ -135,6 +106,7 @@
                 >
                     <option value="active">Activo</option>
                     <option value="inactive">Inactivo</option>
+                    <option value="suspended">Suspendido</option>
                 </select>
             </div>
 
@@ -147,11 +119,11 @@
                 >
                     Cancelar
                 </button>
-                @if ($this->supplier)
+                @if ($this->bank)
                     <button
                         type="button"
                         wire:click="delete"
-                        wire:confirm="¿Está seguro de que desea eliminar este proveedor?"
+                        wire:confirm="¿Está seguro de que desea eliminar este banco?"
                         class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                     >
                         Eliminar

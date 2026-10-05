@@ -59,7 +59,7 @@ class AccountsReceivableService
         AccountsReceivable $receivable,
         float $amount
     ): void {
-        return DB::transaction(function () use ($receivable, $amount) {
+        DB::transaction(function () use ($receivable, $amount) {
             $receivable->applyPayment($amount);
 
             // Generar asiento contable: Débito Banco/Caja, Crédito CxC

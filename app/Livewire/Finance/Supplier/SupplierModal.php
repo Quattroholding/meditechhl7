@@ -133,6 +133,16 @@ class SupplierModal extends Component
         $this->dispatch('closeModal');
     }
 
+    public function delete(): void
+    {
+        if ($this->supplier) {
+            $this->authorize('payables.suppliers.manage');
+            $this->supplier->delete();
+            $this->dispatch('supplier-saved');
+            $this->dispatch('closeModal');
+        }
+    }
+
     public function getAccountingAccountsProperty()
     {
         return AccountingAccount::where('client_id', auth()->user()->getCurrentClient()->id)
