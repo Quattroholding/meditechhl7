@@ -7,6 +7,15 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 
 class AnthropicDocumentParser extends BaseDocumentParser
 {
+    // Track API usage for cost calculations
+    private ?string $modelUsed = null;
+
+    private int $inputTokens = 0;
+
+    private int $outputTokens = 0;
+
+    private int $processingCostCents = 0;
+
     /**
      * Parse document using Claude AI to intelligently extract fields
      *
@@ -25,6 +34,10 @@ class AnthropicDocumentParser extends BaseDocumentParser
 
                 return $this->getResultWithMetadata($googleAIResponse, [
                     'items' => [],
+                    'model_used' => null,
+                    'input_tokens' => null,
+                    'output_tokens' => null,
+                    'processing_cost_cents' => null,
                 ]);
             }
 
@@ -36,6 +49,10 @@ class AnthropicDocumentParser extends BaseDocumentParser
 
                 return $this->getResultWithMetadata($googleAIResponse, [
                     'items' => [],
+                    'model_used' => $this->modelUsed,
+                    'input_tokens' => $this->inputTokens,
+                    'output_tokens' => $this->outputTokens,
+                    'processing_cost_cents' => $this->processingCostCents,
                 ]);
             }
 
@@ -45,7 +62,13 @@ class AnthropicDocumentParser extends BaseDocumentParser
 
             return $this->getResultWithMetadata($googleAIResponse, array_merge(
                 ['items' => []],
-                $extractedData
+                $extractedData,
+                [
+                    'model_used' => $this->modelUsed,
+                    'input_tokens' => $this->inputTokens,
+                    'output_tokens' => $this->outputTokens,
+                    'processing_cost_cents' => $this->processingCostCents,
+                ]
             ));
 
         } catch (\Exception $e) {
@@ -53,6 +76,10 @@ class AnthropicDocumentParser extends BaseDocumentParser
 
             return $this->getResultWithMetadata($googleAIResponse, [
                 'items' => [],
+                'model_used' => $this->modelUsed,
+                'input_tokens' => $this->inputTokens,
+                'output_tokens' => $this->outputTokens,
+                'processing_cost_cents' => $this->processingCostCents,
             ]);
         }
     }
@@ -98,6 +125,27 @@ class AnthropicDocumentParser extends BaseDocumentParser
 
             $responseData = $response->json();
             $responseText = $responseData['content'][0]['text'] ?? '';
+
+            // Extract and store usage information
+            $usage = $responseData['usage'] ?? [];
+            $this->modelUsed = 'claude-opus-4-5-20251101';
+            $this->inputTokens = (int) ($usage['input_tokens'] ?? 0);
+            $this->outputTokens = (int) ($usage['output_tokens'] ?? 0);
+
+            // Calculate cost based on model
+            $this->processingCostCents = $this->calculateProcessingCost(
+                $this->modelUsed,
+                $this->inputTokens,
+                $this->outputTokens
+            );
+
+            LaravelLog::info('AnthropicDocumentParser: Claude API usage', [
+                'model' => $this->modelUsed,
+                'input_tokens' => $this->inputTokens,
+                'output_tokens' => $this->outputTokens,
+                'total_tokens' => $this->inputTokens + $this->outputTokens,
+                'cost_cents' => $this->processingCostCents,
+            ]);
 
             if (empty($responseText)) {
                 LaravelLog::error('Claude API: Empty response', ['response' => $responseData]);
@@ -217,5 +265,59 @@ PROMPT.$text;
         $optionalBonus = ($foundOptional / count($optionalFields)) * 0.1;
 
         return min(0.95, $baseConfidence + $optionalBonus);
+    }
+
+    /**
+     * Reset parser state including cost tracking
+     */
+    protected function reset(): void
+    {
+        parent::reset();
+        $this->modelUsed = null;
+        $this->inputTokens = 0;
+        $this->outputTokens = 0;
+        $this->processingCostCents = 0;
+    }
+
+    /**
+     * Calculate processing cost based on model and token usage
+     */
+    private function calculateProcessingCost(string $model, int $inputTokens, int $outputTokens): int
+    {
+        // Pricing as of October 2026 - prices are in dollars
+        $pricing = [
+            'claude-sonnet-5' => [
+                'input' => 3, // $3 per million input tokens
+                'output' => 15, // $15 per million output tokens
+            ],
+            'claude-sonnet-4-5' => [
+                'input' => 3, // $3 per million input tokens
+                'output' => 15, // $15 per million output tokens
+            ],
+            'claude-opus-4-5-20251101' => [
+                'input' => 15, // $15 per million input tokens
+                'output' => 75, // $75 per million output tokens
+            ],
+            'claude-opus-4' => [
+                'input' => 15,
+                'output' => 75,
+            ],
+            'claude-haiku-4-5' => [
+                'input' => 0.80, // $0.80 per million input tokens
+                'output' => 4, // $4 per million output tokens
+            ],
+            'claude-haiku-4' => [
+                'input' => 0.25,
+                'output' => 1.25,
+            ],
+        ];
+
+        $modelPricing = $pricing[$model] ?? $pricing['claude-opus-4-5-20251101'];
+
+        // Calculate cost: (tokens / million) * price_per_million = cost_in_dollars
+        $costDollars = (($inputTokens * $modelPricing['input']) +
+                        ($outputTokens * $modelPricing['output'])) / 1000000;
+
+        return (int) round($costDollars * 100);
     }
 }
