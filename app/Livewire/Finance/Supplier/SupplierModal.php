@@ -10,6 +10,8 @@ use Livewire\Component;
 
 class SupplierModal extends Component
 {
+    public bool $isModal = true;
+
     public ?Supplier $supplier = null;
 
     #[Validate]

@@ -11,6 +11,8 @@ use Livewire\Component;
 
 class CostCenterModal extends Component
 {
+    public bool $isModal = true;
+
     public ?CostCenter $costCenter = null;
 
     #[Validate]

@@ -1,7 +1,6 @@
 <x-app-layout>
     <div class="page-wrapper">
-        <div class="content">
-            <!-- Page Header -->
+        <div class="row content">
             @component('components.page-header')
                 @slot('title')
                     Editar Proveedor
@@ -10,12 +9,16 @@
                     Módulo Financiero
                 @endslot
             @endcomponent
-
-            <div class="card">
-                <div class="card-body text-center py-5">
-                    <h4>En Construcción</h4>
-                    <p class="text-muted mt-3">Esta página será implementada en la siguiente iteración del Sprint 3</p>
-                    <small class="text-secondary">Ruta: finance/payables/suppliers/edit</small>
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="col-12">
+                            <div class="form-heading">
+                                <h4>Editar Proveedor</h4>
+                            </div>
+                        </div>
+                        @livewire('finance.supplier.supplier-modal', ['isModal' => false, 'supplier' => $supplier])
+                    </div>
                 </div>
             </div>
         </div>

@@ -3,10 +3,10 @@
         <div class="row content">
             @component('components.page-header')
                 @slot('title')
-                    Crear Proveedor
+                    Editar Método de Pago
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Tesorería
                 @endslot
             @endcomponent
             <div class="col-sm-12">
@@ -14,10 +14,10 @@
                     <div class="card-body">
                         <div class="col-12">
                             <div class="form-heading">
-                                <h4>Crear Proveedor</h4>
+                                <h4>Editar Método de Pago</h4>
                             </div>
                         </div>
-                        @livewire('finance.supplier.supplier-modal', ['isModal' => false])
+                        @livewire('treasury.payment-method.payment-method-modal', ['isModal' => false, 'paymentMethod' => $paymentMethod])
                     </div>
                 </div>
             </div>

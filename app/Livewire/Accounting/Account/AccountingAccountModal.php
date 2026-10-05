@@ -9,6 +9,8 @@ use Livewire\Component;
 
 class AccountingAccountModal extends Component
 {
+    public bool $isModal = true;
+
     public ?AccountingAccount $account = null;
 
     #[Validate]

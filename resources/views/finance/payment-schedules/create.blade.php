@@ -3,10 +3,10 @@
         <div class="content">
             @component('components.page-header')
                 @slot('title')
-                    Crear Caja
+                    Crear Programa de Pagos
                 @endslot
                 @slot('li_1')
-                    Tesorería
+                    Módulo Financiero
                 @endslot
             @endcomponent
 
@@ -16,10 +16,10 @@
                         <div class="card-body">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4>Crear Caja</h4>
+                                    <h4>Crear Programa de Pagos</h4>
                                 </div>
                             </div>
-                            @livewire('treasury.cash-register.cash-register-modal', ['isModal' => false])
+                            @livewire('finance.accounts-payable.payment-schedule-modal', ['isModal' => false, 'invoice' => $invoice])
                         </div>
                     </div>
                 </div>

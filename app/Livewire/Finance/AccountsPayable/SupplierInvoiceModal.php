@@ -11,6 +11,8 @@ use Livewire\Component;
 
 class SupplierInvoiceModal extends Component
 {
+    public bool $isModal = true;
+
     public ?SupplierInvoice $invoice = null;
 
     #[Validate]

@@ -10,6 +10,8 @@ use Livewire\Component;
 
 class PaymentMethodModal extends Component
 {
+    public bool $isModal = true;
+
     public ?PaymentMethod $paymentMethod = null;
 
     #[Validate]

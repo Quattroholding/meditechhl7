@@ -11,6 +11,8 @@ use Livewire\Component;
 
 class CashRegisterModal extends Component
 {
+    public bool $isModal = true;
+
     public ?CashRegister $cashRegister = null;
 
     #[Validate]

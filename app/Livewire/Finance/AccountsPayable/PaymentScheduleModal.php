@@ -9,6 +9,8 @@ use Livewire\Component;
 
 class PaymentScheduleModal extends Component
 {
+    public bool $isModal = true;
+
     public SupplierInvoice $invoice;
 
     public array $schedules = [];

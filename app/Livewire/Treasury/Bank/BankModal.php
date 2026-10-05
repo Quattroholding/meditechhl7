@@ -9,6 +9,8 @@ use Livewire\Component;
 
 class BankModal extends Component
 {
+    public bool $isModal = true;
+
     public ?Bank $bank = null;
 
     #[Validate]

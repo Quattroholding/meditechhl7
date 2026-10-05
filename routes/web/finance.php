@@ -20,6 +20,14 @@ use App\Livewire\Finance\AccountsPayable\InvoiceDataTable;
 use App\Livewire\Finance\AccountsReceivable\DataTable as ReceivablesDataTable;
 use App\Livewire\Finance\CostCenter\DataTable as CostCenterDataTable;
 use App\Livewire\Finance\Supplier\DataTable as SupplierDataTable;
+use App\Models\Accounting\AccountingAccount;
+use App\Models\Accounting\JournalEntry;
+use App\Models\Finance\CostCenter;
+use App\Models\Supplier;
+use App\Models\SupplierInvoice;
+use App\Models\Treasury\Bank;
+use App\Models\Treasury\CashRegister;
+use App\Models\Treasury\PaymentMethod;
 use Illuminate\Support\Facades\Route;
 
 // ============================================================================
@@ -36,8 +44,8 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:cost-centers.v
     });
 
     Route::middleware('permission:cost-centers.edit')->group(function () {
-        Route::get('/{costCenter}/edit', function () {
-            return view('finance.cost-centers.edit');
+        Route::get('/{costCenter}/edit', function (CostCenter $costCenter) {
+            return view('finance.cost-centers.edit', ['costCenter' => $costCenter]);
         })->name('edit');
     });
 });
@@ -51,6 +59,18 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:accounting.vie
     // Plan de Cuentas
     Route::get('/accounts', AccountDataTable::class)->name('accounts');
 
+    Route::middleware('permission:accounting.accounts.create')->group(function () {
+        Route::get('/accounts/create', function () {
+            return view('accounting.accounts.create');
+        })->name('accounts.create');
+    });
+
+    Route::middleware('permission:accounting.accounts.edit')->group(function () {
+        Route::get('/accounts/{account}/edit', function (AccountingAccount $account) {
+            return view('accounting.accounts.edit', ['account' => $account]);
+        })->name('accounts.edit');
+    });
+
     // Asientos Contables
     Route::middleware('permission:accounting.entries.view')->group(function () {
         Route::get('/journal-entries', JournalEntryDataTable::class)->name('journal-entries');
@@ -60,8 +80,8 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:accounting.vie
                 return view('accounting.journal-entries.create');
             })->name('journal-entries.create');
 
-            Route::get('/journal-entries/{journalEntry}/edit', function () {
-                return view('accounting.journal-entries.edit');
+            Route::get('/journal-entries/{journalEntry}/edit', function (JournalEntry $journalEntry) {
+                return view('accounting.journal-entries.edit', ['journalEntry' => $journalEntry]);
             })->name('journal-entries.edit');
         });
 
@@ -126,8 +146,8 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:payables.view'
             return view('finance.payables.suppliers.create');
         })->name('create');
 
-        Route::get('/{supplier}/edit', function () {
-            return view('finance.payables.suppliers.edit');
+        Route::get('/{supplier}/edit', function (Supplier $supplier) {
+            return view('finance.payables.suppliers.edit', ['supplier' => $supplier]);
         })->name('edit');
 
         Route::get('/{supplier}', function () {
@@ -143,8 +163,8 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:payables.view'
             return view('finance.payables.invoices.create');
         })->name('create');
 
-        Route::get('/{invoice}/edit', function () {
-            return view('finance.payables.invoices.edit');
+        Route::get('/{invoice}/edit', function (SupplierInvoice $invoice) {
+            return view('finance.payables.invoices.edit', ['invoice' => $invoice]);
         })->name('edit');
 
         Route::get('/{invoice}', function () {
@@ -174,8 +194,8 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.view'
             return view('treasury.banks.create');
         })->name('create');
 
-        Route::get('/{bank}/edit', function () {
-            return view('treasury.banks.edit');
+        Route::get('/{bank}/edit', function (Bank $bank) {
+            return view('treasury.banks.edit', ['bank' => $bank]);
         })->name('edit');
 
         Route::get('/{bank}', function () {
@@ -197,8 +217,8 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.view'
             return view('treasury.cash-registers.create');
         })->name('create');
 
-        Route::get('/{cashRegister}/edit', function () {
-            return view('treasury.cash-registers.edit');
+        Route::get('/{cashRegister}/edit', function (CashRegister $cashRegister) {
+            return view('treasury.cash-registers.edit', ['cashRegister' => $cashRegister]);
         })->name('edit');
 
         Route::get('/{cashRegister}', function () {
@@ -208,6 +228,21 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.view'
         Route::get('/{cashRegister}/movements', function () {
             return view('treasury.cash-registers.movements');
         })->name('movements');
+    });
+
+    // Métodos de Pago
+    Route::middleware('permission:treasury.payment-methods.manage')->prefix('payment-methods')->name('payment-methods.')->group(function () {
+        Route::get('/', function () {
+            return view('treasury.payment-methods.index');
+        })->name('index');
+
+        Route::get('/create', function () {
+            return view('treasury.payment-methods.create');
+        })->name('create');
+
+        Route::get('/{paymentMethod}/edit', function (PaymentMethod $paymentMethod) {
+            return view('treasury.payment-methods.edit', ['paymentMethod' => $paymentMethod]);
+        })->name('edit');
     });
 
     // Movimientos de Tesorería

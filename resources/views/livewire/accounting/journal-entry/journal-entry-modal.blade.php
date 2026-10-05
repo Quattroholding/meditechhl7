@@ -1,20 +1,24 @@
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg max-w-5xl w-full max-h-[95vh] overflow-y-auto">
-        {{-- Header --}}
-        <div class="sticky top-0 bg-gray-100 px-6 py-4 border-b flex justify-between items-center">
-            <h3 class="text-lg font-bold">
-                {{ $this->entry ? 'Editar Asiento Contable' : 'Nuevo Asiento Contable' }}
-            </h3>
-            <button
-                wire:click="$dispatch('closeModal')"
-                class="text-gray-500 hover:text-gray-700"
-            >
-                ✕
-            </button>
-        </div>
+@if($isModal)
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-5xl w-full max-h-[95vh] overflow-y-auto">
+            {{-- Header --}}
+            <div class="sticky top-0 bg-gray-100 px-6 py-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-bold">
+                    {{ $this->entry ? 'Editar Asiento Contable' : 'Nuevo Asiento Contable' }}
+                </h3>
+                <button
+                    wire:click="$dispatch('closeModal')"
+                    class="text-gray-500 hover:text-gray-700"
+                >
+                    ✕
+                </button>
+            </div>
 
-        {{-- Form --}}
-        <form wire:submit.prevent="save" class="p-6 space-y-4">
+            {{-- Form --}}
+            <form wire:submit.prevent="save" class="p-6 space-y-4">
+@else
+    <form wire:submit.prevent="save" class="space-y-4">
+@endif
             {{-- Header Section --}}
             <div class="grid grid-cols-2 gap-4">
                 {{-- Entry Date --}}
@@ -222,13 +226,15 @@
 
             {{-- Actions --}}
             <div class="flex justify-end gap-2 pt-4 border-t">
-                <button
-                    type="button"
-                    wire:click="$dispatch('closeModal')"
-                    class="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                >
-                    Cancelar
-                </button>
+                @if($isModal)
+                    <button
+                        type="button"
+                        wire:click="$dispatch('closeModal')"
+                        class="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                    >
+                        Cancelar
+                    </button>
+                @endif
                 @if ($this->entry && $this->entry->isDraft())
                     <button
                         type="button"
@@ -247,6 +253,8 @@
                     Guardar
                 </button>
             </div>
-        </form>
-    </div>
-</div>
+            </form>
+        @if($isModal)
+            </div>
+        </div>
+        @endif

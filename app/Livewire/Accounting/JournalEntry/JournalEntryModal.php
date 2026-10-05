@@ -11,6 +11,8 @@ use Livewire\Component;
 
 class JournalEntryModal extends Component
 {
+    public bool $isModal = true;
+
     public ?JournalEntry $entry = null;
 
     #[Validate]
