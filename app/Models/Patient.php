@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Finance\AccountsReceivable;
 use App\Models\Scopes\PatientScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class Patient extends BaseModel
 {
@@ -23,6 +25,8 @@ class Patient extends BaseModel
         'marital_status', 'multiple_birth', 'multiple_birth_count', 'blood_type', 'whatsapp_phone',
         'country_id', 'state_id', 'contact_name', 'contact_email', 'contact_phone', 'creation_source',
         'scb_id', 'communication',
+        // Financial fields
+        'allows_credit', 'credit_limit', 'credit_days', 'credit_status',
     ];
 
     protected $casts = [
@@ -30,6 +34,11 @@ class Patient extends BaseModel
         'deceased_date' => 'datetime',
         'deceased' => 'boolean',
         'multiple_birth' => 'boolean',
+        // Financial casts
+        'allows_credit' => 'boolean',
+        'credit_limit' => 'decimal:2',
+        'credit_days' => 'integer',
+        'credit_status' => 'string',
     ];
 
     /**
@@ -38,6 +47,13 @@ class Patient extends BaseModel
     protected static function booted(): void
     {
         static::addGlobalScope(new PatientScope);
+
+        // Validate financial fields when credit is enabled
+        static::saving(function ($model) {
+            if ($model->allows_credit && ($model->credit_limit === null || $model->credit_days === null)) {
+                throw new \Exception('Si permite crédito, debe definir límite y días de plazo');
+            }
+        });
     }
 
     public function routeNotificationForMail($notification = null)
@@ -335,6 +351,12 @@ class Patient extends BaseModel
         return $this->hasMany(InvoicePayment::class);
     }
 
+    // Financial relationships
+    public function accountsReceivable(): HasMany
+    {
+        return $this->hasMany(AccountsReceivable::class);
+    }
+
     public function hasActiveInsurance(): bool
     {
         return $this->activeInsurancePolicies()->exists();
@@ -451,5 +473,63 @@ class Patient extends BaseModel
 
         return 'Masculino';
 
+    }
+
+    // Financial methods
+    public function canUseCredit(): bool
+    {
+        return $this->allows_credit
+            && $this->credit_status !== 'blocked'
+            && $this->credit_status !== 'suspended';
+    }
+
+    public function hasAvailableCredit(float $amount): bool
+    {
+        if (! $this->canUseCredit()) {
+            return false;
+        }
+
+        return $this->getAvailableCredit() >= $amount;
+    }
+
+    public function getCurrentBalance(): float
+    {
+        return (float) $this->accountsReceivable()
+            ->sum('balance');
+    }
+
+    public function getTotalCreditLimit(): float
+    {
+        return (float) ($this->credit_limit ?? 0);
+    }
+
+    public function getAvailableCredit(): float
+    {
+        return max(0, $this->getTotalCreditLimit() - $this->getCurrentBalance());
+    }
+
+    public function createOrFindAccountsReceivable(): AccountsReceivable
+    {
+        return $this->accountsReceivable()
+            ->where('status', '!=', 'paid')
+            ->first() ?? $this->accountsReceivable()->create([
+                'uuid' => Str::uuid(),
+                'client_id' => auth()->user()?->getCurrentClient()?->id,
+                'status' => 'pending',
+                'original_amount' => 0,
+                'paid_amount' => 0,
+                'balance' => 0,
+            ]);
+    }
+
+    // Financial scopes
+    public function scopeCreditEnabled($query)
+    {
+        return $query->where('allows_credit', true);
+    }
+
+    public function scopeCreditBlocked($query)
+    {
+        return $query->where('credit_status', 'blocked');
     }
 }

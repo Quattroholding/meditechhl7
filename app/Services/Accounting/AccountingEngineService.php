@@ -4,11 +4,14 @@ namespace App\Services\Accounting;
 
 use App\Enums\JournalEntryStatus;
 use App\Models\AccountingAccount;
+use App\Models\Invoice;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
+use App\Models\Payment;
 use App\Models\PaymentSchedule;
 use App\Models\SupplierInvoice;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AccountingEngineService
 {
@@ -30,6 +33,11 @@ class AccountingEngineService
     public function processEvent(string $eventCode, $source, array $data = []): ?JournalEntry
     {
         return match ($eventCode) {
+            // Eventos de Invoice
+            'INVOICE_CASH' => $this->processInvoiceCash($source, $data),
+            'INVOICE_CREDIT' => $this->processInvoiceCredit($source, $data),
+            'PAYMENT_RECEIVED' => $this->processPaymentReceived($source, $data),
+            // Eventos de SupplierInvoice
             'SUPPLIER_INVOICE_CREATED' => $this->processSupplierInvoiceCreated($source),
             'SUPPLIER_INVOICE_APPROVED' => $this->processSupplierInvoiceApproved($source),
             'SUPPLIER_PAYMENT' => $this->processSupplierPayment($source),
@@ -228,5 +236,263 @@ class AccountingEngineService
         }
 
         throw new \Exception('No se puede regenerar asiento de tipo desconocido');
+    }
+
+    /**
+     * Genera asiento contable para factura de contado (paid)
+     * Débito: Banco/Caja (según payment_method)
+     * Crédito: Ingreso por Servicios
+     */
+    public function processInvoiceCash(Invoice $invoice, array $data = []): ?JournalEntry
+    {
+        return DB::transaction(function () use ($invoice, $data) {
+            try {
+                $period = $this->accountingService->getCurrentPeriod($invoice->client_id);
+
+                $entry = JournalEntry::create([
+                    'client_id' => $invoice->client_id,
+                    'entry_date' => now()->toDateString(),
+                    'document_type' => 'invoice',
+                    'document_number' => $invoice->invoice_number,
+                    'description' => "Factura de contado {$invoice->invoice_number} - Paciente: {$invoice->patient->full_name}",
+                    'status' => JournalEntryStatus::POSTED,
+                    'accounting_period_id' => $period->id,
+                    'source_type' => Invoice::class,
+                    'source_id' => $invoice->id,
+                    'posted_at' => now(),
+                    'posted_by' => auth()->id(),
+                    'created_by' => auth()->id(),
+                ]);
+
+                // Obtener cuenta contable de ingresos por servicios
+                $revenueAccount = $this->getIncomeAccount($invoice->client_id);
+
+                // Obtener cuenta de banco/caja según método de pago
+                $bankAccount = $this->getBankAccountForPaymentMethod(
+                    $invoice->client_id,
+                    $data['payment_method'] ?? $invoice->payment_method
+                );
+
+                // Línea débito: Banco/Caja
+                if ($bankAccount) {
+                    JournalEntryLine::create([
+                        'journal_entry_id' => $entry->id,
+                        'accounting_account_id' => $bankAccount->id,
+                        'debit' => $invoice->total_amount,
+                        'credit' => 0,
+                        'description' => "Ingreso por factura {$invoice->invoice_number}",
+                    ]);
+                }
+
+                // Línea crédito: Ingreso por Servicios
+                JournalEntryLine::create([
+                    'journal_entry_id' => $entry->id,
+                    'accounting_account_id' => $revenueAccount->id,
+                    'debit' => 0,
+                    'credit' => $invoice->total_amount,
+                    'description' => "Ingreso por servicios factura {$invoice->invoice_number}",
+                ]);
+
+                // Actualizar balances
+                $entry->lines->each(fn ($line) => $line->accountingAccount->updateBalance());
+
+                return $entry;
+            } catch (\Exception $e) {
+                Log::error('Failed to process invoice cash entry', [
+                    'invoice_id' => $invoice->id,
+                    'error' => $e->getMessage(),
+                ]);
+
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Genera asiento contable para factura a crédito
+     * Débito: Cuentas por Cobrar
+     * Crédito: Ingreso por Servicios
+     */
+    public function processInvoiceCredit(Invoice $invoice, array $data = []): ?JournalEntry
+    {
+        return DB::transaction(function () use ($invoice) {
+            try {
+                $period = $this->accountingService->getCurrentPeriod($invoice->client_id);
+
+                $entry = JournalEntry::create([
+                    'client_id' => $invoice->client_id,
+                    'entry_date' => now()->toDateString(),
+                    'document_type' => 'invoice',
+                    'document_number' => $invoice->invoice_number,
+                    'description' => "Factura a crédito {$invoice->invoice_number} - Paciente: {$invoice->patient->full_name}",
+                    'status' => JournalEntryStatus::POSTED,
+                    'accounting_period_id' => $period->id,
+                    'source_type' => Invoice::class,
+                    'source_id' => $invoice->id,
+                    'posted_at' => now(),
+                    'posted_by' => auth()->id(),
+                    'created_by' => auth()->id(),
+                ]);
+
+                // Obtener cuentas
+                $receivableAccount = $this->getReceivableAccount($invoice->client_id);
+                $revenueAccount = $this->getIncomeAccount($invoice->client_id);
+
+                // Línea débito: Cuentas por Cobrar
+                JournalEntryLine::create([
+                    'journal_entry_id' => $entry->id,
+                    'accounting_account_id' => $receivableAccount->id,
+                    'debit' => $invoice->total_amount,
+                    'credit' => 0,
+                    'description' => "CxC por factura {$invoice->invoice_number}",
+                ]);
+
+                // Línea crédito: Ingreso por Servicios
+                JournalEntryLine::create([
+                    'journal_entry_id' => $entry->id,
+                    'accounting_account_id' => $revenueAccount->id,
+                    'debit' => 0,
+                    'credit' => $invoice->total_amount,
+                    'description' => "Ingreso por servicios factura {$invoice->invoice_number}",
+                ]);
+
+                // Actualizar balances
+                $entry->lines->each(fn ($line) => $line->accountingAccount->updateBalance());
+
+                return $entry;
+            } catch (\Exception $e) {
+                Log::error('Failed to process invoice credit entry', [
+                    'invoice_id' => $invoice->id,
+                    'error' => $e->getMessage(),
+                ]);
+
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Genera asiento contable para pago recibido
+     * Débito: Banco/Caja
+     * Crédito: Cuentas por Cobrar
+     */
+    public function processPaymentReceived($source, array $data = []): ?JournalEntry
+    {
+        return DB::transaction(function () use ($source, $data) {
+            try {
+                // Determinar el tipo de fuente (Payment o AccountsReceivable)
+                $isPayment = $source instanceof Payment;
+                $isInvoice = $source instanceof Invoice;
+
+                if ($isPayment) {
+                    $invoice = $source->invoice;
+                    $amount = $source->amount;
+                    $documentNumber = $source->payment_number ?? "PAY-{$source->id}";
+                    $clientId = $source->client_id;
+                } elseif ($isInvoice) {
+                    $invoice = $source;
+                    $amount = $source->total_amount;
+                    $documentNumber = $source->invoice_number;
+                    $clientId = $source->client_id;
+                } else {
+                    return null;
+                }
+
+                $period = $this->accountingService->getCurrentPeriod($clientId);
+
+                $entry = JournalEntry::create([
+                    'client_id' => $clientId,
+                    'entry_date' => now()->toDateString(),
+                    'document_type' => $isPayment ? 'payment' : 'invoice',
+                    'document_number' => $documentNumber,
+                    'description' => "Pago recibido - {$documentNumber}",
+                    'status' => JournalEntryStatus::POSTED,
+                    'accounting_period_id' => $period->id,
+                    'source_type' => get_class($source),
+                    'source_id' => $source->id,
+                    'posted_at' => now(),
+                    'posted_by' => auth()->id(),
+                    'created_by' => auth()->id(),
+                ]);
+
+                // Obtener cuentas
+                $receivableAccount = $this->getReceivableAccount($clientId);
+                $bankAccount = $this->getBankAccountForPaymentMethod(
+                    $clientId,
+                    $data['payment_method'] ?? 'bank'
+                );
+
+                // Línea débito: Banco/Caja
+                if ($bankAccount) {
+                    JournalEntryLine::create([
+                        'journal_entry_id' => $entry->id,
+                        'accounting_account_id' => $bankAccount->id,
+                        'debit' => $amount,
+                        'credit' => 0,
+                        'description' => "Ingreso por pago {$documentNumber}",
+                    ]);
+                }
+
+                // Línea crédito: Cuentas por Cobrar
+                JournalEntryLine::create([
+                    'journal_entry_id' => $entry->id,
+                    'accounting_account_id' => $receivableAccount->id,
+                    'debit' => 0,
+                    'credit' => $amount,
+                    'description' => "Cobro de CxC {$documentNumber}",
+                ]);
+
+                // Actualizar balances
+                $entry->lines->each(fn ($line) => $line->accountingAccount->updateBalance());
+
+                return $entry;
+            } catch (\Exception $e) {
+                Log::error('Failed to process payment received entry', [
+                    'error' => $e->getMessage(),
+                ]);
+
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Obtiene la cuenta contable de ingresos por servicios
+     */
+    private function getIncomeAccount(int $clientId): AccountingAccount
+    {
+        // Buscar cuenta de ingresos por servicios (ej: 4101)
+        return AccountingAccount::where('client_id', $clientId)
+            ->where('code', '4101') // Ingresos por Servicios
+            ->firstOrFail();
+    }
+
+    /**
+     * Obtiene la cuenta contable de cuentas por cobrar
+     */
+    private function getReceivableAccount(int $clientId): AccountingAccount
+    {
+        // Buscar cuenta de CxC (ej: 1201)
+        return AccountingAccount::where('client_id', $clientId)
+            ->where('code', '1201') // Cuentas por Cobrar
+            ->firstOrFail();
+    }
+
+    /**
+     * Obtiene la cuenta de banco según el método de pago
+     */
+    private function getBankAccountForPaymentMethod(int $clientId, string $paymentMethod): ?AccountingAccount
+    {
+        $accountCode = match ($paymentMethod) {
+            'cash' => '1101', // Caja
+            'bank_transfer', 'online' => '1102', // Banco
+            'credit_card', 'debit_card' => '1102', // Banco
+            'check' => '1102', // Banco
+            default => '1102', // Default a Banco
+        };
+
+        return AccountingAccount::where('client_id', $clientId)
+            ->where('code', $accountCode)
+            ->first();
     }
 }

@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Enums\InvoivePatientStatus;
+use App\Models\Accounting\JournalEntry;
+use App\Models\Finance\AccountsReceivable;
+use App\Models\Finance\CostCenter;
 use App\Models\Scopes\InvoiceScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -75,6 +78,10 @@ class Invoice extends BaseModel
         'insurance_status',
         'has_insurance',
         'insurance_notes',
+        // Accounting fields
+        'journal_entry_id',
+        'accounts_receivable_id',
+        'cost_center_id',
     ];
 
     protected $casts = [
@@ -186,6 +193,21 @@ class Invoice extends BaseModel
         return $this->hasMany(Payment::class)->orderBy('payment_date', 'desc');
     }
 
+    public function journalEntry(): BelongsTo
+    {
+        return $this->belongsTo(JournalEntry::class);
+    }
+
+    public function accountsReceivable(): BelongsTo
+    {
+        return $this->belongsTo(AccountsReceivable::class);
+    }
+
+    public function costCenter(): BelongsTo
+    {
+        return $this->belongsTo(CostCenter::class);
+    }
+
     // Scopes
     public function scopeByStatus($query, $status)
     {
@@ -206,6 +228,17 @@ class Invoice extends BaseModel
     public function scopeByEncounter($query, $encounterId)
     {
         return $query->where('encounter_id', $encounterId);
+    }
+
+    public function scopeOnCredit($query)
+    {
+        return $query->whereNotNull('accounts_receivable_id')
+            ->where('payment_status', '!=', 'paid');
+    }
+
+    public function scopeWithoutAccountingEntry($query)
+    {
+        return $query->whereNull('journal_entry_id');
     }
 
     // Accessors
@@ -351,5 +384,63 @@ class Invoice extends BaseModel
         $this->patient_paid_amount = $this->patientPayments()->sum('amount');
         $this->patient_balance_amount = $this->calculatePatientBalance();
         $this->save();
+    }
+
+    // Financial methods
+    public function isCredit(): bool
+    {
+        return $this->accounts_receivable_id !== null;
+    }
+
+    public function hasAccountingEntry(): bool
+    {
+        return $this->journal_entry_id !== null;
+    }
+
+    public function getAccountingEntry(): ?JournalEntry
+    {
+        return $this->journalEntry;
+    }
+
+    public function getCostCenter(): ?CostCenter
+    {
+        return $this->costCenter;
+    }
+
+    public function generateAccountingEntry(): JournalEntry
+    {
+        if ($this->hasAccountingEntry()) {
+            return $this->journalEntry;
+        }
+
+        $journalEntry = JournalEntry::create([
+            'uuid' => Str::uuid(),
+            'client_id' => $this->client_id,
+            'entry_number' => 'INV-'.$this->invoice_number,
+            'entry_date' => $this->issue_date ?? now()->toDateString(),
+            'document_type' => 'invoice',
+            'document_number' => $this->invoice_number,
+            'description' => 'Invoice #'.$this->invoice_number.' - Patient: '.$this->patient?->name,
+            'status' => 'draft',
+            'source_type' => Invoice::class,
+            'source_id' => $this->id,
+        ]);
+
+        $this->update(['journal_entry_id' => $journalEntry->id]);
+
+        return $journalEntry;
+    }
+
+    public function syncAccountingEntry(): void
+    {
+        if ($this->hasAccountingEntry()) {
+            // Update existing entry
+            $this->journalEntry->update([
+                'description' => 'Invoice #'.$this->invoice_number.' - Patient: '.$this->patient?->name,
+            ]);
+        } else {
+            // Create new entry
+            $this->generateAccountingEntry();
+        }
     }
 }

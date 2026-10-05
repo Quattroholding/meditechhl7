@@ -239,6 +239,10 @@ class LoginController extends Controller
             $route = route('accounting.dashboard');
         }
 
+        if ($user->hasAnyRole(['contabilidad_client', 'contabilidad_asistente_client'])) {
+            $route = route('accounting-client.dashboard');
+        }
+
         if ($user->hasRole('validador')) {
             $route = route('user.pending-validations');
         }
