@@ -72,9 +72,9 @@
                         <span>Centros de Costo</span> <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
-                        <li><a class="{{ Request::is('finance/cost-centers') ? 'active' : '' }}" href="#">Listar Centros</a></li>
+                        <li><a class="{{ Request::is('finance/cost-centers') ? 'active' : '' }}" href="{{route('finance.cost-centers.index')}}">Listar Centros</a></li>
                         @can('cost-centers.create')
-                        <li><a class="{{ Request::is('finance/cost-centers/create') ? 'active' : '' }}" href="#">Crear Centro</a></li>
+                        <li><a class="{{ Request::is('finance/cost-centers/create') ? 'active' : '' }}" href="{{route('finance.cost-centers.create')}}">Crear Centro</a></li>
                         @endcan
                     </ul>
                 </li>
@@ -89,18 +89,18 @@
                     </a>
                     <ul style="display: none;">
                         @can('accounting.view')
-                        <li><a class="{{ Request::is('accounting/accounts') ? 'active' : '' }}" href="#">Plan de Cuentas</a></li>
+                        <li><a class="{{ Request::is('accounting/accounts') ? 'active' : '' }}" href="{{route('accounting.accounts')}}">Plan de Cuentas</a></li>
                         @endcan
                         @can('accounting.entries.view')
-                        <li><a class="{{ Request::is('accounting/journal-entries') ? 'active' : '' }}" href="#">Asientos Contables</a></li>
+                        <li><a class="{{ Request::is('accounting/journal-entries') ? 'active' : '' }}" href="{{route('accounting.journal-entries')}}">Asientos Contables</a></li>
                         @endcan
                         @can('accounting.reports.view')
                         <li class="submenu-title">
                             <a href="javascript:;"><span>Reportes</span> <span class="menu-arrow"></span></a>
                             <ul style="display: none;">
-                                <li><a href="#">Balance de Comprobación</a></li>
-                                <li><a href="#">Balance General</a></li>
-                                <li><a href="#">Estado de Resultados</a></li>
+                                <li><a href="{{route('accounting.reports.trial-balance')}}">Balance de Comprobación</a></li>
+                                <li><a href="{{route('accounting.reports.balance-sheet')}}">Balance General</a></li>
+                                <li><a href="{{route('accounting.reports.income-statement')}}">Estado de Resultados</a></li>
                             </ul>
                         </li>
                         @endcan
@@ -117,8 +117,8 @@
                     </a>
                     <ul style="display: none;">
                         @can('receivables.view')
-                        <li><a class="{{ Request::is('finance/receivables') ? 'active' : '' }}" href="#">Listar CxC</a></li>
-                        <li><a class="{{ Request::is('finance/receivables/aging-report') ? 'active' : '' }}" href="#">Reporte de Antigüedad</a></li>
+                        <li><a class="{{ Request::is('finance/receivables') ? 'active' : '' }}" href="{{route('finance.receivables.index')}}">Listar CxC</a></li>
+                        <li><a class="{{ Request::is('finance/receivables/aging-report') ? 'active' : '' }}" href="{{route('finance.receivables.aging-report')}}">Reporte de Antigüedad</a></li>
                         @endcan
                     </ul>
                 </li>
@@ -133,18 +133,18 @@
                     </a>
                     <ul style="display: none;">
                         @can('payables.suppliers.manage')
-                        <li><a class="{{ Request::is('finance/payables/suppliers') ? 'active' : '' }}" href="#">Proveedores</a></li>
+                        <li><a class="{{ Request::is('finance/payables/suppliers') ? 'active' : '' }}" href="{{route('finance.payables.suppliers.index')}}">Proveedores</a></li>
                         @endcan
                         @can('payables.view')
-                        <li><a class="{{ Request::is('finance/payables/invoices') ? 'active' : '' }}" href="#">Facturas de Proveedor</a></li>
-                        <li><a class="{{ Request::is('finance/payables/aging-report') ? 'active' : '' }}" href="#">Reporte de Antigüedad</a></li>
+                        <li><a class="{{ Request::is('finance/payables/invoices') ? 'active' : '' }}" href="{{route('finance.payables.invoices.index')}}">Facturas de Proveedor</a></li>
+                        <li><a class="{{ Request::is('finance/payables/aging-report') ? 'active' : '' }}" href="{{route('finance.payables.aging-report')}}">Reporte de Antigüedad</a></li>
                         @endcan
                     </ul>
                 </li>
                 @endcanany
 
-                <!-- Tesorería -->
-                @canany(['treasury.view', 'treasury.banks.manage', 'treasury.cash-registers.manage'])
+                <!-- Tesorería mejorado con Cash Flow -->
+                @canany(['treasury.view', 'treasury.banks.manage', 'treasury.cash-registers.manage', 'treasury.movements.view', 'treasury.reports.view'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                         <i class="fa fa-money-bill-wave"></i></span>
@@ -152,14 +152,21 @@
                     </a>
                     <ul style="display: none;">
                         @can('treasury.banks.manage')
-                        <li><a class="{{ Request::is('treasury/banks') ? 'active' : '' }}" href="#">Bancos</a></li>
+                        <li><a class="{{ Request::is('treasury/banks') ? 'active' : '' }}" href="{{route('treasury.banks.index')}}">Bancos</a></li>
                         @endcan
                         @can('treasury.cash-registers.manage')
-                        <li><a class="{{ Request::is('treasury/cash-registers') ? 'active' : '' }}" href="#">Cajas</a></li>
+                        <li><a class="{{ Request::is('treasury/cash-registers') ? 'active' : '' }}" href="{{route('treasury.cash-registers.index')}}">Cajas</a></li>
                         @endcan
                         @can('treasury.view')
-                        <li><a class="{{ Request::is('treasury/movements') ? 'active' : '' }}" href="#">Movimientos</a></li>
-                        <li><a class="{{ Request::is('treasury/cash-flow') ? 'active' : '' }}" href="#">Flujo de Caja</a></li>
+                        <li><a class="{{ Request::is('treasury/movements') ? 'active' : '' }}" href="{{route('treasury.movements.index')}}">Movimientos</a></li>
+                        @endcan
+                        @can('treasury.reports.view')
+                        <li class="submenu-title">
+                            <a href="javascript:;"><span>Reportes</span> <span class="menu-arrow"></span></a>
+                            <ul style="display: none;">
+                                <li><a href="{{route('treasury.reports.cash-flow')}}">Flujo de Caja</a></li>
+                            </ul>
+                        </li>
                         @endcan
                     </ul>
                 </li>
