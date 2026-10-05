@@ -28,6 +28,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
 
         try {
             $text = $googleAIResponse['document']['text'] ?? '';
+            $model = config('services.claude.default_model', 'claude-sonnet-4-5');
 
             if (empty($text)) {
                 $this->addWarning('No se encontró texto extraíble en el documento');
@@ -42,7 +43,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
             }
 
             // Use Anthropic API to analyze the document
-            $extractedData = $this->analyzeWithClaude($text);
+            $extractedData = $this->analyzeWithClaude($text, $model);
 
             if (empty($extractedData)) {
                 $this->addError('No se pudo extraer información del documento');
@@ -87,7 +88,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
     /**
      * Use Claude API to analyze document text
      */
-    private function analyzeWithClaude(string $text): array
+    private function analyzeWithClaude(string $text, string $model): array
     {
         try {
             // Truncate text if too large (keep first 10000 chars + last 2000 chars to preserve important info)
@@ -104,7 +105,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
                 'x-api-key' => config('services.claude.api_key'),
                 'anthropic-version' => '2023-06-01',
             ])->post('https://api.anthropic.com/v1/messages', [
-                'model' => 'claude-opus-4-5-20251101',
+                'model' => $model,
                 'max_tokens' => 1024,
                 'messages' => [
                     [
@@ -128,7 +129,7 @@ class AnthropicDocumentParser extends BaseDocumentParser
 
             // Extract and store usage information
             $usage = $responseData['usage'] ?? [];
-            $this->modelUsed = 'claude-opus-4-5-20251101';
+            $this->modelUsed = $model;
             $this->inputTokens = (int) ($usage['input_tokens'] ?? 0);
             $this->outputTokens = (int) ($usage['output_tokens'] ?? 0);
 
@@ -312,7 +313,7 @@ PROMPT.$text;
             ],
         ];
 
-        $modelPricing = $pricing[$model] ?? $pricing['claude-opus-4-5-20251101'];
+        $modelPricing = $pricing[$model] ?? $pricing['claude-sonnet-4-5'];
 
         // Calculate cost: (tokens / million) * price_per_million = cost_in_dollars
         $costDollars = (($inputTokens * $modelPricing['input']) +

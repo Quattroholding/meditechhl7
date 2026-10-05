@@ -164,7 +164,7 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 'prompt_length' => strlen($prompt),
             ]);
 
-            $model = config('services.claude.default_model', 'claude-opus-4-5-20251101');
+            $model = config('services.claude.default_model', 'claude-sonnet-4-5');
 
             $response = Http::withHeaders([
                 'x-api-key' => config('services.claude.api_key'),
