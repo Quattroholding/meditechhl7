@@ -305,3 +305,10 @@ Route::get('/verificar-incapacidad/{verificationHash}', [MedicalLeaveVerificatio
  * Document Management Routes
  */
 require __DIR__.'/web/documents.php';
+
+/**
+ * Financial Module Routes
+ */
+require __DIR__.'/web/finance.php';
+require __DIR__.'/web/accounting.php';
+require __DIR__.'/web/treasury.php';
