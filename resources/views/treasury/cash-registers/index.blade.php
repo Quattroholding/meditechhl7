@@ -11,11 +11,27 @@
                 @endslot
             @endcomponent
 
-            <div class="card">
-                <div class="card-body text-center py-5">
-                    <h4>En Construcción</h4>
-                    <p class="text-muted mt-3">Esta página será implementada en la siguiente iteración del Sprint 3</p>
-                    <small class="text-secondary">Ruta: treasury/cash-registers/index</small>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card card-table show-entire p-2">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h5 class="card-title mb-0">Listado de Cajas</h5>
+                                @can('treasury.cash-registers.manage')
+                                    <a href="{{ route('treasury.cash-registers.create') }}" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>Nueva Caja
+                                    </a>
+                                @endcan
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <livewire:data-table model="\App\Models\Treasury\CashRegister"
+                                                 :columns="['id', 'name', 'branch_id', 'responsible_user_id', 'balance', 'status', 'acciones']"
+                                                 :actions="['edit','delete']"
+                                                 routename="treasury.cash-registers"
+                                                 wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

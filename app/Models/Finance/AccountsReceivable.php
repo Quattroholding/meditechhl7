@@ -16,6 +16,8 @@ class AccountsReceivable extends BaseModel
 {
     use HasFactory;
 
+    protected $table = 'accounts_receivable';
+
     protected $fillable = [
         'uuid',
         'client_id',
