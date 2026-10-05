@@ -1,10 +1,18 @@
-<div>
-    <div class="row">
+<div class="page-wrapper">
+    <div class="row content">
+        @component('components.page-header')
+            @slot('title')
+                Facturas de Proveedores
+            @endslot
+            @slot('li_1')
+                Módulo Financiero
+            @endslot
+        @endcomponent
         <div class="col-sm-12">
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header', ['show_create' => auth()->user()->can('payables.invoices.create'), 'title' => 'Facturas de Proveedores', 'li_1' => route('finance.payables.invoices.create')])
+                    @component('components.table-header', ['show_create' => auth()->user()->can('payables.invoices.create'), 'title' => '', 'li_1' => route('finance.payables.invoices.create')])
                         @slot('filters')
                             <div class="d-flex flex-wrap gap-2">
                                 <div class="input-block local-forms mb-0">

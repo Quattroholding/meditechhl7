@@ -39,12 +39,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('cost_centers');
     }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('cost_centers');
-    }
 };

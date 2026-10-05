@@ -1,10 +1,18 @@
-<div>
-    <div class="row">
+<div class="page-wrapper">
+    <div class="row content">
+        @component('components.page-header')
+            @slot('title')
+                Asientos Contables
+            @endslot
+            @slot('li_1')
+                Contabilidad
+            @endslot
+        @endcomponent
         <div class="col-sm-12">
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header', ['show_create' => auth()->user()->can('accounting.entries.create'), 'title' => 'Asientos Contables', 'li_1' => route('accounting.journal-entries.create')])
+                    @component('components.table-header', ['show_create' => auth()->user()->can('accounting.entries.create'), 'title' => '', 'li_1' => route('accounting.journal-entries.create')])
                         @slot('filters')
                             <div class="d-flex flex-wrap gap-2">
                                 <div class="input-block local-forms mb-0">

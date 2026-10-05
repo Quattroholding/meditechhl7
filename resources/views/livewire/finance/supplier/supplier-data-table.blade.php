@@ -1,94 +1,108 @@
-<div class="space-y-4">
-    {{-- Header --}}
-    <div class="flex justify-between items-center">
-        <h2 class="text-2xl font-bold">Proveedores</h2>
-        <button
-            wire:click="openModal"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-            + Nuevo Proveedor
-        </button>
-    </div>
+<div class="page-wrapper">
+    <div class="row content">
+        @component('components.page-header')
+            @slot('title')
+                Gestión de Proveedores
+            @endslot
+            @slot('li_1')
+                Módulo Financiero
+            @endslot
+        @endcomponent
+        <div class="col-sm-12">
+            <div class="card card-table show-entire">
+                <div class="card-body">
+                    <!-- Table Header -->
+                    @component('components.table-header', ['show_create' => auth()->user()->can('payables.suppliers.manage'), 'title' => '', 'li_1' => '#'])
+                        @slot('filters')
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="input-block local-forms mb-0">
+                                    <label>{{ __('Búsqueda') }}</label>
+                                    <input type="text" wire:model.live="search" placeholder="RUC o nombre..." class="form-control" />
+                                </div>
+                                <div class="input-block local-forms mb-0">
+                                    <label>{{ __('Estatus') }}</label>
+                                    <x-select-input wire:model.live="status" id="statusFilter" name="status" :options="['active' => 'Activos', 'inactive' => 'Inactivos']" :selected="[]" class="form-select" />
+                                </div>
+                            </div>
+                        @endslot
+                    @endcomponent
+                    <!-- /Table Header -->
 
-    {{-- Filters --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-            <input
-                type="text"
-                wire:model.live="search"
-                placeholder="Buscar por RUC o nombre..."
-                class="w-full px-4 py-2 border rounded-lg"
-            />
+                    <div class="table-responsive">
+                        <table class="table border-0 custom-table comman-table mb-0 responsive-table">
+                            <thead>
+                                <tr>
+                                    <th data-column="ruc" data-priority="1">
+                                        <x-table-sort-button title="RUC" columnName="" />
+                                    </th>
+                                    <th data-column="legal_name" data-priority="2">
+                                        <x-table-sort-button title="Razón Social" columnName="" />
+                                    </th>
+                                    <th data-column="contact_person" data-priority="3">
+                                        <x-table-sort-button title="Contacto" columnName="" />
+                                    </th>
+                                    <th data-column="phone" data-priority="4">
+                                        <x-table-sort-button title="Teléfono" columnName="" />
+                                    </th>
+                                    <th data-column="status" data-priority="5">
+                                        <x-table-sort-button title="Estado" columnName="" />
+                                    </th>
+                                    <th data-column="acciones" data-priority="1" class="text-end">
+                                        <x-table-sort-button title="{{ __('Acciones') }}" columnName="" />
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($suppliers as $supplier)
+                                    <tr class="table-row" data-row-id="{{ $supplier->id }}">
+                                        <td data-column="ruc" data-priority="1" data-label="RUC">
+                                            <span class="cell-content">{{ $supplier->ruc }}</span>
+                                        </td>
+                                        <td data-column="legal_name" data-priority="2" data-label="Razón Social">
+                                            <span class="cell-content">{{ $supplier->legal_name }}</span>
+                                        </td>
+                                        <td data-column="contact_person" data-priority="3" data-label="Contacto">
+                                            <span class="cell-content">{{ $supplier->contact_person ?? 'N/A' }}</span>
+                                        </td>
+                                        <td data-column="phone" data-priority="4" data-label="Teléfono">
+                                            <span class="cell-content">{{ $supplier->phone ?? 'N/A' }}</span>
+                                        </td>
+                                        <td data-column="status" data-priority="5" data-label="Estado">
+                                            <span class="cell-content badge me-1 {{ $supplier->status === 'active' ? 'bg-success' : 'bg-danger' }}">
+                                                {{ $supplier->status === 'active' ? 'Activo' : 'Inactivo' }}
+                                            </span>
+                                        </td>
+                                        <td data-column="acciones" data-priority="1" data-label="{{ __('Acciones') }}" class="text-end">
+                                            <div class="btn-group btn-group-sm">
+                                                @can('payables.suppliers.manage')
+                                                    <button wire:click="openModal({{ $supplier->id }})" class="btn btn-success btn-sm" title="Editar">
+                                                        <i class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                    </button>
+                                                    <button wire:click="toggleStatus({{ $supplier->id }})" class="btn btn-warning btn-sm" title="{{ $supplier->status === 'active' ? 'Desactivar' : 'Activar' }}">
+                                                        <i class="fa-solid fa-{{ $supplier->status === 'active' ? 'ban' : 'check' }} m-r-5"></i>
+                                                    </button>
+                                                @endcan
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            No hay proveedores registrados
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    @include('partials.pagination', ['data' => $suppliers])
+                </div>
+            </div>
         </div>
-        <div>
-            <select wire:model.live="status" class="w-full px-4 py-2 border rounded-lg">
-                <option value="">Todos los estados</option>
-                <option value="active">Activo</option>
-                <option value="inactive">Inactivo</option>
-            </select>
-        </div>
     </div>
-
-    {{-- Table --}}
-    <div class="overflow-x-auto bg-white rounded-lg shadow">
-        <table class="w-full">
-            <thead class="bg-gray-100 border-b">
-                <tr>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">RUC</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Razón Social</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Contacto</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Teléfono</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Estado</th>
-                    <th class="px-6 py-3 text-right text-sm font-semibold">Acciones</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y">
-                @forelse($suppliers as $supplier)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 text-sm">{{ $supplier->ruc }}</td>
-                        <td class="px-6 py-4 text-sm font-medium">{{ $supplier->legal_name }}</td>
-                        <td class="px-6 py-4 text-sm">{{ $supplier->contact_person ?? '-' }}</td>
-                        <td class="px-6 py-4 text-sm">{{ $supplier->phone ?? '-' }}</td>
-                        <td class="px-6 py-4 text-sm">
-                            <span
-                                class="px-3 py-1 rounded-full text-xs font-medium {{ $supplier->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}"
-                            >
-                                {{ $supplier->status === 'active' ? 'Activo' : 'Inactivo' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-right text-sm space-x-2">
-                            <button
-                                wire:click="openModal({{ $supplier->id }})"
-                                class="text-blue-600 hover:text-blue-900"
-                            >
-                                Editar
-                            </button>
-                            <button
-                                wire:click="toggleStatus({{ $supplier->id }})"
-                                class="text-amber-600 hover:text-amber-900"
-                            >
-                                {{ $supplier->status === 'active' ? 'Desactivar' : 'Activar' }}
-                            </button>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
-                            No hay proveedores registrados
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    {{-- Pagination --}}
-    <div class="flex justify-center">
-        {{ $suppliers->links() }}
-    </div>
-
-    {{-- Modal --}}
-    @if ($showModal)
-        @livewire('finance.supplier.supplier-modal', ['supplier' => $editingSupplier], key('supplier-modal-' . ($editingSupplier?->id ?? 'new')))
-    @endif
 </div>
+
+{{-- Modal --}}
+@if ($showModal)
+    @livewire('finance.supplier.supplier-modal', ['supplier' => $editingSupplier], key('supplier-modal-' . ($editingSupplier?->id ?? 'new')))
+@endif

@@ -1,118 +1,143 @@
-<div class="space-y-4">
-    {{-- Header --}}
-    <div class="flex justify-between items-center">
-        <h2 class="text-2xl font-bold">Cuentas por Cobrar</h2>
-    </div>
+<div class="page-wrapper">
+    <div class="row content">
+        @component('components.page-header')
+            @slot('title')
+                Estado de CxC
+            @endslot
+            @slot('li_1')
+                Módulo Financiero
+            @endslot
+        @endcomponent
+        <div class="col-sm-12">
+            <div class="card card-table show-entire">
+                <div class="card-body">
+                    <!-- Table Header -->
+                    @component('components.table-header', ['show_create' => false, 'title' => '', 'li_1' => '#'])
+                        @slot('filters')
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="input-block local-forms mb-0">
+                                    <label>{{ __('Búsqueda') }}</label>
+                                    <input type="text" wire:model.live="search" placeholder="Factura o paciente..." class="form-control" />
+                                </div>
+                                <div class="input-block local-forms mb-0">
+                                    <label>{{ __('Estatus') }}</label>
+                                    <x-select-input wire:model.live="status" id="statusFilter" name="status" :options="['pending' => 'Pendiente', 'partial' => 'Parcial', 'paid' => 'Pagada', 'overdue' => 'Vencida', 'cancelled' => 'Cancelada']" :selected="[]" class="form-select" />
+                                </div>
+                            </div>
+                        @endslot
+                    @endcomponent
+                    <!-- /Table Header -->
 
-    {{-- Filters --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-            <input
-                type="text"
-                wire:model.live="search"
-                placeholder="Buscar por número o paciente..."
-                class="w-full px-4 py-2 border rounded-lg"
-            />
+                    <div class="table-responsive">
+                        <table class="table border-0 custom-table comman-table mb-0 responsive-table">
+                            <thead>
+                                <tr>
+                                    <th data-column="invoice_number" data-priority="1">
+                                        <x-table-sort-button title="Factura #" columnName="" />
+                                    </th>
+                                    <th data-column="patient" data-priority="2">
+                                        <x-table-sort-button title="Paciente" columnName="" />
+                                    </th>
+                                    <th data-column="invoice_date" data-priority="3">
+                                        <x-table-sort-button title="Fecha" columnName="" />
+                                    </th>
+                                    <th data-column="due_date" data-priority="4">
+                                        <x-table-sort-button title="Vencimiento" columnName="" />
+                                    </th>
+                                    <th data-column="original_amount" data-priority="5">
+                                        <x-table-sort-button title="Total" columnName="" />
+                                    </th>
+                                    <th data-column="paid_amount" data-priority="6">
+                                        <x-table-sort-button title="Pagado" columnName="" />
+                                    </th>
+                                    <th data-column="balance" data-priority="7">
+                                        <x-table-sort-button title="Saldo" columnName="" />
+                                    </th>
+                                    <th data-column="status" data-priority="8">
+                                        <x-table-sort-button title="Estado" columnName="" />
+                                    </th>
+                                    <th data-column="acciones" data-priority="1" class="text-end">
+                                        <x-table-sort-button title="{{ __('Acciones') }}" columnName="" />
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($receivables as $receivable)
+                                    <tr class="table-row" data-row-id="{{ $receivable->id }}">
+                                        <td data-column="invoice_number" data-priority="1" data-label="Factura #">
+                                            <span class="cell-content">{{ $receivable->invoice_number }}</span>
+                                        </td>
+                                        <td data-column="patient" data-priority="2" data-label="Paciente">
+                                            <span class="cell-content">{{ $receivable->patient->full_name ?? 'N/A' }}</span>
+                                        </td>
+                                        <td data-column="invoice_date" data-priority="3" data-label="Fecha">
+                                            <span class="cell-content">{{ $receivable->invoice_date->format('d-m-Y') }}</span>
+                                        </td>
+                                        <td data-column="due_date" data-priority="4" data-label="Vencimiento">
+                                            <span class="cell-content">{{ $receivable->due_date->format('d-m-Y') }}</span>
+                                        </td>
+                                        <td data-column="original_amount" data-priority="5" data-label="Total">
+                                            <span class="cell-content">B/. {{ number_format($receivable->original_amount, 2) }}</span>
+                                        </td>
+                                        <td data-column="paid_amount" data-priority="6" data-label="Pagado">
+                                            <span class="cell-content">B/. {{ number_format($receivable->paid_amount, 2) }}</span>
+                                        </td>
+                                        <td data-column="balance" data-priority="7" data-label="Saldo">
+                                            <span class="cell-content font-weight-bold">B/. {{ number_format($receivable->balance, 2) }}</span>
+                                        </td>
+                                        <td data-column="status" data-priority="8" data-label="Estado">
+                                            <span class="cell-content badge me-1
+                                                @switch($receivable->status->value)
+                                                    @case('pending') bg-warning @break
+                                                    @case('partial') bg-info @break
+                                                    @case('paid') bg-success @break
+                                                    @case('overdue') bg-danger @break
+                                                    @case('cancelled') bg-secondary @break
+                                                @endswitch
+                                            ">
+                                                {{ match($receivable->status->value) {
+                                                    'pending' => 'Pendiente',
+                                                    'partial' => 'Parcial',
+                                                    'paid' => 'Pagada',
+                                                    'overdue' => 'Vencida',
+                                                    'cancelled' => 'Cancelada',
+                                                    default => $receivable->status->value
+                                                } }}
+                                            </span>
+                                        </td>
+                                        <td data-column="acciones" data-priority="1" data-label="{{ __('Acciones') }}" class="text-end">
+                                            <div class="btn-group btn-group-sm">
+                                                @if ($receivable->status->value !== 'paid' && $receivable->status->value !== 'cancelled')
+                                                    <button wire:click="openPaymentModal({{ $receivable->id }})" class="btn btn-success btn-sm" title="Aplicar Pago">
+                                                        <i class="fa-solid fa-money-bill m-r-5"></i>
+                                                    </button>
+                                                @endif
+                                                @if ($receivable->status->value !== 'paid')
+                                                    <button wire:click="cancel({{ $receivable->id }})" class="btn btn-danger btn-sm" title="Cancelar">
+                                                        <i class="fa-solid fa-ban m-r-5"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted py-4">
+                                            No hay cuentas por cobrar registradas
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    @include('partials.pagination', ['data' => $receivables])
+                </div>
+            </div>
         </div>
-        <div>
-            <select wire:model.live="status" class="w-full px-4 py-2 border rounded-lg">
-                <option value="">Todos los estados</option>
-                <option value="pending">Pendiente</option>
-                <option value="partial">Parcial</option>
-                <option value="paid">Pagada</option>
-                <option value="overdue">Vencida</option>
-                <option value="cancelled">Cancelada</option>
-            </select>
-        </div>
     </div>
-
-    {{-- Table --}}
-    <div class="overflow-x-auto bg-white rounded-lg shadow">
-        <table class="w-full">
-            <thead class="bg-gray-100 border-b">
-                <tr>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Factura #</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Paciente</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Fecha</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Vencimiento</th>
-                    <th class="px-6 py-3 text-right text-sm font-semibold">Total</th>
-                    <th class="px-6 py-3 text-right text-sm font-semibold">Pagado</th>
-                    <th class="px-6 py-3 text-right text-sm font-semibold">Saldo</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Estado</th>
-                    <th class="px-6 py-3 text-right text-sm font-semibold">Acciones</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y">
-                @forelse($receivables as $receivable)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 text-sm font-medium">{{ $receivable->invoice_number }}</td>
-                        <td class="px-6 py-4 text-sm">{{ $receivable->patient->full_name ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 text-sm">{{ $receivable->invoice_date->format('d/m/Y') }}</td>
-                        <td class="px-6 py-4 text-sm">{{ $receivable->due_date->format('d/m/Y') }}</td>
-                        <td class="px-6 py-4 text-right text-sm">{{ number_format($receivable->original_amount, 2) }}</td>
-                        <td class="px-6 py-4 text-right text-sm">{{ number_format($receivable->paid_amount, 2) }}</td>
-                        <td class="px-6 py-4 text-right text-sm font-semibold">
-                            {{ number_format($receivable->balance, 2) }}
-                        </td>
-                        <td class="px-6 py-4 text-sm">
-                            <span
-                                class="px-3 py-1 rounded-full text-xs font-medium
-                                @switch($receivable->status->value)
-                                    @case('pending') bg-yellow-100 text-yellow-800 @break
-                                    @case('partial') bg-blue-100 text-blue-800 @break
-                                    @case('paid') bg-green-100 text-green-800 @break
-                                    @case('overdue') bg-red-100 text-red-800 @break
-                                    @case('cancelled') bg-gray-100 text-gray-800 @break
-                                @endswitch
-                            "
-                            >
-                                {{ match($receivable->status->value) {
-                                    'pending' => 'Pendiente',
-                                    'partial' => 'Parcial',
-                                    'paid' => 'Pagada',
-                                    'overdue' => 'Vencida',
-                                    'cancelled' => 'Cancelada',
-                                    default => $receivable->status->value
-                                } }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-right text-sm space-x-2">
-                            @if ($receivable->status->value !== 'paid' && $receivable->status->value !== 'cancelled')
-                                <button
-                                    wire:click="openPaymentModal({{ $receivable->id }})"
-                                    class="text-blue-600 hover:text-blue-900"
-                                >
-                                    Aplicar Pago
-                                </button>
-                            @endif
-                            @if ($receivable->status->value !== 'paid')
-                                <button
-                                    wire:click="cancel({{ $receivable->id }})"
-                                    class="text-red-600 hover:text-red-900"
-                                >
-                                    Cancelar
-                                </button>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="9" class="px-6 py-8 text-center text-gray-500">
-                            No hay cuentas por cobrar registradas
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    {{-- Pagination --}}
-    <div class="flex justify-center">
-        {{ $receivables->links() }}
-    </div>
-
-    {{-- Payment Modal --}}
-    @if ($showPaymentModal && $selectedReceivable)
-        @livewire('finance.accounts-receivable.payment-application-modal', ['receivable' => $selectedReceivable], key('payment-modal-' . $selectedReceivable->id))
-    @endif
 </div>
+
+{{-- Payment Modal --}}
+@if ($showPaymentModal && $selectedReceivable)
+    @livewire('finance.accounts-receivable.payment-application-modal', ['receivable' => $selectedReceivable], key('payment-modal-' . $selectedReceivable->id))
+@endif
