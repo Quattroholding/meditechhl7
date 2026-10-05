@@ -227,15 +227,28 @@ Extract:
 
 Rules for parsing:
 1. Product rows may contain: SKU | Description | Quantity | Unit Price | Discount | Amount | Tax | Value
-2. SKU is alphanumeric code (e.g., "PFI-BG-640")
+2. SKU is alphanumeric code (e.g., "PFI-BG-640", "470242")
 3. Numbers use $ or B/. prefix: "$44.27" → 44.27, remove currency symbols
-4. Quantities are decimal numbers: "2.000000" → 2
-5. If description has "CAJA X NN" or "FRASCO X NN", extract NN as internal_units_per_presentation, set unit_type="internal"
-6. If no multiplier/factor in description, set internal_units_per_presentation=1, unit_type="presentation"
-7. unit_cost: Cost per unit in document. base_price: Selling price. If base_price missing, calculate: base_price = unit_cost × 1.10
-8. discount_amount: Extract value from "Descuento" column as-is. Do NOT multiply by quantity. Just copy the number shown.
-9. If quantity > 0 but unit_cost = 0, set is_gift=true, include the item anyway
-10. Lines may be concatenated with pipes (|) - split and interpret each part logically
+4. Quantities are decimal numbers: "2.000000" → 2, "10.000000" → 10
+5. CONVERSION FACTOR DETECTION (CRITICAL):
+   Look for patterns in the product name/description that indicate package size:
+   - "X30" or "X 30" or "X30S" → factor = 30
+   - "30S" or "30s" at end of name → factor = 30
+   - "CAJA X NN" or "CAJA X30" → factor = NN or 30
+   - "FRASCO X NN" or "FRASCO X120" → factor = NN or 120
+   - "BLISTER X NN" → factor = NN
+   - "TAB 30" or "TABS 30" → factor = 30
+   - "120ML" in "FRASCO X 120ML" → factor = 120
+   Examples:
+   - "WELLBUTRIN XL TAB LIB 150MG 30S" → factor = 30 (30 tablets per package)
+   - "VITAMINC FRASCO 120ML" → factor = 120
+   - "VENTOLIN AEROSOL" (no factor) → factor = 1
+   If factor found: internal_units_per_presentation = factor, unit_type = "internal"
+   If NO factor: internal_units_per_presentation = 1, unit_type = "presentation"
+6. unit_cost: Cost per unit in document. base_price: Selling price. If base_price missing, calculate: base_price = unit_cost × 1.10
+7. discount_amount: Extract value from "Descuento" column as-is. Do NOT multiply by quantity. Just copy the number shown.
+8. If quantity > 0 but unit_cost = 0, set is_gift=true, include the item anyway
+9. Lines may be concatenated with pipes (|) - split and interpret each part logically
 
 Output format:
 {

@@ -104,7 +104,7 @@ class DocumentUploadForm extends Component
             $diskName = config('filesystems.default', 'local');
             $uploadedCount = 0;
             $delaySeconds = 0; // Delay progresivo: 0s para el primero, 120s para el segundo, etc.
-            $delayIncrement = 120; // 2 minutos entre cada job
+            $delayIncrement = 30; // 2 minutos entre cada job
 
             foreach ($this->files as $index => $file) {
                 try {
