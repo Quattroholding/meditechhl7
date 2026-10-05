@@ -184,4 +184,20 @@ class DashboardController extends Controller
 
         return view('Dashboard.contabilidad-dashboard', compact('dashboard'));
     }
+
+    public function accountingClient(Request $request)
+    {
+        $dashboard = [];
+
+        // Redirect to add show_salute param on first visit
+        if (! session()->has('dashboard_accounting_client_visited')) {
+            session()->put('dashboard_accounting_client_visited', true);
+
+            if (! $request->has('show_salute')) {
+                return redirect()->route('accounting-client.dashboard', ['show_salute' => 'true']);
+            }
+        }
+
+        return view('Dashboard.accounting-client-dashboard', compact('dashboard'));
+    }
 }

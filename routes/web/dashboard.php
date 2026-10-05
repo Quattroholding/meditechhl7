@@ -46,6 +46,9 @@ Route::get('/dash', function () {
     if (auth()->user()->hasRole('contabilidad')) {
         $route = route('accounting.dashboard');
     }
+    if (auth()->user()->hasRole('contabilidad_client')) {
+        $route = route('accounting-client.dashboard');
+    }
     if (auth()->user()->hasRole('hemoscreen')) {
         $route = route('hemoscreen.dashboard');
     }
@@ -91,6 +94,10 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified', 'fir
     Route::get('/accounting', [DashboardController::class, 'accounting'])
         ->middleware('permission:dashboard.accounting')
         ->name('accounting.dashboard');
+
+    Route::get('/accounting-client', [DashboardController::class, 'accountingClient'])
+        ->middleware('permission:dashboard.accounting')
+        ->name('accounting-client.dashboard');
 
     Route::get('/hemoscreen', [HemoScreenStandaloneWebController::class, 'index'])
         ->middleware('role:hemoscreen')

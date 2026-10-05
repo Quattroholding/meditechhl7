@@ -8,7 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Cost centers table may have financial fields already, check and add if needed
+        // Cost centers table may not exist yet (created in Sprint 1), skip if it doesn't
+        if (! Schema::hasTable('cost_centers')) {
+            return;
+        }
+
+        // Add financial fields if needed
         if (! Schema::hasColumn('cost_centers', 'uuid')) {
             Schema::table('cost_centers', function (Blueprint $table) {
                 $table->uuid('uuid')->unique()->after('id');

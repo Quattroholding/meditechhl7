@@ -51,6 +51,122 @@
                         </a>
                     </li>
                 @endcan
+                @can('dashboard.accounting-client')
+                    <li class="menu-side">
+                        <a class="{{ Request::is('dashboard/accounting-client') ? 'active' : '' }}"  href="{{ route('accounting-client.dashboard') }}"><span class="menu-side" >
+                            <i class="fa fa-chart-bar"></i></span>
+                            <span> Dashboard Financiero </span>
+                        </a>
+                    </li>
+                @endcan
+
+                <!-- MÓDULO FINANCIERO - Solo para contabilidad_client -->
+                @canany(['cost-centers.view', 'accounting.view', 'receivables.view', 'payables.view', 'treasury.view', 'accounting.reports.view'])
+                <li class="menu-title">Finanzas & Contabilidad</li>
+
+                <!-- Centros de Costos -->
+                @can('cost-centers.view')
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                        <i class="fa fa-building"></i></span>
+                        <span>Centros de Costo</span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('finance/cost-centers') ? 'active' : '' }}" href="#">Listar Centros</a></li>
+                        @can('cost-centers.create')
+                        <li><a class="{{ Request::is('finance/cost-centers/create') ? 'active' : '' }}" href="#">Crear Centro</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcan
+
+                <!-- Contabilidad -->
+                @canany(['accounting.view', 'accounting.entries.view', 'accounting.accounts.manage', 'accounting.reports.view'])
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                        <i class="fa fa-calculator"></i></span>
+                        <span>Contabilidad</span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('accounting.view')
+                        <li><a class="{{ Request::is('accounting/accounts') ? 'active' : '' }}" href="#">Plan de Cuentas</a></li>
+                        @endcan
+                        @can('accounting.entries.view')
+                        <li><a class="{{ Request::is('accounting/journal-entries') ? 'active' : '' }}" href="#">Asientos Contables</a></li>
+                        @endcan
+                        @can('accounting.reports.view')
+                        <li class="submenu-title">
+                            <a href="javascript:;"><span>Reportes</span> <span class="menu-arrow"></span></a>
+                            <ul style="display: none;">
+                                <li><a href="#">Balance de Comprobación</a></li>
+                                <li><a href="#">Balance General</a></li>
+                                <li><a href="#">Estado de Resultados</a></li>
+                            </ul>
+                        </li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
+
+                <!-- Cuentas por Cobrar -->
+                @canany(['receivables.view', 'receivables.manage'])
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                        <i class="fa fa-file-invoice-dollar"></i></span>
+                        <span>Cuentas por Cobrar</span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('receivables.view')
+                        <li><a class="{{ Request::is('finance/receivables') ? 'active' : '' }}" href="#">Listar CxC</a></li>
+                        <li><a class="{{ Request::is('finance/receivables/aging-report') ? 'active' : '' }}" href="#">Reporte de Antigüedad</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
+
+                <!-- Cuentas por Pagar -->
+                @canany(['payables.view', 'payables.suppliers.manage', 'payables.invoices.create'])
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                        <i class="fa fa-receipt"></i></span>
+                        <span>Cuentas por Pagar</span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('payables.suppliers.manage')
+                        <li><a class="{{ Request::is('finance/payables/suppliers') ? 'active' : '' }}" href="#">Proveedores</a></li>
+                        @endcan
+                        @can('payables.view')
+                        <li><a class="{{ Request::is('finance/payables/invoices') ? 'active' : '' }}" href="#">Facturas de Proveedor</a></li>
+                        <li><a class="{{ Request::is('finance/payables/aging-report') ? 'active' : '' }}" href="#">Reporte de Antigüedad</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
+
+                <!-- Tesorería -->
+                @canany(['treasury.view', 'treasury.banks.manage', 'treasury.cash-registers.manage'])
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                        <i class="fa fa-money-bill-wave"></i></span>
+                        <span>Tesorería</span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('treasury.banks.manage')
+                        <li><a class="{{ Request::is('treasury/banks') ? 'active' : '' }}" href="#">Bancos</a></li>
+                        @endcan
+                        @can('treasury.cash-registers.manage')
+                        <li><a class="{{ Request::is('treasury/cash-registers') ? 'active' : '' }}" href="#">Cajas</a></li>
+                        @endcan
+                        @can('treasury.view')
+                        <li><a class="{{ Request::is('treasury/movements') ? 'active' : '' }}" href="#">Movimientos</a></li>
+                        <li><a class="{{ Request::is('treasury/cash-flow') ? 'active' : '' }}" href="#">Flujo de Caja</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
+
+                @endcanany
+
                 @canany(['clients.view', 'clients.create', 'branches.view', 'branches.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side primary">

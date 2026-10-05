@@ -202,6 +202,45 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'documents.approve', 'description' => 'Aprobar o rechazar documentos', 'module' => 'documentos'],
             ['name' => 'documents.download', 'description' => 'Descargar documentos', 'module' => 'documentos'],
 
+            // Financial Module - Cost Centers
+            ['name' => 'cost-centers.view', 'description' => 'Ver centros de costo', 'module' => 'finanzas'],
+            ['name' => 'cost-centers.create', 'description' => 'Crear centros de costo', 'module' => 'finanzas'],
+            ['name' => 'cost-centers.edit', 'description' => 'Editar centros de costo', 'module' => 'finanzas'],
+
+            // Financial Module - Accounting
+            ['name' => 'accounting.view', 'description' => 'Ver plan de cuentas', 'module' => 'finanzas'],
+            ['name' => 'accounting.accounts.manage', 'description' => 'Gestionar cuentas contables', 'module' => 'finanzas'],
+            ['name' => 'accounting.entries.view', 'description' => 'Ver asientos contables', 'module' => 'finanzas'],
+            ['name' => 'accounting.entries.create', 'description' => 'Crear asientos contables', 'module' => 'finanzas'],
+            ['name' => 'accounting.entries.post', 'description' => 'Contabilizar asientos', 'module' => 'finanzas'],
+            ['name' => 'accounting.entries.reverse', 'description' => 'Revertir asientos', 'module' => 'finanzas'],
+            ['name' => 'accounting.reports.view', 'description' => 'Ver reportes contables', 'module' => 'finanzas'],
+
+            // Financial Module - Accounts Receivable
+            ['name' => 'receivables.view', 'description' => 'Ver cuentas por cobrar', 'module' => 'finanzas'],
+            ['name' => 'receivables.manage', 'description' => 'Gestionar cuentas por cobrar', 'module' => 'finanzas'],
+            ['name' => 'receivables.apply-payment', 'description' => 'Aplicar pagos a CxC', 'module' => 'finanzas'],
+
+            // Financial Module - Accounts Payable
+            ['name' => 'payables.view', 'description' => 'Ver cuentas por pagar', 'module' => 'finanzas'],
+            ['name' => 'payables.suppliers.manage', 'description' => 'Gestionar proveedores', 'module' => 'finanzas'],
+            ['name' => 'payables.invoices.create', 'description' => 'Crear facturas de proveedor', 'module' => 'finanzas'],
+            ['name' => 'payables.invoices.approve', 'description' => 'Aprobar facturas de proveedor', 'module' => 'finanzas'],
+            ['name' => 'payables.payments.process', 'description' => 'Procesar pagos', 'module' => 'finanzas'],
+
+            // Financial Module - Treasury
+            ['name' => 'treasury.view', 'description' => 'Ver tesorería', 'module' => 'finanzas'],
+            ['name' => 'treasury.banks.manage', 'description' => 'Gestionar bancos', 'module' => 'finanzas'],
+            ['name' => 'treasury.cash-registers.manage', 'description' => 'Gestionar cajas', 'module' => 'finanzas'],
+            ['name' => 'treasury.movements.create', 'description' => 'Crear movimientos de tesorería', 'module' => 'finanzas'],
+            ['name' => 'treasury.reports.view', 'description' => 'Ver reportes de tesorería', 'module' => 'finanzas'],
+
+            // Financial Module - Configuration
+            ['name' => 'accounting.config.manage', 'description' => 'Configurar eventos contables', 'module' => 'finanzas'],
+
+            // Dashboard - Accounting Client
+            ['name' => 'dashboard.accounting-client', 'description' => 'Acceso al dashboard financiero del cliente', 'module' => 'dashboards'],
+
         ];
 
         foreach ($permissions as $permissionData) {
@@ -530,18 +569,67 @@ class RolePermissionSeeder extends Seeder
             'practitioners.add_assistant',
         ]);
 
-        // Contabilidad Client role - Accounting staff for each client
+        // Contabilidad Client role - Full accounting staff for each client
         $contabilidadClientRole = Role::firstOrCreate(['name' => 'contabilidad_client']);
         $contabilidadClientRole->givePermissionTo([
-            'dashboard.accounting',
+            'dashboard.accounting-client',
+            'users.profile',
+            'users.change_client',
+            'cost-centers.view',
+            'cost-centers.create',
+            'cost-centers.edit',
+            'accounting.view',
+            'accounting.accounts.manage',
+            'accounting.entries.view',
+            'accounting.entries.create',
+            'accounting.entries.post',
+            'accounting.entries.reverse',
+            'accounting.reports.view',
+            'receivables.view',
+            'receivables.manage',
+            'receivables.apply-payment',
+            'payables.view',
+            'payables.suppliers.manage',
+            'payables.invoices.create',
+            'payables.invoices.approve',
+            'payables.payments.process',
+            'treasury.view',
+            'treasury.banks.manage',
+            'treasury.cash-registers.manage',
+            'treasury.movements.create',
+            'treasury.reports.view',
+            'accounting.config.manage',
             'documents.view',
             'documents.create',
-            'documents.approve',
             'documents.download',
             'inventory.view',
             'inventory.view_reports',
+        ]);
+
+        // Contabilidad Assistant Client role - Limited accounting staff for each client
+        $contabilidadAsistenteClientRole = Role::firstOrCreate(['name' => 'contabilidad_asistente_client']);
+        $contabilidadAsistenteClientRole->givePermissionTo([
+            'dashboard.accounting-client',
             'users.profile',
             'users.change_client',
+            'cost-centers.view',
+            'accounting.view',
+            'accounting.entries.view',
+            'accounting.entries.create',
+            'accounting.reports.view',
+            'receivables.view',
+            'receivables.apply-payment',
+            'payables.view',
+            'payables.invoices.create',
+            'payables.payments.process',
+            'treasury.view',
+            'treasury.movements.create',
+            'treasury.reports.view',
+            'documents.view',
+            'documents.create',
+            'documents.download',
+            'inventory.view',
+            'inventory.view_reports',
         ]);
 
         // Set 2FA requirement for specific roles
@@ -549,6 +637,7 @@ class RolePermissionSeeder extends Seeder
             'admin' => 'Este rol requiere autenticación de dos factores por políticas de seguridad.',
             'contabilidad' => 'Este rol maneja información financiera sensible y requiere 2FA.',
             'contabilidad_client' => 'Este rol maneja información financiera sensible del cliente y requiere 2FA.',
+            'contabilidad_asistente_client' => 'Este rol maneja información financiera sensible del cliente y requiere 2FA.',
             'validador' => 'Este rol valida usuarios y requiere 2FA para mayor seguridad.',
             'soporte' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
             'ventas' => 'Este rol maneja datos de clientes y requiere 2FA.',

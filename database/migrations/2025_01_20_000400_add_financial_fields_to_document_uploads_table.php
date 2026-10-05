@@ -8,18 +8,29 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Skip if table doesn't exist (created in later migrations)
+        if (! Schema::hasTable('document_uploads')) {
+            return;
+        }
+
         Schema::table('document_uploads', function (Blueprint $table) {
             // Vinculación a proveedor (puede crearse automáticamente)
-            $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->onDelete('set null')
-                ->after('total');
+            if (! Schema::hasColumn('document_uploads', 'supplier_id')) {
+                $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->onDelete('set null')
+                    ->after('total');
+            }
 
             // Centro de costos (para clasificar gasto)
-            $table->foreignId('cost_center_id')->nullable()->constrained('cost_centers')->onDelete('set null')
-                ->after('supplier_id');
+            if (! Schema::hasColumn('document_uploads', 'cost_center_id')) {
+                $table->foreignId('cost_center_id')->nullable()->constrained('cost_centers')->onDelete('set null')
+                    ->after('supplier_id');
+            }
 
             // Factura de proveedor generada
-            $table->foreignId('supplier_invoice_id')->nullable()->constrained('supplier_invoices')->onDelete('set null')
-                ->after('cost_center_id');
+            if (! Schema::hasColumn('document_uploads', 'supplier_invoice_id')) {
+                $table->foreignId('supplier_invoice_id')->nullable()->constrained('supplier_invoices')->onDelete('set null')
+                    ->after('cost_center_id');
+            }
 
             // Índices
             $table->index('supplier_id');

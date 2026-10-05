@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
-class JournalEntryLine extends Model
+class JournalEntryLine extends BaseModel
 {
     protected $table = 'journal_entry_lines';
 
     protected $fillable = [
+        'uuid',
         'journal_entry_id',
         'accounting_account_id',
         'cost_center_id',
@@ -18,6 +19,15 @@ class JournalEntryLine extends Model
         'credit',
         'description',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function ($model) {
+            if (! $model->uuid) {
+                $model->uuid = Str::uuid();
+            }
+        });
+    }
 
     protected function casts(): array
     {

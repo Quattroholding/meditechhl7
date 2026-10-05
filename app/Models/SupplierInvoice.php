@@ -101,6 +101,16 @@ class SupplierInvoice extends BaseModel
         return $this->belongsTo(JournalEntry::class);
     }
 
+    public function costDistributions(): HasMany
+    {
+        return $this->hasMany(CostDistribution::class);
+    }
+
+    public function paymentSchedules(): HasMany
+    {
+        return $this->hasMany(PaymentSchedule::class);
+    }
+
     public function approvedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');

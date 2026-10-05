@@ -8,27 +8,40 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Skip if table doesn't exist
+        if (! Schema::hasTable('document_parse_results')) {
+            return;
+        }
+
         Schema::table('document_parse_results', function (Blueprint $table) {
             // Proveedor detectado por parser
-            $table->string('detected_supplier')->nullable()
-                ->after('processing_cost_usd')
-                ->comment('Nombre del proveedor extraído del documento');
+            if (! Schema::hasColumn('document_parse_results', 'detected_supplier')) {
+                $table->string('detected_supplier')->nullable()
+                    ->after('processing_cost_usd')
+                    ->comment('Nombre del proveedor extraído del documento');
+            }
 
             // Ítems de inventario detectados
-            $table->json('detected_items')->nullable()
-                ->after('detected_supplier')
-                ->comment('Líneas de inventario extraídas');
+            if (! Schema::hasColumn('document_parse_results', 'detected_items')) {
+                $table->json('detected_items')->nullable()
+                    ->after('detected_supplier')
+                    ->comment('Líneas de inventario extraídas');
+            }
 
             // Centro de costos sugerido
-            $table->string('detected_cost_center')->nullable()
-                ->after('detected_items')
-                ->comment('Centro de costo sugerido basado en contenido');
+            if (! Schema::hasColumn('document_parse_results', 'detected_cost_center')) {
+                $table->string('detected_cost_center')->nullable()
+                    ->after('detected_items')
+                    ->comment('Centro de costo sugerido basado en contenido');
+            }
 
             // Clasificación financiera
-            $table->enum('financial_classification', ['INVENTORY', 'UTILITIES', 'SUPPLIES', 'SERVICES', 'OTHER'])
-                ->nullable()
-                ->after('detected_cost_center')
-                ->comment('Clasificación automática del gasto');
+            if (! Schema::hasColumn('document_parse_results', 'financial_classification')) {
+                $table->enum('financial_classification', ['INVENTORY', 'UTILITIES', 'SUPPLIES', 'SERVICES', 'OTHER'])
+                    ->nullable()
+                    ->after('detected_cost_center')
+                    ->comment('Clasificación automática del gasto');
+            }
 
             // Índices
             $table->index('detected_supplier');

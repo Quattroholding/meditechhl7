@@ -102,7 +102,7 @@ Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'firs
         return view('settings.zoom-settings');
     })->name('practitioner.settings.zoom');
 
-    Route::get('/zoom/authorize', [ZoomOAuthController::class, 'authorize'])
+    Route::get('/zoom/authorize', [ZoomOAuthController::class, 'redirectToZoom'])
         ->name('zoom.authorize');
 
     Route::get('/zoom/callback', [ZoomOAuthController::class, 'callback'])
