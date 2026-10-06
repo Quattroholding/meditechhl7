@@ -156,7 +156,7 @@ class SupplierInvoiceModal extends Component
         if ($this->invoice_file) {
             $storagePath = $this->invoice_file->store(
                 "supplier-invoices/{$clientId}",
-                'private'
+                'local'
             );
 
             // Crear o actualizar registro de archivo
