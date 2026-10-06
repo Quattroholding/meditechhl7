@@ -4,7 +4,8 @@ namespace App\Livewire\Treasury\Bank;
 
 use App\Models\Accounting\AccountingAccount;
 use App\Models\Treasury\Bank;
-use Livewire\Attributes\Validate;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
 class BankModal extends Component
@@ -13,22 +14,16 @@ class BankModal extends Component
 
     public ?Bank $bank = null;
 
-    #[Validate]
     public string $bank_name = '';
 
-    #[Validate]
     public string $account_number = '';
 
-    #[Validate]
     public string $account_type = 'checking';
 
-    #[Validate]
     public string $currency = 'PAB';
 
-    #[Validate]
     public int $accounting_account_id = 0;
 
-    #[Validate]
     public string $status = 'active';
 
     public function mount(?Bank $bank = null): void
@@ -44,6 +39,38 @@ class BankModal extends Component
         }
     }
 
+    public function updatedBankName(): void
+    {
+        $this->validateOnly('bank_name');
+    }
+
+    public function updatedAccountNumber(): void
+    {
+        $this->validateOnly('account_number');
+    }
+
+    public function updatedAccountingAccountId(): void
+    {
+        $this->validateOnly('accounting_account_id');
+    }
+
+    protected $messages = [
+        'bank_name.required' => 'El nombre del banco es obligatorio.',
+        'bank_name.string' => 'El nombre del banco debe ser texto.',
+        'bank_name.max' => 'El nombre del banco no puede exceder 255 caracteres.',
+        'account_number.required' => 'El número de cuenta es obligatorio.',
+        'account_number.string' => 'El número de cuenta debe ser texto.',
+        'account_number.max' => 'El número de cuenta no puede exceder 50 caracteres.',
+        'account_type.required' => 'El tipo de cuenta es obligatorio.',
+        'account_type.in' => 'El tipo de cuenta debe ser válido.',
+        'currency.required' => 'La moneda es obligatoria.',
+        'currency.in' => 'La moneda debe ser PAB, USD o EUR.',
+        'accounting_account_id.required' => 'La cuenta contable es obligatoria.',
+        'accounting_account_id.exists' => 'La cuenta contable seleccionada no existe.',
+        'status.required' => 'El estado es obligatorio.',
+        'status.in' => 'El estado debe ser válido.',
+    ];
+
     public function rules(): array
     {
         return [
@@ -58,8 +85,8 @@ class BankModal extends Component
 
     public function save(): void
     {
-        $this->authorize('treasury.banks.manage');
         $this->validate();
+        $this->authorize('treasury.banks.manage');
 
         $clientId = auth()->user()->getCurrentClient()->id;
 
@@ -100,7 +127,7 @@ class BankModal extends Component
         }
     }
 
-    public function getAccountingAccountsProperty()
+    public function getAccountingAccountsProperty(): Collection
     {
         return AccountingAccount::where('client_id', auth()->user()->getCurrentClient()->id)
             ->where('status', 'active')
@@ -109,7 +136,7 @@ class BankModal extends Component
             ->get();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.treasury.bank.bank-modal', [
             'accounts' => $this->accountingAccounts,

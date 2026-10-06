@@ -6,7 +6,8 @@ use App\Models\Accounting\AccountingAccount;
 use App\Models\Branch;
 use App\Models\Treasury\CashRegister;
 use App\Models\User;
-use Livewire\Attributes\Validate;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
 class CashRegisterModal extends Component
@@ -15,19 +16,14 @@ class CashRegisterModal extends Component
 
     public ?CashRegister $cashRegister = null;
 
-    #[Validate]
     public string $name = '';
 
-    #[Validate]
     public int $branch_id = 0;
 
-    #[Validate]
     public int $responsible_user_id = 0;
 
-    #[Validate]
     public int $accounting_account_id = 0;
 
-    #[Validate]
     public string $status = 'active';
 
     public function mount(?CashRegister $cashRegister = null): void
@@ -42,6 +38,40 @@ class CashRegisterModal extends Component
         }
     }
 
+    public function updatedName(): void
+    {
+        $this->validateOnly('name');
+    }
+
+    public function updatedBranchId(): void
+    {
+        $this->validateOnly('branch_id');
+    }
+
+    public function updatedResponsibleUserId(): void
+    {
+        $this->validateOnly('responsible_user_id');
+    }
+
+    public function updatedAccountingAccountId(): void
+    {
+        $this->validateOnly('accounting_account_id');
+    }
+
+    protected $messages = [
+        'name.required' => 'El nombre de la caja es obligatorio.',
+        'name.string' => 'El nombre debe ser texto.',
+        'name.max' => 'El nombre no puede exceder 255 caracteres.',
+        'branch_id.required' => 'La sucursal es obligatoria.',
+        'branch_id.exists' => 'La sucursal seleccionada no existe.',
+        'responsible_user_id.required' => 'El usuario responsable es obligatorio.',
+        'responsible_user_id.exists' => 'El usuario seleccionado no existe.',
+        'accounting_account_id.required' => 'La cuenta contable es obligatoria.',
+        'accounting_account_id.exists' => 'La cuenta contable seleccionada no existe.',
+        'status.required' => 'El estado es obligatorio.',
+        'status.in' => 'El estado debe ser activo, cerrado o inactivo.',
+    ];
+
     public function rules(): array
     {
         return [
@@ -55,8 +85,8 @@ class CashRegisterModal extends Component
 
     public function save(): void
     {
-        $this->authorize('treasury.cash-registers.manage');
         $this->validate();
+        $this->authorize('treasury.cash-registers.manage');
 
         $clientId = auth()->user()->getCurrentClient()->id;
 
@@ -95,7 +125,7 @@ class CashRegisterModal extends Component
         }
     }
 
-    public function getBranchesProperty()
+    public function getBranchesProperty(): Collection
     {
         return Branch::where('client_id', auth()->user()->getCurrentClient()->id)
             ->where('active', 1)
@@ -103,15 +133,15 @@ class CashRegisterModal extends Component
             ->get();
     }
 
-    public function getUsersProperty()
+    public function getUsersProperty(): Collection
     {
         return User::where('default_client_id', auth()->user()->getCurrentClient()->id)
             ->where('active', 1)
-            ->orderBy('name')
+            ->orderBy('first_name')
             ->get();
     }
 
-    public function getAccountingAccountsProperty()
+    public function getAccountingAccountsProperty(): Collection
     {
         return AccountingAccount::where('client_id', auth()->user()->getCurrentClient()->id)
             ->where('status', 'active')
@@ -120,7 +150,7 @@ class CashRegisterModal extends Component
             ->get();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.treasury.cash-register.cash-register-modal', [
             'branches' => $this->branches,
