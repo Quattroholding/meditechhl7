@@ -111,6 +111,7 @@ class CostCenterModal extends Component
 
     public function save(): void
     {
+        dd('save method called');
         $this->validate();
         $this->authorize('finance.cost-centers.manage');
 
