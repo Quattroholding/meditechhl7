@@ -16,9 +16,7 @@
 
 use App\Livewire\Accounting\AccountDataTable;
 use App\Livewire\Accounting\JournalEntryDataTable;
-use App\Livewire\Finance\AccountsPayable\InvoiceDataTable;
 use App\Livewire\Finance\AccountsReceivable\DataTable as ReceivablesDataTable;
-use App\Livewire\Finance\Supplier\DataTable as SupplierDataTable;
 use App\Models\Accounting\AccountingAccount;
 use App\Models\Accounting\JournalEntry;
 use App\Models\Finance\CostCenter;
@@ -52,6 +50,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:cost-centers.v
             return view('finance.cost-centers.edit', ['costCenter' => $costCenter]);
         })->name('edit');
     });
+
+    Route::middleware('permission:cost-centers.delete')->delete('/{costCenter}', function () {
+        //
+    })->name('destroy');
 });
 
 // ============================================================================
@@ -73,6 +75,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:accounting.vie
         Route::get('/accounts/{account}/edit', function (AccountingAccount $account) {
             return view('accounting.accounts.edit', ['account' => $account]);
         })->name('accounts.edit');
+
+        Route::delete('/accounts/{account}', function () {
+            //
+        })->name('accounts.destroy');
     });
 
     // Asientos Contables
@@ -92,6 +98,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:accounting.vie
         Route::get('/journal-entries/{journalEntry}', function () {
             return view('accounting.journal-entries.show');
         })->name('journal-entries.show');
+
+        Route::delete('/journal-entries/{journalEntry}', function () {
+            //
+        })->name('journal-entries.destroy');
     });
 
     // Reportes Contables
@@ -119,7 +129,13 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:accounting.vie
 // ============================================================================
 
 Route::middleware(['auth', 'verified', 'first.login', 'permission:receivables.view'])->prefix('finance/receivables')->name('finance.receivables.')->group(function () {
-    Route::get('/', ReceivablesDataTable::class)->name('index');
+    // Route::get('/', ReceivablesDataTable::class)->name('index');
+
+    Route::middleware('permission:receivables.view')->group(function () {
+        Route::get('/', function () {
+            return view('finance.receivables.index');
+        })->name('index');
+    });
 
     Route::get('/credit-invoices', function () {
         return view('finance.receivables.credit-invoices');
@@ -144,7 +160,9 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:payables.view'
 
     // Proveedores
     Route::middleware('permission:payables.suppliers.manage')->prefix('suppliers')->name('suppliers.')->group(function () {
-        Route::get('/', SupplierDataTable::class)->name('index');
+        Route::get('/', function () {
+            return view('finance.payables.suppliers.index');
+        })->name('index');
 
         Route::get('/create', function () {
             return view('finance.payables.suppliers.create');
@@ -157,11 +175,18 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:payables.view'
         Route::get('/{supplier}', function () {
             return view('finance.payables.suppliers.show');
         })->name('show');
+
+        Route::delete('/{supplier}', function () {
+            //
+        })->name('destroy');
     });
 
     // Facturas de Proveedor
     Route::middleware('permission:payables.invoices.create')->prefix('invoices')->name('invoices.')->group(function () {
-        Route::get('/', InvoiceDataTable::class)->name('index');
+
+        Route::get('/', function () {
+            return view('finance.payables.invoices.index');
+        })->name('index');
 
         Route::get('/create', function () {
             return view('finance.payables.invoices.create');
@@ -174,6 +199,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:payables.view'
         Route::get('/{invoice}', function () {
             return view('finance.payables.invoices.show');
         })->name('show');
+
+        Route::delete('/{invoice}', function () {
+            //
+        })->name('destroy');
     });
 
     // Reporte de Antigüedad
@@ -209,6 +238,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.view'
         Route::get('/{bank}/movements', function () {
             return view('treasury.banks.movements');
         })->name('movements');
+
+        Route::delete('/{bank}', function () {
+            //
+        })->name('destroy');
     });
 
     // Cajas
@@ -232,6 +265,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.view'
         Route::get('/{cashRegister}/movements', function () {
             return view('treasury.cash-registers.movements');
         })->name('movements');
+
+        Route::delete('/{cashRegister}', function () {
+            //
+        })->name('destroy');
     });
 
     // Métodos de Pago
@@ -247,6 +284,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.view'
         Route::get('/{paymentMethod}/edit', function (PaymentMethod $paymentMethod) {
             return view('treasury.payment-methods.edit', ['paymentMethod' => $paymentMethod]);
         })->name('edit');
+
+        Route::delete('/{paymentMethod}', function () {
+            //
+        })->name('destroy');
     });
 
     // Movimientos de Tesorería
@@ -266,6 +307,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.view'
         Route::get('/{movement}', function () {
             return view('treasury.movements.show');
         })->name('show');
+
+        Route::delete('/{movement}', function () {
+            //
+        })->name('destroy');
     });
 
     // Reportes de Tesorería

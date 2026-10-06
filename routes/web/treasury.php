@@ -43,6 +43,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.banks
     Route::get('/{bank}/movements', function () {
         return view('treasury.banks.movements');
     })->name('movements');
+
+    Route::middleware('permission:treasury.banks.delete')->delete('/{bank}', function () {
+        //
+    })->name('destroy');
 });
 
 // ============================================================================
@@ -71,6 +75,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.cash-
     Route::get('/{cashRegister}/movements', function () {
         return view('treasury.cash-registers.movements');
     })->name('movements');
+
+    Route::middleware('permission:treasury.cash-registers.delete')->delete('/{cashRegister}', function () {
+        //
+    })->name('destroy');
 });
 
 // ============================================================================
@@ -95,6 +103,10 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.movem
     Route::get('/{movement}', function () {
         return view('treasury.movements.show');
     })->name('show');
+
+    Route::middleware('permission:treasury.movements.delete')->delete('/{movement}', function () {
+        //
+    })->name('destroy');
 });
 
 // ============================================================================
