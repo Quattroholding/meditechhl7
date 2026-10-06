@@ -105,7 +105,7 @@ class CashRegisterModal extends Component
 
     public function getUsersProperty()
     {
-        return User::where('client_id', auth()->user()->getCurrentClient()->id)
+        return User::where('default_client_id', auth()->user()->getCurrentClient()->id)
             ->where('active', 1)
             ->orderBy('name')
             ->get();
