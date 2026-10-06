@@ -117,6 +117,7 @@ class JournalEntryModal extends Component
                 'description' => $this->description,
                 'status' => 'draft',
                 'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
             ]);
         }
 

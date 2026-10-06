@@ -139,6 +139,7 @@ class CostCenterModal extends Component
                 'medical_speciality_id' => $this->medical_speciality_id,
                 'status' => $this->status,
                 'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
             ]);
             session()->flash('message.success', 'Centro de costo creado exitosamente.');
         }

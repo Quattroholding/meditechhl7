@@ -131,6 +131,7 @@ class SupplierModal extends Component
                 'accounting_account_id' => $this->accounting_account_id,
                 'status' => $this->status,
                 'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
             ]);
             session()->flash('message.success', 'Proveedor creado exitosamente.');
         }
@@ -139,7 +140,7 @@ class SupplierModal extends Component
             $this->dispatch('supplier-saved');
             $this->dispatch('closeModal');
         } else {
-            $this->redirect(route('finance.payables.suppliers'));
+            $this->redirect(route('finance.payables.suppliers.index'));
         }
     }
 
@@ -154,7 +155,7 @@ class SupplierModal extends Component
                 $this->dispatch('supplier-saved');
                 $this->dispatch('closeModal');
             } else {
-                $this->redirect(route('finance.payables.suppliers'));
+                $this->redirect(route('finance.payables.suppliers.index'));
             }
         }
     }

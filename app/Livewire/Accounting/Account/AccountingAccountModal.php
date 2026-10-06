@@ -127,6 +127,7 @@ class AccountingAccountModal extends Component
                 'status' => $this->status,
                 'description' => $this->description,
                 'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
             ]);
             session()->flash('message.success', 'Cuenta contable creada exitosamente.');
         }
