@@ -30,6 +30,8 @@ class SupplierInvoice extends BaseModel
         'balance',
         'cost_center_id',
         'notes',
+        'document_path',
+        'document_filename',
         'status',
         'approved_at',
         'approved_by',

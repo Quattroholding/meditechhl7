@@ -8,9 +8,12 @@ use App\Models\SupplierInvoice;
 use App\Services\Finance\AccountsPayableService;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class SupplierInvoiceModal extends Component
 {
+    use WithFileUploads;
+
     public bool $isModal = true;
 
     public ?SupplierInvoice $invoice = null;
@@ -47,6 +50,9 @@ class SupplierInvoiceModal extends Component
 
     #[Validate]
     public string $notes = '';
+
+    #[Validate]
+    public mixed $invoice_file = null;
 
     public array $distributions = [];
 
@@ -92,6 +98,7 @@ class SupplierInvoiceModal extends Component
             'total_amount' => 'required|numeric|min:0',
             'cost_center_id' => 'nullable|exists:cost_centers,id',
             'notes' => 'nullable|string|max:1000',
+            'invoice_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ];
     }
 
@@ -112,6 +119,7 @@ class SupplierInvoiceModal extends Component
 
         $clientId = auth()->user()->getCurrentClient()->id;
         $service = app(AccountsPayableService::class);
+        $isCreating = ! $this->invoice;
 
         if ($this->invoice) {
             $this->invoice->update([
@@ -144,13 +152,34 @@ class SupplierInvoiceModal extends Component
             ]);
         }
 
+        // Guardar archivo si se proporcionó
+        if ($this->invoice_file) {
+            $storagePath = $this->invoice_file->store(
+                "supplier-invoices/{$clientId}",
+                'private'
+            );
+
+            // Crear o actualizar registro de archivo
+            $this->invoice->update([
+                'document_path' => $storagePath,
+                'document_filename' => $this->invoice_file->getClientOriginalName(),
+            ]);
+        }
+
         // Guardar distribuciones si hay
         if (! empty($this->distributions)) {
             $service->distributeByCenter($this->invoice, $this->distributions);
         }
 
-        $this->dispatch('invoice-saved');
-        $this->dispatch('closeModal');
+        $message = $isCreating ? 'Factura de proveedor creada exitosamente.' : 'Factura de proveedor actualizada exitosamente.';
+        session()->flash('message.success', $message);
+
+        if ($this->isModal) {
+            $this->dispatch('invoice-saved');
+            $this->dispatch('closeModal');
+        } else {
+            $this->redirect(route('finance.payables.invoices.index'));
+        }
     }
 
     public function addDistribution(): void

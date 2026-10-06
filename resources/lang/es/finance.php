@@ -103,6 +103,10 @@ return [
         'cost_center' => 'Centro de Costo',
         'status' => 'Estado',
         'notes' => 'Notas',
+        'invoice_file' => 'Archivo de Factura',
+        'file_help' => 'Cargue un PDF o imagen de la factura (PDF, JPG, PNG, máximo 10MB)',
+        'no_cost_center' => 'Sin Centro de Costo',
+        'cost_distribution' => 'Centro de distribuicion',
         'delete_confirmation' => '¿Está seguro de que desea eliminar esta factura?',
     ],
 
@@ -260,5 +264,10 @@ return [
         'generate_report' => 'Generar Reporte',
         'export_excel' => 'Exportar a Excel',
         'export_pdf' => 'Exportar a PDF',
+    ],
+
+    'currency' => [
+        'pab' => 'Balboa',
+        'usd' => 'Dolares',
     ],
 ];

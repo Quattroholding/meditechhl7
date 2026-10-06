@@ -103,6 +103,8 @@ return [
         'cost_center' => 'Cost Center',
         'status' => 'Status',
         'notes' => 'Notes',
+        'invoice_file' => 'Invoice File',
+        'file_help' => 'Upload a PDF or image of the invoice (PDF, JPG, PNG, max 10MB)',
         'delete_confirmation' => 'Are you sure you want to delete this invoice?',
     ],
 
