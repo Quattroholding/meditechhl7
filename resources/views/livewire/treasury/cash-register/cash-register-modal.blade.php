@@ -1,24 +1,5 @@
-@if($isModal)
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="sticky top-0 bg-light px-6 py-4 border-b d-flex justify-content-between align-items-center">
-                <h3 class="text-lg font-bold">
-                    {{ $this->cashRegister ? __('treasury.cash_register.edit_title') : __('treasury.cash_register.create_title') }}
-                </h3>
-                <button
-                    type="button"
-                    wire:click="$dispatch('closeModal')"
-                    class="text-gray-500 hover:text-gray-700"
-                    style="border: none; background: none; cursor: pointer;"
-                >
-                    ×
-                </button>
-            </div>
-
-            <form wire:submit.prevent="save" class="p-6">
-@else
-    <form wire:submit.prevent="save">
-@endif
+<form wire:submit="save" id="form">
+    @csrf
                 <div class="col-12">
                     <div class="form-heading">
                         <h4>  {{ __('generic.create') }} {{ __('treasury.cash-registers.title') }}</h4>
@@ -117,8 +98,4 @@
                         </button>
                     @endif
                 </div>
-            </form>
-        @if($isModal)
-            </div>
-        </div>
-        @endif
+</form>
