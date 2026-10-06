@@ -19,11 +19,16 @@
 @else
     <form wire:submit.prevent="save">
 @endif
+                <div class="col-12">
+                    <div class="form-heading">
+                        <h4>  {{ __('generic.create') }} {{ __('treasury.cash-registers.title') }}</h4>
+                    </div>
+                </div>
                 <div class="row">
                     <!-- Name -->
                     <div class="col-12">
                         <div class="input-block local-forms">
-                            <x-input-label for="name" :value="__('treasury.cash_register.name')" required="true"/>
+                            <x-input-label for="name" :value="__('treasury.cash-registers.name')" required="true"/>
                             <x-text-input wire:model="name" id="name" class="block mt-1 w-full" type="text" name="name" placeholder="Ej: Caja Principal"/>
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
@@ -34,7 +39,7 @@
                     <!-- Branch -->
                     <div class="col-12 col-md-6">
                         <div class="input-block local-forms">
-                            <x-input-label for="branch_id" :value="__('treasury.cash_register.branch')" required="true"/>
+                            <x-input-label for="branch_id" :value="__('treasury.cash-registers.branch_id')" required="true"/>
                             <select wire:model="branch_id" id="branch_id" class="form-control">
                                 <option value="">{{ __('generic.select') }}</option>
                                 @foreach ($branches as $branch)
@@ -50,12 +55,12 @@
                     <!-- Responsible User -->
                     <div class="col-12 col-md-6">
                         <div class="input-block local-forms">
-                            <x-input-label for="responsible_user_id" :value="__('treasury.cash_register.responsible_user')" required="true"/>
+                            <x-input-label for="responsible_user_id" :value="__('treasury.cash-registers.responsible_user_id')" required="true"/>
                             <select wire:model="responsible_user_id" id="responsible_user_id" class="form-control">
                                 <option value="">{{ __('generic.select') }}</option>
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}">
-                                        {{ $user->name }}
+                                        {{ $user->full_name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -68,7 +73,7 @@
                     <!-- Accounting Account -->
                     <div class="col-12">
                         <div class="input-block local-forms">
-                            <x-input-label for="accounting_account_id" :value="__('treasury.cash_register.accounting_account')" required="true"/>
+                            <x-input-label for="accounting_account_id" :value="__('treasury.cash-registers.accounting_account')" required="true"/>
                             <select wire:model="accounting_account_id" id="accounting_account_id" class="form-control">
                                 <option value="">{{ __('generic.select') }}</option>
                                 @foreach ($accounts as $account)
@@ -88,10 +93,10 @@
                         <div class="input-block local-forms">
                             <x-input-label for="status" :value="__('generic.status')"/>
                             <x-select-input wire:model="status" id="status" name="status" :options="[
-                                'active' => __('generic.active'),
-                                'closed' => __('treasury.cash_register.status.closed'),
-                                'inactive' => __('generic.inactive'),
-                            ]" :selected="['active']" class="block w-full"/>
+                                'active' =>  __('treasury.cash-registers.statuses.active'),
+                                'closed' => __('treasury.cash-registers.statuses.closed'),
+                                'inactive' =>  __('treasury.cash-registers.statuses.inactive'),
+                            ]" :selected="$this->status" class="block w-full"/>
                             <x-input-error :messages="$errors->get('status')" class="mt-2" />
                         </div>
                     </div>
@@ -99,7 +104,7 @@
 
                 <div class="doctor-submit text-end">
                     @if ($this->cashRegister)
-                        <button type="button" wire:click="delete" wire:confirm="{{ __('treasury.cash_register.confirm_delete') }}" class="btn btn-danger me-2">
+                        <button type="button" wire:click="delete" wire:confirm="{{ __('treasury.cash-registers.confirm_delete') }}" class="btn btn-danger me-2">
                             {{ __('button.delete') }}
                         </button>
                     @endif

@@ -52,7 +52,7 @@
                     <div class="col-12 col-md-6">
                         <div class="input-block local-forms">
                             <x-input-label for="branch_id" :value="__('finance.cost_centers.branch')" required="true"/>
-                            <x-select-input wire:model="branch_id" id="branch_id" name="branch_id" :options="$branches->pluck('name', 'id')->toArray()" :selected="[$this->branch_id]" class="block w-full"/>
+                            <x-select-input wire:model="branch_id" id="branch_id" name="branch_id" :options="$branches->pluck('name', 'id')->toArray()" :selected="$this->branch_id" class="block w-full"/>
                             <x-input-error :messages="$errors->get('branch_id')" class="mt-2" />
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                     <div class="col-12 col-md-6">
                         <div class="input-block local-forms">
                             <x-input-label for="medical_speciality_id" :value="__('finance.cost_centers.speciality')"/>
-                            <x-select-input wire:model="medical_speciality_id" id="medical_speciality_id" name="medical_speciality_id" :options="$specialities->pluck('name', 'id')->toArray()" :selected="[$this->medical_speciality_id]" class="block w-full"/>
+                            <x-select-input wire:model="medical_speciality_id" id="medical_speciality_id" name="medical_speciality_id" :options="$specialities->pluck('name', 'id')->toArray()" :selected="$this->medical_speciality_id" class="block w-full"/>
                             <x-input-error :messages="$errors->get('medical_speciality_id')" class="mt-2" />
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                     <div class="col-12">
                         <div class="input-block local-forms">
                             <x-input-label for="status" :value="__('finance.cost_centers.status')"/>
-                            <x-select-input wire:model="status" id="status" name="status" :options="['active' => __('general.active'), 'inactive' => __('general.inactive')]" :selected="[$this->status]" class="block w-full"/>
+                            <x-select-input wire:model="status" id="status" name="status" :options="['active' => __('generic.active'), 'inactive' => __('generic.inactive')]" :selected="$this->status" class="block w-full"/>
                             <x-input-error :messages="$errors->get('status')" class="mt-2" />
                         </div>
                     </div>
@@ -94,6 +94,9 @@
                         <button type="submit" class="btn btn-primary me-2">
                             {{ $this->costCenter ? __('button.update') : __('button.save') }}
                         </button>
+                        @if(!$isModal)
+                        <a class="btn btn-secondary cancel-form" href="{{ route('finance.cost-centers.index') }}">  {{ __('button.cancel') }}</a>
+                        @endif
                     </div>
                 </div>
             </form>
