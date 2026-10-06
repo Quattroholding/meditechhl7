@@ -52,7 +52,7 @@ class CashRegisterDataTable extends Component
     public function render(): View
     {
         $data = CashRegister::query()
-            ->where('client_id', auth()->user()->client_id)
+            ->where('client_id', auth()->user()->getCurrentClient()->id)
             ->with(['branch', 'responsibleUser'])
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {

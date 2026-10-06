@@ -8,6 +8,7 @@ use App\Models\Treasury\CashRegister;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class CashRegisterModal extends Component
@@ -101,6 +102,7 @@ class CashRegisterModal extends Component
             ]);
         } else {
             CashRegister::create([
+                'uuid' => Str::uuid(),
                 'client_id' => $clientId,
                 'name' => $this->name,
                 'branch_id' => $this->branch_id,

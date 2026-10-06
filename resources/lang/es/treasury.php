@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'bank' => [
+    'banks' => [
+        'id' => 'id',
         'title' => 'Bancos',
         'create_title' => 'Nuevo Banco',
         'edit_title' => 'Editar Banco',
@@ -17,6 +18,7 @@ return [
         'created_successfully' => 'Banco creado exitosamente',
         'updated_successfully' => 'Banco actualizado exitosamente',
         'deleted_successfully' => 'Banco eliminado exitosamente',
+        'acciones' => 'Acciones',
         'types' => [
             'checking' => 'Corriente',
             'savings' => 'Ahorros',
@@ -30,13 +32,14 @@ return [
         ],
     ],
 
-    'cash_register' => [
+    'cash-registers' => [
+        'id' => 'id',
         'title' => 'Cajas',
         'create_title' => 'Nueva Caja',
         'edit_title' => 'Editar Caja',
         'name' => 'Nombre de la Caja',
-        'branch' => 'Sucursal',
-        'responsible_user' => 'Usuario Responsable',
+        'branch_id' => 'Sucursal',
+        'responsible_user_id' => 'Usuario Responsable',
         'accounting_account' => 'Cuenta Contable',
         'balance' => 'Balance',
         'status' => 'Estado',
@@ -44,6 +47,7 @@ return [
         'created_successfully' => 'Caja creada exitosamente',
         'updated_successfully' => 'Caja actualizada exitosamente',
         'deleted_successfully' => 'Caja eliminada exitosamente',
+        'acciones' => 'Acciones',
         'statuses' => [
             'active' => 'Activa',
             'closed' => 'Cerrada',
@@ -71,6 +75,7 @@ return [
     ],
 
     'movements' => [
+        'id' => 'ID',
         'title' => 'Movimientos de Tesorería',
         'create_title' => 'Nuevo Movimiento',
         'edit_title' => 'Editar Movimiento',
@@ -85,6 +90,7 @@ return [
         'created_successfully' => 'Movimiento creado exitosamente',
         'updated_successfully' => 'Movimiento actualizado exitosamente',
         'deleted_successfully' => 'Movimiento eliminado exitosamente',
+        'acciones' => 'Acciones',
         'types' => [
             'income' => 'Ingreso',
             'expense' => 'Egreso',

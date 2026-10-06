@@ -7,6 +7,7 @@ use App\Models\Finance\CostCenter;
 use App\Models\MedicalSpeciality;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
@@ -111,9 +112,8 @@ class CostCenterModal extends Component
 
     public function save(): void
     {
-        dd('save method called');
         $this->validate();
-        $this->authorize('finance.cost-centers.manage');
+        $this->authorize('cost-centers.create');
 
         $clientId = auth()->user()->getCurrentClient()->id;
 
@@ -129,6 +129,7 @@ class CostCenterModal extends Component
             ]);
         } else {
             CostCenter::create([
+                'uuid' => Str::uuid(),
                 'client_id' => $clientId,
                 'code' => $this->code,
                 'name' => $this->name,

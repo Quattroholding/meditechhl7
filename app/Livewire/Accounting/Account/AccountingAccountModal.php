@@ -3,6 +3,7 @@
 namespace App\Livewire\Accounting\Account;
 
 use App\Models\Accounting\AccountingAccount;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -114,6 +115,7 @@ class AccountingAccountModal extends Component
             ]);
         } else {
             AccountingAccount::create([
+                'uuid' => Str::uuid(),
                 'client_id' => $clientId,
                 'code' => $this->code,
                 'name' => $this->name,

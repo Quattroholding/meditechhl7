@@ -52,7 +52,7 @@ class BankDataTable extends Component
     public function render(): View
     {
         $data = Bank::query()
-            ->where('client_id', auth()->user()->client_id)
+            ->where('client_id', auth()->user()->getCurrentClient()->id)
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
                     $q->where('bank_name', 'like', '%'.$this->search.'%')

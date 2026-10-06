@@ -1,13 +1,4 @@
-<div class="page-wrapper">
-    <div class="row content">
-        @component('components.page-header')
-            @slot('title')
-                Centros de Costo
-            @endslot
-            @slot('li_1')
-                Módulo Financiero
-            @endslot
-        @endcomponent
+<div class="row ">
         <div class="col-sm-12">
             <div class="card card-table show-entire">
                 <div class="card-body">
@@ -97,4 +88,4 @@
             </div>
         </div>
     </div>
-</div>
+

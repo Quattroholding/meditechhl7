@@ -18,7 +18,6 @@ use App\Livewire\Accounting\AccountDataTable;
 use App\Livewire\Accounting\JournalEntryDataTable;
 use App\Livewire\Finance\AccountsPayable\InvoiceDataTable;
 use App\Livewire\Finance\AccountsReceivable\DataTable as ReceivablesDataTable;
-use App\Livewire\Finance\CostCenter\DataTable as CostCenterDataTable;
 use App\Livewire\Finance\Supplier\DataTable as SupplierDataTable;
 use App\Models\Accounting\AccountingAccount;
 use App\Models\Accounting\JournalEntry;
@@ -35,7 +34,12 @@ use Illuminate\Support\Facades\Route;
 // ============================================================================
 
 Route::middleware(['auth', 'verified', 'first.login', 'permission:cost-centers.view'])->prefix('finance/cost-centers')->name('finance.cost-centers.')->group(function () {
-    Route::get('/', CostCenterDataTable::class)->name('index');
+
+    Route::middleware('permission:cost-centers.view')->group(function () {
+        Route::get('/', function () {
+            return view('finance.cost-centers.index');
+        })->name('index');
+    });
 
     Route::middleware('permission:cost-centers.create')->group(function () {
         Route::get('/create', function () {

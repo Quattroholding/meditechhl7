@@ -24,6 +24,7 @@
                     @endcomponent
                     <!-- /Table Header -->
 
+
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0 responsive-table">
                             <thead>

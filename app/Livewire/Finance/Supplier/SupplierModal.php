@@ -4,6 +4,7 @@ namespace App\Livewire\Finance\Supplier;
 
 use App\Models\AccountingAccount;
 use App\Models\Supplier;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -116,6 +117,7 @@ class SupplierModal extends Component
             ]);
         } else {
             Supplier::create([
+                'uuid' => Str::uuid(),
                 'client_id' => $clientId,
                 'ruc' => $this->ruc,
                 'legal_name' => $this->legal_name,

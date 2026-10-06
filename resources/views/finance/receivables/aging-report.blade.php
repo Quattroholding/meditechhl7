@@ -29,9 +29,9 @@
                                             <label for="customer_id">Cliente</label>
                                             <select name="customer_id" id="customer_id" class="form-control">
                                                 <option value="">Todos los clientes</option>
-                                                @forelse(\App\Models\Patient::whereHas('clients', fn($q) => $q->where('client_id', auth()->user()->getCurrentClient()->id))->orderBy('first_name')->get() as $customer)
+                                                @forelse(\App\Models\Patient::whereHas('clients', fn($q) => $q->where('client_id', auth()->user()->getCurrentClient()->id))->orderBy('name')->get() as $customer)
                                                     <option value="{{ $customer->id }}" {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                        {{ $customer->first_name }} {{ $customer->last_name }}
+                                                        {{ $customer->name }}
                                                     </option>
                                                 @empty
                                                 @endforelse

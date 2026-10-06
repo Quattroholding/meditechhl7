@@ -6,6 +6,7 @@ use App\Models\Accounting\AccountingAccount;
 use App\Models\Treasury\Bank;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class BankModal extends Component
@@ -102,6 +103,7 @@ class BankModal extends Component
             ]);
         } else {
             Bank::create([
+                'uuid' => Str::uuid(),
                 'client_id' => $clientId,
                 'bank_name' => $this->bank_name,
                 'account_number' => $this->account_number,

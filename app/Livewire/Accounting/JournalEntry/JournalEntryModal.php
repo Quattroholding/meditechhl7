@@ -6,6 +6,7 @@ use App\Models\Accounting\AccountingAccount;
 use App\Models\Accounting\JournalEntry;
 use App\Models\Accounting\JournalEntryLine;
 use App\Models\Finance\CostCenter;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -108,6 +109,7 @@ class JournalEntryModal extends Component
         } else {
             // Crear nueva entrada
             $this->entry = JournalEntry::create([
+                'uuid' => Str::uuid(),
                 'client_id' => $clientId,
                 'entry_date' => $this->entry_date,
                 'document_type' => $this->document_type,
@@ -122,6 +124,7 @@ class JournalEntryModal extends Component
         foreach ($this->lines as $lineData) {
             if ($lineData['debit'] > 0 || $lineData['credit'] > 0) {
                 JournalEntryLine::create([
+                    'uuid' => Str::uuid(),
                     'journal_entry_id' => $this->entry->id,
                     'accounting_account_id' => $lineData['accounting_account_id'],
                     'cost_center_id' => $lineData['cost_center_id'],

@@ -45,4 +45,9 @@ return [
     'tomorrow' => 'Mañana',
     'this_week' => 'Esta Semana',
     'this_month' => 'Este Mes',
+    'currencies' => 'Monedas',
+    'currency' => 'Moneda',
+    'status' => 'Estatus',
+    'active' => 'Activo',
+    'inactive' => 'Inactivo',
 ];

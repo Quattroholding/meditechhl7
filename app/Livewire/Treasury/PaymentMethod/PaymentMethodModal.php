@@ -5,6 +5,7 @@ namespace App\Livewire\Treasury\PaymentMethod;
 use App\Models\Treasury\Bank;
 use App\Models\Treasury\CashRegister;
 use App\Models\Treasury\PaymentMethod;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -83,6 +84,7 @@ class PaymentMethodModal extends Component
             ]);
         } else {
             PaymentMethod::create([
+                'uuid' => Str::uuid(),
                 'client_id' => $clientId,
                 'name' => $this->name,
                 'destination_type' => $this->destination_type,
