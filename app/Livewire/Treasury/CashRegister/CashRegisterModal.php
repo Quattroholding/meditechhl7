@@ -100,6 +100,7 @@ class CashRegisterModal extends Component
                 'status' => $this->status,
                 'updated_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Caja actualizada exitosamente.');
         } else {
             CashRegister::create([
                 'uuid' => Str::uuid(),
@@ -111,10 +112,15 @@ class CashRegisterModal extends Component
                 'status' => $this->status,
                 'created_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Caja creada exitosamente.');
         }
 
-        $this->dispatch('cash-register-saved');
-        $this->dispatch('closeModal');
+        if ($this->isModal) {
+            $this->dispatch('cash-register-saved');
+            $this->dispatch('closeModal');
+        } else {
+            $this->redirect(route('treasury.cash-registers.index'));
+        }
     }
 
     public function delete(): void
@@ -122,8 +128,14 @@ class CashRegisterModal extends Component
         if ($this->cashRegister) {
             $this->authorize('treasury.cash-registers.manage');
             $this->cashRegister->delete();
-            $this->dispatch('cash-register-saved');
-            $this->dispatch('closeModal');
+            session()->flash('message.success', 'Caja eliminada exitosamente.');
+
+            if ($this->isModal) {
+                $this->dispatch('cash-register-saved');
+                $this->dispatch('closeModal');
+            } else {
+                $this->redirect(route('treasury.cash-registers.index'));
+            }
         }
     }
 

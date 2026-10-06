@@ -82,6 +82,7 @@ class PaymentMethodModal extends Component
                 'status' => $this->status,
                 'updated_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Método de pago actualizado exitosamente.');
         } else {
             PaymentMethod::create([
                 'uuid' => Str::uuid(),
@@ -93,10 +94,15 @@ class PaymentMethodModal extends Component
                 'status' => $this->status,
                 'created_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Método de pago creado exitosamente.');
         }
 
-        $this->dispatch('payment-method-saved');
-        $this->dispatch('closeModal');
+        if ($this->isModal) {
+            $this->dispatch('payment-method-saved');
+            $this->dispatch('closeModal');
+        } else {
+            $this->redirect(route('treasury.payment-methods.index'));
+        }
     }
 
     public function delete(): void
@@ -104,8 +110,14 @@ class PaymentMethodModal extends Component
         if ($this->paymentMethod) {
             $this->authorize('treasury.payment-methods.manage');
             $this->paymentMethod->delete();
-            $this->dispatch('payment-method-saved');
-            $this->dispatch('closeModal');
+            session()->flash('message.success', 'Método de pago eliminado exitosamente.');
+
+            if ($this->isModal) {
+                $this->dispatch('payment-method-saved');
+                $this->dispatch('closeModal');
+            } else {
+                $this->redirect(route('treasury.payment-methods.index'));
+            }
         }
     }
 

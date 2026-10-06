@@ -113,6 +113,7 @@ class AccountingAccountModal extends Component
                 'description' => $this->description,
                 'updated_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Cuenta contable actualizada exitosamente.');
         } else {
             AccountingAccount::create([
                 'uuid' => Str::uuid(),
@@ -127,10 +128,15 @@ class AccountingAccountModal extends Component
                 'description' => $this->description,
                 'created_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Cuenta contable creada exitosamente.');
         }
 
-        $this->dispatch('account-saved');
-        $this->dispatch('closeModal');
+        if ($this->isModal) {
+            $this->dispatch('account-saved');
+            $this->dispatch('closeModal');
+        } else {
+            $this->redirect(route('accounting.accounts.index'));
+        }
     }
 
     public function delete(): void
@@ -138,8 +144,14 @@ class AccountingAccountModal extends Component
         if ($this->account) {
             $this->authorize('accounting.accounts.manage');
             $this->account->delete();
-            $this->dispatch('account-saved');
-            $this->dispatch('closeModal');
+            session()->flash('message.success', 'Cuenta contable eliminada exitosamente.');
+
+            if ($this->isModal) {
+                $this->dispatch('account-saved');
+                $this->dispatch('closeModal');
+            } else {
+                $this->redirect(route('accounting.accounts.index'));
+            }
         }
     }
 

@@ -127,6 +127,7 @@ class CostCenterModal extends Component
                 'status' => $this->status,
                 'updated_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Centro de costo actualizado exitosamente.');
         } else {
             CostCenter::create([
                 'uuid' => Str::uuid(),
@@ -139,10 +140,15 @@ class CostCenterModal extends Component
                 'status' => $this->status,
                 'created_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Centro de costo creado exitosamente.');
         }
 
-        $this->dispatch('cost-center-saved');
-        $this->dispatch('closeModal');
+        if ($this->isModal) {
+            $this->dispatch('cost-center-saved');
+            $this->dispatch('closeModal');
+        } else {
+            $this->redirect(route('finance.cost-centers.index'));
+        }
     }
 
     public function delete(): void
@@ -150,8 +156,14 @@ class CostCenterModal extends Component
         if ($this->costCenter) {
             $this->authorize('finance.cost-centers.manage');
             $this->costCenter->delete();
-            $this->dispatch('cost-center-saved');
-            $this->dispatch('closeModal');
+            session()->flash('message.success', 'Centro de costo eliminado exitosamente.');
+
+            if ($this->isModal) {
+                $this->dispatch('cost-center-saved');
+                $this->dispatch('closeModal');
+            } else {
+                $this->redirect(route('finance.cost-centers.index'));
+            }
         }
     }
 

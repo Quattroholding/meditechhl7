@@ -101,6 +101,7 @@ class BankModal extends Component
                 'status' => $this->status,
                 'updated_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Banco actualizado exitosamente.');
         } else {
             Bank::create([
                 'uuid' => Str::uuid(),
@@ -113,10 +114,15 @@ class BankModal extends Component
                 'status' => $this->status,
                 'created_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Banco creado exitosamente.');
         }
 
-        $this->dispatch('bank-saved');
-        $this->dispatch('closeModal');
+        if ($this->isModal) {
+            $this->dispatch('bank-saved');
+            $this->dispatch('closeModal');
+        } else {
+            $this->redirect(route('treasury.banks.index'));
+        }
     }
 
     public function delete(): void
@@ -124,8 +130,14 @@ class BankModal extends Component
         if ($this->bank) {
             $this->authorize('treasury.banks.manage');
             $this->bank->delete();
-            $this->dispatch('bank-saved');
-            $this->dispatch('closeModal');
+            session()->flash('message.success', 'Banco eliminado exitosamente.');
+
+            if ($this->isModal) {
+                $this->dispatch('bank-saved');
+                $this->dispatch('closeModal');
+            } else {
+                $this->redirect(route('treasury.banks.index'));
+            }
         }
     }
 

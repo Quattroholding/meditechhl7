@@ -135,14 +135,15 @@ class JournalEntryModal extends Component
             }
         }
 
-        $this->dispatch('swal:alert', [
-            'type' => 'success',
-            'title' => 'Éxito',
-            'text' => $this->entry ? 'Asiento actualizado exitosamente.' : 'Asiento creado exitosamente.',
-        ]);
+        $message = $this->entry ? 'Asiento actualizado exitosamente.' : 'Asiento creado exitosamente.';
+        session()->flash('message.success', $message);
 
-        $this->dispatch('entry-saved');
-        $this->dispatch('closeModal');
+        if ($this->isModal) {
+            $this->dispatch('entry-saved');
+            $this->dispatch('closeModal');
+        } else {
+            $this->redirect(route('accounting.journal-entries.index'));
+        }
     }
 
     public function delete(): void
@@ -150,8 +151,14 @@ class JournalEntryModal extends Component
         if ($this->entry && $this->entry->isDraft()) {
             $this->authorize('accounting.entries.manage');
             $this->entry->delete();
-            $this->dispatch('entry-saved');
-            $this->dispatch('closeModal');
+            session()->flash('message.success', 'Asiento eliminado exitosamente.');
+
+            if ($this->isModal) {
+                $this->dispatch('entry-saved');
+                $this->dispatch('closeModal');
+            } else {
+                $this->redirect(route('accounting.journal-entries.index'));
+            }
         }
     }
 

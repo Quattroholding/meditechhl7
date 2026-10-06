@@ -115,6 +115,7 @@ class SupplierModal extends Component
                 'status' => $this->status,
                 'updated_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Proveedor actualizado exitosamente.');
         } else {
             Supplier::create([
                 'uuid' => Str::uuid(),
@@ -131,10 +132,15 @@ class SupplierModal extends Component
                 'status' => $this->status,
                 'created_by' => auth()->id(),
             ]);
+            session()->flash('message.success', 'Proveedor creado exitosamente.');
         }
 
-        $this->dispatch('supplier-saved');
-        $this->dispatch('closeModal');
+        if ($this->isModal) {
+            $this->dispatch('supplier-saved');
+            $this->dispatch('closeModal');
+        } else {
+            $this->redirect(route('finance.payables.suppliers'));
+        }
     }
 
     public function delete(): void
@@ -142,8 +148,14 @@ class SupplierModal extends Component
         if ($this->supplier) {
             $this->authorize('payables.suppliers.manage');
             $this->supplier->delete();
-            $this->dispatch('supplier-saved');
-            $this->dispatch('closeModal');
+            session()->flash('message.success', 'Proveedor eliminado exitosamente.');
+
+            if ($this->isModal) {
+                $this->dispatch('supplier-saved');
+                $this->dispatch('closeModal');
+            } else {
+                $this->redirect(route('finance.payables.suppliers'));
+            }
         }
     }
 
