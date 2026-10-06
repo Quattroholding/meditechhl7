@@ -5,8 +5,9 @@ namespace App\Livewire\Finance\CostCenter;
 use App\Models\Branch;
 use App\Models\Finance\CostCenter;
 use App\Models\MedicalSpeciality;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\Rule;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class CostCenterModal extends Component
@@ -15,22 +16,16 @@ class CostCenterModal extends Component
 
     public ?CostCenter $costCenter = null;
 
-    #[Validate]
     public string $code = '';
 
-    #[Validate]
     public string $name = '';
 
-    #[Validate]
     public string $description = '';
 
-    #[Validate]
     public ?int $branch_id = null;
 
-    #[Validate]
     public ?int $medical_speciality_id = null;
 
-    #[Validate]
     public string $status = 'active';
 
     public function mount(?CostCenter $costCenter = null): void
@@ -45,6 +40,46 @@ class CostCenterModal extends Component
             $this->status = $costCenter->status;
         }
     }
+
+    public function updatedCode(): void
+    {
+        $this->validateOnly('code');
+    }
+
+    public function updatedName(): void
+    {
+        $this->validateOnly('name');
+    }
+
+    public function updatedBranchId(): void
+    {
+        $this->validateOnly('branch_id');
+    }
+
+    protected $rules = [
+        'code' => 'required|string|max:50',
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string|max:1000',
+        'branch_id' => 'required|exists:branches,id',
+        'medical_speciality_id' => 'nullable|exists:medical_specialities,id',
+        'status' => 'required|in:active,inactive',
+    ];
+
+    protected $messages = [
+        'code.required' => 'El código es obligatorio.',
+        'code.string' => 'El código debe ser texto.',
+        'code.max' => 'El código no puede exceder 50 caracteres.',
+        'name.required' => 'El nombre es obligatorio.',
+        'name.string' => 'El nombre debe ser texto.',
+        'name.max' => 'El nombre no puede exceder 255 caracteres.',
+        'description.string' => 'La descripción debe ser texto.',
+        'description.max' => 'La descripción no puede exceder 1000 caracteres.',
+        'branch_id.required' => 'La sucursal es obligatoria.',
+        'branch_id.exists' => 'La sucursal seleccionada no existe.',
+        'medical_speciality_id.exists' => 'La especialidad seleccionada no existe.',
+        'status.required' => 'El estado es obligatorio.',
+        'status.in' => 'El estado debe ser activo o inactivo.',
+    ];
 
     public function rules(): array
     {
@@ -76,8 +111,8 @@ class CostCenterModal extends Component
 
     public function save(): void
     {
-        $this->authorize('finance.cost-centers.manage');
         $this->validate();
+        $this->authorize('finance.cost-centers.manage');
 
         $clientId = auth()->user()->getCurrentClient()->id;
 
@@ -118,7 +153,7 @@ class CostCenterModal extends Component
         }
     }
 
-    public function getBranchesProperty()
+    public function getBranchesProperty(): Collection
     {
         return Branch::where('client_id', auth()->user()->getCurrentClient()->id)
             ->where('active', 1)
@@ -126,12 +161,12 @@ class CostCenterModal extends Component
             ->get();
     }
 
-    public function getSpecialitiesProperty()
+    public function getSpecialitiesProperty(): Collection
     {
         return MedicalSpeciality::orderBy('name')->get();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.finance.cost-center.cost-center-modal', [
             'branches' => $this->branches,
