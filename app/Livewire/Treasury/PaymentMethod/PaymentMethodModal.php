@@ -93,6 +93,7 @@ class PaymentMethodModal extends Component
                 'default_cash_register_id' => $this->destination_type === 'cash' ? $this->default_cash_register_id : null,
                 'status' => $this->status,
                 'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
             ]);
             session()->flash('message.success', 'Método de pago creado exitosamente.');
         }

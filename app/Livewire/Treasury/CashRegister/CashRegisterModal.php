@@ -111,6 +111,7 @@ class CashRegisterModal extends Component
                 'accounting_account_id' => $this->accounting_account_id,
                 'status' => $this->status,
                 'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
             ]);
             session()->flash('message.success', 'Caja creada exitosamente.');
         }
