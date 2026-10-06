@@ -60,7 +60,7 @@ class TreasuryMovementDataTable extends Component
     public function render(): View
     {
         $data = TreasuryMovement::query()
-            ->where('client_id', auth()->user()->client_id)
+            ->where('client_id', auth()->user()->getCurrentClient()->id)
             ->with(['bank', 'cashRegister'])
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
