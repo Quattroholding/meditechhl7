@@ -5,8 +5,12 @@ namespace App\Services\DocumentProcessors;
 use App\Enums\InventoryItemStatus;
 use App\Enums\InventoryTransactionType;
 use App\Models\DocumentUpload;
+use App\Models\Finance\Supplier;
+use App\Models\Finance\SupplierInvoice;
 use App\Models\InventoryItem;
 use App\Models\InventoryTransaction;
+use App\Services\Accounting\AccountingEngineService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -40,6 +44,15 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
                 $extractedData = json_decode($extractedData, true);
             }
 
+            $this->logStep('Extracted data after decoding', [
+                'is_array' => is_array($extractedData),
+                'has_supplier_name' => isset($extractedData['supplier_name']),
+                'supplier_name' => $extractedData['supplier_name'] ?? 'NOT SET',
+                'supplier_ruc' => $extractedData['supplier_ruc'] ?? 'NOT SET',
+                'supplier_dv' => $extractedData['supplier_dv'] ?? 'NOT SET',
+                'items_count' => count($extractedData['items'] ?? []),
+            ]);
+
             $items = $extractedData['items'] ?? [];
 
             if (empty($items)) {
@@ -47,9 +60,14 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             }
 
             // Process within a transaction for atomicity
-            DB::transaction(function () use ($document, $items) {
+            DB::transaction(function () use ($document, $items, $extractedData) {
                 foreach ($items as $index => $item) {
                     $this->processItem($document, $item, $index);
+                }
+
+                // Process supplier invoice if supplier information is available
+                if (! empty($extractedData['supplier_name'])) {
+                    $this->processSupplierInvoice($document, $extractedData);
                 }
 
                 // Update document status
@@ -237,6 +255,251 @@ class InventoryDocumentProcessor extends BaseDocumentProcessor
             'quantity' => $quantity,
             'unit_cost' => $unitCost,
         ]);
+    }
+
+    /**
+     * Process supplier invoice and generate accounting entry
+     */
+    private function processSupplierInvoice(DocumentUpload $document, array $extractedData): void
+    {
+        try {
+            $supplierName = $extractedData['supplier_name'] ?? null;
+            $supplierRuc = $extractedData['supplier_ruc'] ?? null;
+            $supplierDv = $extractedData['supplier_dv'] ?? null;
+            $invoiceNumber = $extractedData['invoice_number'] ?? null;
+            $invoiceDate = $extractedData['invoice_date'] ?? null;
+            $total = (float) ($extractedData['total'] ?? 0);
+            $subtotal = (float) ($extractedData['subtotal'] ?? 0);
+            $taxAmount = (float) ($extractedData['total_tax'] ?? 0);
+
+            if (! $supplierName || ! $invoiceNumber) {
+                $this->logStep('Skipping supplier invoice: Missing supplier name or invoice number', [
+                    'supplier_name' => $supplierName,
+                    'invoice_number' => $invoiceNumber,
+                ]);
+
+                return;
+            }
+
+            $this->logStep('Processing supplier invoice from document', [
+                'document_id' => $document->id,
+                'supplier_name' => $supplierName,
+                'supplier_ruc' => $supplierRuc,
+                'supplier_dv' => $supplierDv,
+                'invoice_number' => $invoiceNumber,
+                'total' => $total,
+            ]);
+
+            // Find or create supplier
+            $supplier = $this->findOrCreateSupplier($document->client_id, $supplierName, $supplierRuc, $supplierDv);
+
+            // Get the user who approved the document
+            $approvalUser = $document->approval()?->where('approved_at', '!=', null)->first()?->approved_by_user_id;
+
+            // Create supplier invoice record
+            $supplierInvoice = $this->createSupplierInvoice(
+                $document,
+                $supplier,
+                $invoiceNumber,
+                $invoiceDate,
+                $subtotal,
+                $taxAmount,
+                $total,
+                $approvalUser
+            );
+
+            // Actualizar document_uploads con las relaciones creadas
+            $document->update([
+                'supplier_id' => $supplier->id,
+                'supplier_invoice_id' => $supplierInvoice->id,
+                'cost_center_id' => $supplierInvoice->cost_center_id, // Vincular el cost center si está disponible
+            ]);
+
+            // Generate accounting entry for the supplier invoice
+            $this->generateAccountingEntry($document, $supplier, $supplierInvoice, $total);
+
+            $this->logStep('Supplier invoice processed successfully', [
+                'supplier_invoice_id' => $supplierInvoice->id,
+                'supplier_id' => $supplier->id,
+                'document_supplier_id' => $document->supplier_id,
+                'document_supplier_invoice_id' => $document->supplier_invoice_id,
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logError('Error processing supplier invoice', [
+                'document_id' => $document->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            // Don't throw - let inventory processing continue even if accounting fails
+            // This is important to maintain inventory data integrity
+        }
+    }
+
+    /**
+     * Find or create a supplier by RUC (primary) or name (fallback)
+     */
+    private function findOrCreateSupplier(int $clientId, string $supplierName, ?string $supplierRuc = null, ?string $supplierDv = null): Supplier
+    {
+        // Try to find by RUC first (more reliable unique identifier)
+        if ($supplierRuc) {
+            $supplier = Supplier::where('client_id', $clientId)
+                ->where('ruc', $supplierRuc)
+                ->first();
+
+            if ($supplier) {
+                return $supplier;
+            }
+        }
+
+        // Fall back to finding by name
+        $supplier = Supplier::where('client_id', $clientId)
+            ->where('legal_name', $supplierName)
+            ->first();
+
+        if ($supplier) {
+            return $supplier;
+        }
+
+        $this->logStep('Creating new supplier', [
+            'client_id' => $clientId,
+            'supplier_name' => $supplierName,
+            'supplier_ruc' => $supplierRuc,
+            'supplier_dv' => $supplierDv,
+        ]);
+
+        // Create new supplier with minimal required data
+        // Get the default CxP account
+        $cxpAccount = DB::table('accounting_accounts')
+            ->where('client_id', $clientId)
+            ->where('code', '2101') // Cuentas por Pagar
+            ->first();
+
+        $accountingAccountId = $cxpAccount?->id;
+
+        if (! $accountingAccountId) {
+            // If CxP account doesn't exist, try to find any payable account
+            $anyPayable = DB::table('accounting_accounts')
+                ->where('client_id', $clientId)
+                ->where('account_type', 'liability')
+                ->first();
+
+            if ($anyPayable) {
+                $accountingAccountId = $anyPayable->id;
+            }
+        }
+
+        return Supplier::create([
+            'uuid' => Str::uuid(),
+            'client_id' => $clientId,
+            'ruc' => $supplierRuc,
+            'dv' => $supplierDv,
+            'legal_name' => $supplierName,
+            'commercial_name' => $supplierName,
+            'accounting_account_id' => $accountingAccountId,
+            'status' => 'active',
+            'created_by' => auth()->id() ?? 1,
+            'updated_by' => auth()->id() ?? 1,
+        ]);
+    }
+
+    /**
+     * Create a supplier invoice record
+     */
+    private function createSupplierInvoice(
+        DocumentUpload $document,
+        Supplier $supplier,
+        string $invoiceNumber,
+        ?string $invoiceDate,
+        float $subtotal,
+        float $taxAmount,
+        float $total,
+        ?int $approvalUserId = null
+    ): SupplierInvoice {
+        // Parse invoice date
+        $parsedDate = null;
+        if ($invoiceDate) {
+            try {
+                $parsedDate = Carbon::parse($invoiceDate)->toDateString();
+            } catch (\Exception $e) {
+                $this->logStep('Could not parse invoice date', ['invoice_date' => $invoiceDate]);
+                $parsedDate = now()->toDateString();
+            }
+        }
+
+        // Calculate due date (default to 30 days from invoice date)
+        $dueDate = $parsedDate ? Carbon::parse($parsedDate)->addDays(30)->toDateString() : now()->addDays(30)->toDateString();
+
+        // Use approval user if available, otherwise use current auth user or fallback to 1
+        $userId = $approvalUserId ?? auth()->id() ?? 1;
+
+        return SupplierInvoice::create([
+            'uuid' => Str::uuid(),
+            'client_id' => $document->client_id,
+            'supplier_id' => $supplier->id,
+            'invoice_number' => $invoiceNumber,
+            'invoice_date' => $parsedDate,
+            'received_date' => now()->toDateString(),
+            'due_date' => $dueDate,
+            'currency' => 'PAB',
+            'subtotal' => $subtotal,
+            'tax_amount' => $taxAmount,
+            'total_amount' => $total,
+            'paid_amount' => 0,
+            'balance' => $total,
+            'cost_center_id' => $document->cost_center_id, // Use document's cost center if available
+            'document_path' => $document->file_path ?? null,
+            'document_filename' => $document->original_filename ?? null,
+            'notes' => "Imported from document: {$document->original_filename}",
+            'status' => 'approved', // Mark as approved since the document is approved
+            'approved_at' => now(),
+            'approved_by' => $userId,
+            'created_by' => $userId,
+            'updated_by' => $userId,
+        ]);
+    }
+
+    /**
+     * Generate accounting entry for the supplier invoice
+     */
+    private function generateAccountingEntry(
+        DocumentUpload $document,
+        Supplier $supplier,
+        SupplierInvoice $supplierInvoice,
+        float $amount
+    ): void {
+        try {
+            $service = new AccountingEngineService(
+                app('App\Services\Accounting\AccountingService'),
+                app('App\Services\Accounting\JournalEntryService')
+            );
+
+            // Generate accounting entry using the supplier invoice
+            $journalEntry = $service->processSupplierInvoiceCreated($supplierInvoice);
+
+            // Link journal entry to supplier invoice and mark as approved
+            $supplierInvoice->update([
+                'journal_entry_id' => $journalEntry->id,
+                'status' => 'approved',
+                'approved_at' => now(),
+                'approved_by' => auth()->id() ?? 1,
+            ]);
+
+            $this->logStep('Accounting entry created and supplier invoice approved', [
+                'journal_entry_id' => $journalEntry->id,
+                'supplier_invoice_id' => $supplierInvoice->id,
+                'approved_by' => auth()->id() ?? 1,
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logError('Error generating accounting entry', [
+                'supplier_invoice_id' => $supplierInvoice->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            // Don't rethrow - allow document processing to complete
+            // Accounting entry can be generated manually later if needed
+        }
     }
 
     /**
