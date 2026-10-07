@@ -72,9 +72,17 @@ class TreasuryService
                 throw new \Exception('Amount must be greater than 0');
             }
 
+            // Generar número de movimiento
+            $year = now()->year;
+            $count = TreasuryMovement::where('client_id', $clientId)
+                ->whereYear('movement_date', $year)
+                ->count() + 1;
+            $movementNumber = sprintf('TM-%d-%06d', $year, $count);
+
             // Crear movimiento
             $movement = TreasuryMovement::create([
                 'client_id' => $clientId,
+                'movement_number' => $movementNumber,
                 'movement_date' => $data['movement_date'] ?? now()->toDateString(),
                 'movement_type' => $data['movement_type'],
                 'source_type' => $data['source_type'] ?? null,
