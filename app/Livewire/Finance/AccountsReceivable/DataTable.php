@@ -6,6 +6,7 @@ use App\Models\Finance\AccountsReceivable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -68,6 +69,13 @@ class DataTable extends Component
             Log::error('Error opening payment modal', ['error' => $e->getMessage()]);
             $this->dispatch('error', message: 'No tienes permiso para aplicar pagos: '.$e->getMessage());
         }
+    }
+
+    #[On('paymentSaved')]
+    public function refreshData(): void
+    {
+        // Forzar actualización del datatable cuando se registra un pago
+        $this->resetPage();
     }
 
     public function render(): View
