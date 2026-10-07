@@ -5,6 +5,7 @@ namespace App\Livewire\Finance\AccountsReceivable;
 use App\Models\Finance\AccountsReceivable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -56,17 +57,33 @@ class DataTable extends Component
 
     public function applyPayment(int $receivableId): void
     {
-        $receivable = AccountsReceivable::find($receivableId);
-        if ($receivable) {
-            $this->openPaymentModal($receivable);
+        try {
+            $receivable = AccountsReceivable::find($receivableId);
+            if (! $receivable) {
+                Log::warning('Receivable not found', ['id' => $receivableId]);
+
+                return;
+            }
+
+            $this->authorize('receivables.apply-payment');
+            $this->selectedReceivable = $receivable;
+            $this->showPaymentModal = true;
+            Log::info('Payment modal opened', ['receivable_id' => $receivableId]);
+        } catch (\Exception $e) {
+            Log::error('Error opening payment modal', ['error' => $e->getMessage()]);
+            $this->dispatch('error', message: 'No tienes permiso para aplicar pagos: '.$e->getMessage());
         }
     }
 
     public function openPaymentModal(AccountsReceivable $receivable): void
     {
-        $this->authorize('receivables.apply-payment');
-        $this->selectedReceivable = $receivable;
-        $this->showPaymentModal = true;
+        try {
+            $this->authorize('receivables.apply-payment');
+            $this->selectedReceivable = $receivable;
+            $this->showPaymentModal = true;
+        } catch (\Exception $e) {
+            $this->dispatch('error', message: 'No tienes permiso para aplicar pagos');
+        }
     }
 
     public function closePaymentModal(): void
