@@ -183,7 +183,7 @@
                                 <h5 class="card-title mb-0">Vista Previa del Documento</h5>
                             </div>
                             <div class="card-body p-0">
-                                <embed src="{{ asset('storage/' . $invoice->document_path) }}"
+                                <embed src="{{ route('invoice.document', ['path' => str_replace('documents/', '', $invoice->document_path)]) }}"
                                        type="application/pdf"
                                        class="w-100"
                                        style="height: 500px;" />
@@ -193,7 +193,7 @@
                                     <label class="form-label text-muted">Archivo</label>
                                     <p class="mb-0">
                                         <i class="fas fa-file-pdf me-2 text-danger"></i>
-                                        <a href="{{ asset('storage/' . $invoice->document_path) }}"
+                                        <a href="{{ route('invoice.document', ['path' => str_replace('documents/', '', $invoice->document_path)]) }}"
                                            target="_blank" class="fw-bold">
                                             {{ $invoice->document_filename }}
                                         </a>

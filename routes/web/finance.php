@@ -26,6 +26,25 @@ use App\Models\Treasury\CashRegister;
 use App\Models\Treasury\PaymentMethod;
 use App\Models\Treasury\TreasuryMovement;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+// ============================================================================
+// DOCUMENT SERVING (Servir documentos de facturas)
+// ============================================================================
+
+Route::middleware(['auth', 'verified'])->get('/documents/invoices/{path}', function ($path) {
+    $filePath = 'documents/'.$path;
+    $disk = Storage::disk('private');
+
+    if (! $disk->exists($filePath)) {
+        abort(404, 'Archivo no encontrado');
+    }
+
+    return response()->file($disk->path($filePath), [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="'.basename($filePath).'"',
+    ]);
+})->where('path', '.+')->name('invoice.document');
 
 // ============================================================================
 // COST CENTERS (Centros de Costo)
