@@ -113,7 +113,7 @@ class AccountingService
      */
     public function calculateAccountBalance(AccountingAccount $account): float
     {
-        $account->updateBalance();
+        $account->recalculateBalance();
 
         return (float) $account->balance;
     }
@@ -126,7 +126,7 @@ class AccountingService
         $accounts = $this->getChartOfAccounts($clientId);
 
         foreach ($accounts as $account) {
-            $account->updateBalance();
+            $account->recalculateBalance();
         }
     }
 

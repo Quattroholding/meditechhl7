@@ -119,6 +119,26 @@ class AccountingAccount extends BaseModel
         $this->save();
     }
 
+    /**
+     * Recalcula el balance desde todas las líneas del diario asociadas
+     */
+    public function recalculateBalance(): void
+    {
+        $balance = 0;
+
+        $lines = $this->journalEntryLines()->get();
+
+        foreach ($lines as $line) {
+            if ($line->debit > 0) {
+                $balance += $line->debit;
+            } else {
+                $balance -= $line->credit;
+            }
+        }
+
+        $this->update(['balance' => $balance]);
+    }
+
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
