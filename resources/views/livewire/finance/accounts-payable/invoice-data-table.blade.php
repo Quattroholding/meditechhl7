@@ -117,4 +117,52 @@
             @include('partials.pagination', ['data' => $data])
         </div>
     </div>
+
+    {{-- Payment Scheduling Modal --}}
+    @if ($showPaymentSchedulingModal && $selectedInvoice)
+        <div class="modal-overlay" wire:click="closePaymentSchedulingModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div class="modal-content" wire:click.stop style="position: relative; max-width: 400px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Programar Pago</h5>
+                    <button type="button" class="close" wire:click="closePaymentSchedulingModal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form wire:submit.prevent="">
+                    <div class="modal-body">
+                        {{-- Invoice Info --}}
+                        <div class="alert alert-info mb-3">
+                            <p class="mb-2"><strong>Factura:</strong> {{ $selectedInvoice->invoice_number }}</p>
+                            <p class="mb-2"><strong>Proveedor:</strong> {{ $selectedInvoice->supplier?->legal_name ?? 'N/A' }}</p>
+                            <p class="mb-2"><strong>Total:</strong> B/. {{ number_format($selectedInvoice->total_amount, 2) }}</p>
+                            <p class="mb-0"><strong>Saldo Pendiente:</strong> B/. {{ number_format($selectedInvoice->balance, 2) }}</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Monto a Programar *</label>
+                            <input type="number" step="0.01" class="form-control" max="{{ $selectedInvoice->balance }}" value="{{ $selectedInvoice->balance }}" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fecha Pago</label>
+                            <input type="date" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Notas</label>
+                            <textarea class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">
+                            Programar Pago
+                        </button>
+                        <button type="button" class="btn btn-secondary" wire:click="closePaymentSchedulingModal">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 </div>

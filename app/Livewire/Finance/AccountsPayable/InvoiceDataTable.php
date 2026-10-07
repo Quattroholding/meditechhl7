@@ -5,6 +5,8 @@ namespace App\Livewire\Finance\AccountsPayable;
 use App\Models\Finance\SupplierInvoice;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -21,6 +23,10 @@ class InvoiceDataTable extends Component
     public $pagination = 10;
 
     public $statusFilter = 'all'; // all, draft, registered, approved, partial, paid, overdue, cancelled
+
+    public bool $showPaymentSchedulingModal = false;
+
+    public ?SupplierInvoice $selectedInvoice = null;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -47,6 +53,45 @@ class InvoiceDataTable extends Component
     public function updatingStatusFilter()
     {
         $this->resetPage();
+    }
+
+    public function schedulePayment(int $invoiceId): void
+    {
+        try {
+            $invoice = SupplierInvoice::find($invoiceId);
+            if (! $invoice) {
+                Log::warning('Supplier invoice not found', ['id' => $invoiceId]);
+
+                return;
+            }
+
+            $this->authorize('payables.payments.process');
+            $this->selectedInvoice = $invoice;
+            $this->showPaymentSchedulingModal = true;
+            Log::info('Payment scheduling modal opened', ['invoice_id' => $invoiceId]);
+        } catch (\Exception $e) {
+            Log::error('Error opening payment scheduling modal', ['error' => $e->getMessage()]);
+            $this->dispatch('error', message: 'No tienes permiso para programar pagos: '.$e->getMessage());
+        }
+    }
+
+    public function closePaymentSchedulingModal(): void
+    {
+        $this->showPaymentSchedulingModal = false;
+        $this->selectedInvoice = null;
+    }
+
+    #[On('closePaymentSchedulingModal')]
+    public function handleClosePaymentSchedulingModal(): void
+    {
+        $this->closePaymentSchedulingModal();
+    }
+
+    #[On('payment-scheduled')]
+    public function handlePaymentScheduled(): void
+    {
+        $this->closePaymentSchedulingModal();
+        $this->dispatch('invoice-updated');
     }
 
     public function render(): View
