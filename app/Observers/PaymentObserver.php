@@ -99,12 +99,11 @@ class PaymentObserver
 
         $invoiceNumber = $payment->invoice?->invoice_number ?? 'N/A';
         $movementData = [
-            'client_id' => $payment->client_id,
             'movement_type' => 'income',
             'amount' => $payment->amount,
             'movement_date' => $payment->payment_date ?? now()->toDateString(),
             'description' => "Pago de factura {$invoiceNumber}",
-            'reference' => $payment->reference_number,
+            'reference_number' => $payment->reference_number,
             'source_type' => Payment::class,
             'source_id' => $payment->id,
         ];
@@ -116,7 +115,7 @@ class PaymentObserver
             $movementData['cash_register_id'] = $destination['cash_register_id'];
         }
 
-        $treasuryMovement = $this->treasury->recordMovement($movementData);
+        $treasuryMovement = $this->treasury->recordMovement($payment->client_id, $movementData);
 
         if ($treasuryMovement) {
             $payment->update(['treasury_movement_id' => $treasuryMovement->id]);
