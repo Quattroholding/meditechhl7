@@ -6,6 +6,7 @@ use App\Enums\DocumentType;
 use App\Jobs\ParseDocumentJob;
 use App\Models\Branch;
 use App\Models\Client;
+use App\Models\CostCenter;
 use App\Models\DocumentUpload;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Validate;
@@ -123,9 +124,13 @@ class DocumentUploadForm extends Component
                         'type' => $this->fileTypes[$index],
                     ]);
 
+                    // Obtener el cost_center del branch
+                    $costCenterId = $this->getCostCenterIdForBranch($this->branch_id);
+
                     $documentUpload = DocumentUpload::create([
                         'client_id' => $this->client_id,
                         'branch_id' => $this->branch_id,
+                        'cost_center_id' => $costCenterId,
                         'document_type' => DocumentType::tryFrom($this->fileTypes[$index]),
                         'status' => 'pending',
                         'file_path' => $filePath,
@@ -179,6 +184,20 @@ class DocumentUploadForm extends Component
             ]);
             $this->errorMessage = $e->getMessage();
         }
+    }
+
+    private function getCostCenterIdForBranch(?int $branchId): ?int
+    {
+        if (! $branchId) {
+            return null;
+        }
+
+        // Obtener el primer cost_center del branch
+        $costCenter = CostCenter::where('branch_id', $branchId)
+            ->where('status', 'active')
+            ->first();
+
+        return $costCenter?->id;
     }
 
     public function render()
