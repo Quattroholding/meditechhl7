@@ -50,7 +50,7 @@
                 <div class="col-md-3 mb-3">
                     <label class="form-label text-muted small">Estado</label>
                     <p class="fw-bold">
-                        <span class="badge badge-{{ $journalEntry->status === App\Enums\JournalEntryStatus::POSTED ? 'success' : ($journalEntry->status === App\Enums\JournalEntryStatus::DRAFT ? 'warning' : 'secondary') }}">
+                        <span class="badge bg-{{ $journalEntry->status === App\Enums\JournalEntryStatus::POSTED ? 'success' : ($journalEntry->status === App\Enums\JournalEntryStatus::DRAFT ? 'warning' : 'secondary') }}">
                             {{ $journalEntry->status->label() }}
                         </span>
                     </p>
@@ -65,7 +65,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-muted small">Contabilizado Por</label>
-                        <p class="fw-bold">{{ $journalEntry->postedBy->name ?? 'N/A' }}</p>
+                        <p class="fw-bold">{{ $journalEntry->postedBy->full_name ?? 'N/A' }}</p>
                     </div>
                 </div>
             @endif
@@ -186,11 +186,11 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label text-muted small">Creado Por</label>
-                    <p class="fw-bold">{{ $journalEntry->createdBy->name ?? 'N/A' }} el {{ $journalEntry->created_at->format('d/m/Y H:i') }}</p>
+                    <p class="fw-bold">{{ $journalEntry->createdBy->full_name ?? 'N/A' }} el {{ $journalEntry->created_at }}</p>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label text-muted small">Última Actualización</label>
-                    <p class="fw-bold">{{ $journalEntry->updated_at->format('d/m/Y H:i') }}</p>
+                    <p class="fw-bold">{{ $journalEntry->updated_at }}</p>
                 </div>
             </div>
         </div>

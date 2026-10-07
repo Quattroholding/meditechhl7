@@ -4,10 +4,10 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Reporte de Antigüedad - CxC
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Reporte de Antigüedad - CxC
                 @endslot
             @endcomponent
 

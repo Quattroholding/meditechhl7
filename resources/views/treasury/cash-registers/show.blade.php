@@ -4,10 +4,10 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Detalle de Caja
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Detalle de Caja
                 @endslot
             @endcomponent
 
@@ -27,7 +27,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label text-muted">Usuario Responsable</label>
-                                <p class="mb-0">{{ $cashRegister->responsibleUser->name ?? 'N/A' }}</p>
+                                <p class="mb-0">{{ $cashRegister->responsibleUser->full_name ?? 'N/A' }}</p>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label text-muted">Saldo Actual</label>
@@ -48,11 +48,11 @@
                             <hr class="my-3">
                             <div class="mb-3">
                                 <label class="form-label text-muted">Creado Por</label>
-                                <p class="mb-0">{{ $cashRegister->createdBy->name ?? 'N/A' }}</p>
+                                <p class="mb-0">{{ $cashRegister->createdBy->full_name ?? 'N/A' }}</p>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label text-muted">Fecha de Creación</label>
-                                <p class="mb-0">{{ $cashRegister->created_at->format('d/m/Y H:i') }}</p>
+                                <p class="mb-0">{{ $cashRegister->created_at }}</p>
                             </div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                                     <label class="form-label text-muted">Cuenta Contable Asociada</label>
                                     @if($cashRegister->accountingAccount)
                                         <p class="mb-0 fw-bold">
-                                            {{ $cashRegister->accountingAccount->account_number }} - {{ $cashRegister->accountingAccount->account_name }}
+                                            {{ $cashRegister->accountingAccount->code }} - {{ $cashRegister->accountingAccount->name }}
                                         </p>
                                     @else
                                         <p class="mb-0 text-muted">No hay cuenta contable asociada</p>

@@ -3,9 +3,8 @@
 namespace App\Services\Accounting;
 
 use App\Enums\JournalEntryStatus;
-use App\Models\AccountingAccount;
-use App\Models\JournalEntry;
-use App\Models\JournalEntryLine;
+use App\Models\Accounting\JournalEntry;
+use App\Models\Accounting\JournalEntryLine;
 use Illuminate\Support\Collection;
 
 class JournalEntryService

@@ -135,8 +135,9 @@ class AccountingAccountModal extends Component
         if ($this->isModal) {
             $this->dispatch('account-saved');
             $this->dispatch('closeModal');
+            $this->redirect(route('accounting.accounts'));
         } else {
-            $this->redirect(route('accounting.accounts.index'));
+            $this->redirect(route('accounting.accounts'));
         }
     }
 

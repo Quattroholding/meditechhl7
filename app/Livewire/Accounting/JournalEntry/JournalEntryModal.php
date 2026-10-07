@@ -76,9 +76,17 @@ class JournalEntryModal extends Component
         ];
     }
 
+    protected $messages = [
+        // 'patient_id.required' => 'Debe seleccionar un paciente.',
+        'document_type.required' => 'El campo tipo documento es obligatorio.',
+        'document_number.required' => 'El campo número de documento es obligatorio.',
+        'description.required' => 'La descripción es obligatoria.',
+        'lines.*.accounting_account_id.required' => 'La cuenta contable es obligatoria.',
+    ];
+
     public function save(): void
     {
-        $this->authorize('accounting.entries.manage');
+        $this->authorize('accounting.entries.create');
         $this->validate();
 
         // Validar que las líneas estén balanceadas
@@ -173,6 +181,7 @@ class JournalEntryModal extends Component
             'credit' => 0,
             'description' => '',
         ];
+        $this->calculateTotals();
     }
 
     public function removeLine(int $index): void

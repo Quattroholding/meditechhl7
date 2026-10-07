@@ -3,10 +3,10 @@
         <div class="content">
             @component('components.page-header')
                 @slot('title')
-                    Crear Factura de Proveedor
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Crear Factura de Proveedor
                 @endslot
             @endcomponent
 

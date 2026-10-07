@@ -4,6 +4,7 @@ namespace App\Livewire\Accounting\Period;
 
 use App\Models\Accounting\AccountingPeriod;
 use Carbon\Carbon;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -23,6 +24,14 @@ class PeriodCreateModal extends Component
 
     #[Validate('required|date|after_or_equal:start_date')]
     public string $end_date = '';
+
+    public bool $showModal = false;
+
+    #[On('open-create-modal')]
+    public function openModal(): void
+    {
+        $this->showModal = true;
+    }
 
     public function mount(): void
     {
@@ -53,6 +62,7 @@ class PeriodCreateModal extends Component
             session()->flash('message.success', 'Período contable creado exitosamente');
             $this->dispatch('period-created');
             $this->resetForm();
+            $this->showModal = false;
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al crear el período: '.$e->getMessage());
         }
@@ -85,6 +95,12 @@ class PeriodCreateModal extends Component
         $this->period_number = now()->month;
         $this->start_date = now()->startOfMonth()->toDateString();
         $this->end_date = now()->endOfMonth()->toDateString();
+    }
+
+    public function closeModal(): void
+    {
+        $this->showModal = false;
+        $this->resetForm();
     }
 
     public function render()

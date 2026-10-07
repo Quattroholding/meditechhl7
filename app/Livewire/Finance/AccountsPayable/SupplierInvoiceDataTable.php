@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Finance\AccountsPayable;
 
-use App\Models\SupplierInvoice;
+use App\Models\Finance\SupplierInvoice;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
 use Livewire\Component;

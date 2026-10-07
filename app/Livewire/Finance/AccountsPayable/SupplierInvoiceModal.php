@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Finance\AccountsPayable;
 
-use App\Models\CostCenter;
-use App\Models\Supplier;
-use App\Models\SupplierInvoice;
+use App\Models\Finance\CostCenter;
+use App\Models\Finance\Supplier;
+use App\Models\Finance\SupplierInvoice;
 use App\Services\Finance\AccountsPayableService;
 use Livewire\Attributes\Validate;
 use Livewire\Component;

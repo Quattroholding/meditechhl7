@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Finance\AccountsReceivable;
 
-use App\Models\AccountsReceivable;
+use App\Models\Finance\AccountsReceivable;
 use App\Services\Finance\AccountsReceivableService;
 use Livewire\Attributes\Validate;
 use Livewire\Component;

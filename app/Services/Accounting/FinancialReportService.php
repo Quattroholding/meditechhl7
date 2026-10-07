@@ -3,9 +3,10 @@
 namespace App\Services\Accounting;
 
 use App\Enums\AccountType;
-use App\Models\AccountingAccount;
-use App\Models\CostCenter;
-use App\Models\JournalEntry;
+use App\Models\Accounting\AccountingAccount;
+use App\Models\Finance\CostCenter;
+use App\Models\Accounting\JournalEntry;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -28,8 +29,8 @@ class FinancialReportService
      */
     public function generateTrialBalance(
         int $clientId,
-        \DateTime $startDate,
-        \DateTime $endDate
+        Carbon $startDate,
+        Carbon $endDate
     ): array {
         $accounts = AccountingAccount::where('client_id', $clientId)
             ->where('status', 'active')
@@ -79,7 +80,7 @@ class FinancialReportService
      * Genera balance general (balance sheet) a una fecha específica
      * Agrupa activos, pasivos y patrimonio
      */
-    public function generateBalanceSheet(int $clientId, \DateTime $asOfDate): array
+    public function generateBalanceSheet(int $clientId, Carbon $asOfDate): array
     {
         $accounts = $this->accountingService->getChartOfAccounts($clientId, [
             'status' => 'active',
@@ -139,32 +140,37 @@ class FinancialReportService
 
     /**
      * Genera estado de resultados (income statement) para un período
-     * Muestra ingresos, gastos y resultado neto
+     * Muestra ingresos, costos, gastos y resultado neto
+     * Estructura: Ingresos - Costos = Utilidad Bruta - Gastos = Utilidad Neta
      */
     public function generateIncomeStatement(
         int $clientId,
-        \DateTime $startDate,
-        \DateTime $endDate
+        Carbon $startDate,
+        Carbon $endDate
     ): array {
         $accounts = $this->accountingService->getChartOfAccounts($clientId, [
             'status' => 'active',
             'allows_transaction' => true,
         ]);
 
-        $revenues = [];
+        $income = [];
+        $costs = [];
         $expenses = [];
 
         foreach ($accounts as $account) {
-            // Solo considerar cuentas de ingresos y gastos
-            if (! in_array($account->account_type, [AccountType::REVENUE, AccountType::EXPENSE])) {
+            // Solo considerar cuentas de ingresos, costos y gastos
+            if (! in_array($account->account_type, [AccountType::INCOME, AccountType::COST, AccountType::EXPENSE])) {
                 continue;
             }
 
             $debit = $this->getAccountDebit($account, $startDate, $endDate);
             $credit = $this->getAccountCredit($account, $startDate, $endDate);
-            $balance = $account->account_type === AccountType::REVENUE
-                ? $credit - $debit
-                : $debit - $credit;
+
+            // Calcular balance según tipo de cuenta
+            $balance = match ($account->account_type) {
+                AccountType::INCOME => $credit - $debit,           // Crédito normal
+                AccountType::COST, AccountType::EXPENSE => $debit - $credit,  // Débito normal
+            };
 
             if ($balance == 0) {
                 continue;
@@ -172,35 +178,36 @@ class FinancialReportService
 
             $accountData = [
                 'code' => $account->code,
-                'name' => $account->name,
-                'amount' => $balance,
+                'account_name' => $account->name,
+                'balance' => $balance,
                 'parent_code' => $account->parent?->code,
                 'level' => $account->level,
             ];
 
-            if ($account->account_type === AccountType::REVENUE) {
-                $revenues[] = $accountData;
-            } else {
-                $expenses[] = $accountData;
-            }
+            match ($account->account_type) {
+                AccountType::INCOME => $income[] = $accountData,
+                AccountType::COST => $costs[] = $accountData,
+                AccountType::EXPENSE => $expenses[] = $accountData,
+            };
         }
 
-        $totalRevenue = collect($revenues)->sum('amount');
-        $totalExpenses = collect($expenses)->sum('amount');
-        $netIncome = $totalRevenue - $totalExpenses;
+        $totalIncome = collect($income)->sum('balance');
+        $totalCosts = collect($costs)->sum('balance');
+        $totalExpenses = collect($expenses)->sum('balance');
+        $grossProfit = $totalIncome - $totalCosts;
+        $netIncome = $grossProfit - $totalExpenses;
 
         return [
             'report_type' => 'income_statement',
             'period_start' => $startDate->toDateString(),
             'period_end' => $endDate->toDateString(),
-            'revenues' => [
-                'details' => $revenues,
-                'total' => round($totalRevenue, 2),
-            ],
-            'expenses' => [
-                'details' => $expenses,
-                'total' => round($totalExpenses, 2),
-            ],
+            'income' => $income,
+            'income_total' => round($totalIncome, 2),
+            'costs' => $costs,
+            'costs_total' => round($totalCosts, 2),
+            'gross_profit' => round($grossProfit, 2),
+            'expenses' => $expenses,
+            'expenses_total' => round($totalExpenses, 2),
             'net_income' => round($netIncome, 2),
         ];
     }
@@ -212,8 +219,8 @@ class FinancialReportService
     public function generateCostCenterReport(
         int $clientId,
         int $costCenterId,
-        \DateTime $startDate,
-        \DateTime $endDate
+        Carbon $startDate,
+        Carbon $endDate
     ): array {
         $costCenter = CostCenter::where('client_id', $clientId)->findOrFail($costCenterId);
 
@@ -269,7 +276,7 @@ class FinancialReportService
      */
     public function generateAgingReport(
         int $clientId,
-        \DateTime $asOfDate,
+        Carbon $asOfDate,
         string $type = 'receivable'
     ): array {
         if ($type === 'receivable') {
@@ -282,13 +289,12 @@ class FinancialReportService
     /**
      * Reporte de antigüedad para cuentas por cobrar
      */
-    protected function generateReceivableAgingReport(int $clientId, \DateTime $asOfDate): array
+    protected function generateReceivableAgingReport(int $clientId, Carbon $asOfDate): array
     {
-        $receivables = DB::table('accounts_receivables')
+        $receivables = DB::table('accounts_receivable')
             ->where('client_id', $clientId)
             ->where('status', '!=', 'paid')
             ->where('status', '!=', 'cancelled')
-            ->with('patient')
             ->get();
 
         $ranges = [
@@ -364,7 +370,7 @@ class FinancialReportService
     /**
      * Reporte de antigüedad para cuentas por pagar
      */
-    protected function generatePayableAgingReport(int $clientId, \DateTime $asOfDate): array
+    protected function generatePayableAgingReport(int $clientId, Carbon $asOfDate): array
     {
         $payables = DB::table('supplier_invoices')
             ->where('client_id', $clientId)
@@ -447,8 +453,8 @@ class FinancialReportService
      */
     protected function getAccountDebit(
         AccountingAccount $account,
-        \DateTime $startDate,
-        \DateTime $endDate
+        Carbon $startDate,
+        Carbon $endDate
     ): float {
         return (float) $account->journalEntryLines()
             ->whereHas('journalEntry', function ($query) use ($startDate, $endDate) {
@@ -463,8 +469,8 @@ class FinancialReportService
      */
     protected function getAccountCredit(
         AccountingAccount $account,
-        \DateTime $startDate,
-        \DateTime $endDate
+        Carbon $startDate,
+        Carbon $endDate
     ): float {
         return (float) $account->journalEntryLines()
             ->whereHas('journalEntry', function ($query) use ($startDate, $endDate) {
@@ -479,7 +485,7 @@ class FinancialReportService
      */
     protected function getAccountBalance(
         AccountingAccount $account,
-        \DateTime $asOfDate
+        Carbon $asOfDate
     ): float {
         $debit = (float) $account->journalEntryLines()
             ->whereHas('journalEntry', function ($query) use ($asOfDate) {

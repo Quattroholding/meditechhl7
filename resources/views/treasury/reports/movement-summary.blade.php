@@ -4,10 +4,10 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Resumen de Movimientos
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Resumen de Movimientos
                 @endslot
             @endcomponent
 

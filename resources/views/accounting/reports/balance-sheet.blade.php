@@ -4,18 +4,20 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Balance General
+                    Contabilidad
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Balance General
                 @endslot
             @endcomponent
 
-            <div class="card">
-                <div class="card-body text-center py-5">
-                    <h4>En Construcción</h4>
-                    <p class="text-muted mt-3">Esta página será implementada en la siguiente iteración del Sprint 3</p>
-                    <small class="text-secondary">Ruta: accounting/reports/balance-sheet</small>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <livewire:accounting.reports.balance-sheet />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,11 +1,33 @@
-<div class="card">
-    <div class="card-header bg-light">
-        <h5 class="card-title">Ingresos vs Gastos</h5>
+<div class="card flex-fill">
+    <div class="card-header">
+        <h5 class="card-title">Ingresos vs Gastos (Últimos 6 Meses)</h5>
     </div>
     <div class="card-body">
-        <div class="text-center py-5">
-            <p class="text-muted">En construcción...</p>
-            <small class="text-secondary">Este componente será actualizado en la siguiente iteración</small>
-        </div>
+        <canvas id="revenueExpensesChart"></canvas>
     </div>
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+            const ctx = document.getElementById('revenueExpensesChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {{ json_encode($chartData) }},
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </div>

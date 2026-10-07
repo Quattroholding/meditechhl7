@@ -4,10 +4,10 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Detalle de Movimiento
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Detalle de Movimiento
                 @endslot
             @endcomponent
 
@@ -50,11 +50,11 @@
                             <hr class="my-3">
                             <div class="mb-3">
                                 <label class="form-label text-muted">Creado Por</label>
-                                <p class="mb-0">{{ $movement->createdBy->name ?? 'N/A' }}</p>
+                                <p class="mb-0">{{ $movement->createdBy->full_name ?? 'N/A' }}</p>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label text-muted">Fecha de Creación</label>
-                                <p class="mb-0">{{ $movement->created_at->format('d/m/Y H:i') }}</p>
+                                <p class="mb-0">{{ $movement->created_at }}</p>
                             </div>
                         </div>
                     </div>

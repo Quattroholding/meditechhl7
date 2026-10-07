@@ -4,7 +4,7 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Contabilidad
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
                     Períodos Contables

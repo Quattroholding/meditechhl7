@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Finance\AccountsPayable;
 
-use App\Models\PaymentSchedule;
-use App\Models\SupplierInvoice;
+use App\Models\Finance\PaymentSchedule;
+use App\Models\Finance\SupplierInvoice;
 use App\Services\Finance\AccountsPayableService;
 use Livewire\Component;
 

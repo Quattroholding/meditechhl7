@@ -7,7 +7,7 @@
                     <h4>Períodos Contables</h4>
                     <p class="text-muted">Gestiona los períodos contables y su estado</p>
                 </div>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#periodCreateModal">
+                <button type="button" class="btn btn-primary" wire:click="openCreateModal">
                     <i class="fas fa-plus"></i> Nuevo Período
                 </button>
             </div>
@@ -109,8 +109,6 @@
                                                     @if ($period->isOpen())
                                                         <li>
                                                             <button type="button" class="dropdown-item"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#periodCloseModal"
                                                                 wire:click="$dispatch('edit-period', { id: {{ $period->id }} })">
                                                                 <i class="fas fa-times-circle"></i> Cerrar
                                                             </button>
@@ -119,9 +117,7 @@
                                                     @if ($period->isClosed())
                                                         <li>
                                                             <button type="button" class="dropdown-item"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#periodLockModal"
-                                                                wire:click="$dispatch('edit-period', { id: {{ $period->id }} })">
+                                                                wire:click="$dispatch('edit-period-lock', { id: {{ $period->id }} })">
                                                                 <i class="fas fa-lock"></i> Bloquear
                                                             </button>
                                                         </li>
@@ -146,23 +142,18 @@
                         </table>
                     </div>
 
-                    <!-- Paginación -->
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            {{ $periods->links() }}
-                        </div>
-                    </div>
+                    @include('partials.pagination', ['data' => $periods])
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Crear Período -->
-    <livewire:accounting.period.period-create-modal lazy />
+    <livewire:accounting.period.period-create-modal />
 
     <!-- Modal Cerrar Período -->
-    <livewire:accounting.period.period-close-modal lazy />
+    <livewire:accounting.period.period-close-modal />
 
     <!-- Modal Bloquear Período -->
-    <livewire:accounting.period.period-lock-modal lazy />
+    <livewire:accounting.period.period-lock-modal />
 </div>

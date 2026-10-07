@@ -265,7 +265,10 @@ class Invoice extends BaseModel
             $nextNumber = 1;
         }
 
-        return $prefix.str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
+        // Add microseconds to ensure uniqueness in case of concurrent requests
+        $timestamp = str_pad(intval((microtime(true) * 1000) % 1000000), 6, '0', STR_PAD_LEFT);
+
+        return $prefix.str_pad($nextNumber, 6, '0', STR_PAD_LEFT).'-'.$timestamp;
     }
 
     public function addPayment(float $amount, ?string $method = null): bool

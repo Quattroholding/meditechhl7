@@ -17,11 +17,6 @@ class AccountingPeriodDataTable extends Component
 
     public string $yearFilter = '';
 
-    public function mount(): void
-    {
-        $this->yearFilter = (string) now()->year;
-    }
-
     #[On('period-created')]
     #[On('period-closed')]
     #[On('period-locked')]
@@ -58,5 +53,10 @@ class AccountingPeriodDataTable extends Component
         return view('livewire.accounting.period.accounting-period-data-table', [
             'periods' => $this->periods,
         ]);
+    }
+
+    public function openCreateModal(): void
+    {
+        $this->dispatch('open-create-modal');
     }
 }

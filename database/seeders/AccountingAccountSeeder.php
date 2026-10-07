@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\AccountType;
-use App\Models\AccountingAccount;
+use App\Models\Accounting\AccountingAccount;
 use App\Models\Client;
 use App\Models\User;
 use Illuminate\Database\Seeder;

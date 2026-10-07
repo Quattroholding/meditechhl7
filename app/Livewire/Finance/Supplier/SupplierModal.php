@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Finance\Supplier;
 
-use App\Models\AccountingAccount;
-use App\Models\Supplier;
+use App\Models\Accounting\AccountingAccount;
+use App\Models\Finance\Supplier;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;

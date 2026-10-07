@@ -2,10 +2,10 @@
     <div class="row content">
         @component('components.page-header')
             @slot('title')
-                Reporte de Antigüedad - Cuentas por Cobrar
+                Módulo Financiero
             @endslot
             @slot('li_1')
-                Módulo Financiero
+                Reporte de Antigüedad - Cuentas por Cobrar
             @endslot
         @endcomponent
 

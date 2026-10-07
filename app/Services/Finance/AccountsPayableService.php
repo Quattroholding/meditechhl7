@@ -2,9 +2,9 @@
 
 namespace App\Services\Finance;
 
-use App\Models\PaymentSchedule;
-use App\Models\Supplier;
-use App\Models\SupplierInvoice;
+use App\Models\Finance\PaymentSchedule;
+use App\Models\Finance\Supplier;
+use App\Models\Finance\SupplierInvoice;
 use App\Services\Accounting\AccountingEngineService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;

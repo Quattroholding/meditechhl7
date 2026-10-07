@@ -187,6 +187,10 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'document_type' => [
+            'required' => 'El tipo de documento es obligatorio',
+        ],
+    ],
 
 ];

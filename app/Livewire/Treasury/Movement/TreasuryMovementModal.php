@@ -5,12 +5,16 @@ namespace App\Livewire\Treasury\Movement;
 use App\Models\Treasury\Bank;
 use App\Models\Treasury\CashRegister;
 use App\Models\Treasury\TreasuryMovement;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\View\View;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class TreasuryMovementModal extends Component
 {
     public bool $isModal = false;
+
+    public ?TreasuryMovement $movement = null;
 
     #[Validate]
     public string $movement_type = '';
@@ -33,9 +37,20 @@ class TreasuryMovementModal extends Component
     #[Validate]
     public ?string $reference_number = null;
 
-    public function mount(): void
+    public function mount(?TreasuryMovement $movement = null): void
     {
-        $this->movement_date = now()->toDateString();
+        if ($movement) {
+            $this->movement = $movement;
+            $this->movement_type = $movement->movement_type;
+            $this->movement_date = $movement->movement_date->toDateString();
+            $this->amount = $movement->amount;
+            $this->bank_id = $movement->bank_id;
+            $this->cash_register_id = $movement->cash_register_id;
+            $this->description = $movement->description;
+            $this->reference_number = $movement->reference_number;
+        } else {
+            $this->movement_date = now()->toDateString();
+        }
     }
 
     public function rules(): array
@@ -79,48 +94,56 @@ class TreasuryMovementModal extends Component
         // Validate that at least one destination is selected based on movement type
         if ($this->movement_type === 'transfer') {
             if (! $this->bank_id || ! $this->cash_register_id) {
-                $this->dispatch('swal:alert', [
-                    'type' => 'error',
-                    'title' => 'Error',
-                    'text' => 'Para una transferencia, debe seleccionar tanto un banco como una caja.',
-                ]);
+                session()->flash('message.error', 'Para una transferencia, debe seleccionar tanto un banco como una caja.');
+                $this->redirect(route('treasury.movements.create'));
 
                 return;
             }
         } else {
             if (! $this->bank_id && ! $this->cash_register_id) {
-                $this->dispatch('swal:alert', [
-                    'type' => 'error',
-                    'title' => 'Error',
-                    'text' => 'Debe seleccionar un banco o una caja.',
-                ]);
+                session()->flash('message.error', 'Debe seleccionar un banco o una caja.');
+                $this->redirect(route('treasury.movements.create'));
 
                 return;
             }
         }
 
         $clientId = auth()->user()->getCurrentClient()->id;
-        $movementNumber = $this->generateMovementNumber($clientId);
 
-        TreasuryMovement::create([
-            'client_id' => $clientId,
-            'movement_number' => $movementNumber,
-            'movement_date' => $this->movement_date,
-            'movement_type' => $this->movement_type,
-            'bank_id' => $this->bank_id,
-            'cash_register_id' => $this->cash_register_id,
-            'amount' => $this->amount,
-            'description' => $this->description,
-            'reference_number' => $this->reference_number,
-            'created_by' => auth()->id(),
-            'updated_by' => auth()->id(),
-        ]);
+        if ($this->movement) {
+            // Actualizar movimiento existente
+            $this->movement->update([
+                'movement_date' => $this->movement_date,
+                'movement_type' => $this->movement_type,
+                'bank_id' => $this->bank_id,
+                'cash_register_id' => $this->cash_register_id,
+                'amount' => $this->amount,
+                'description' => $this->description,
+                'reference_number' => $this->reference_number,
+                'updated_by' => auth()->id(),
+            ]);
 
-        $this->dispatch('swal:alert', [
-            'type' => 'success',
-            'title' => 'Éxito',
-            'text' => 'Movimiento de tesorería registrado exitosamente.',
-        ]);
+            session()->flash('message.success', 'Movimiento de tesorería actualizado exitosamente.');
+        } else {
+            // Crear nuevo movimiento
+            $movementNumber = $this->generateMovementNumber($clientId);
+
+            TreasuryMovement::create([
+                'client_id' => $clientId,
+                'movement_number' => $movementNumber,
+                'movement_date' => $this->movement_date,
+                'movement_type' => $this->movement_type,
+                'bank_id' => $this->bank_id,
+                'cash_register_id' => $this->cash_register_id,
+                'amount' => $this->amount,
+                'description' => $this->description,
+                'reference_number' => $this->reference_number,
+                'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
+            ]);
+
+            session()->flash('message.success', 'Movimiento de tesorería registrado exitosamente.');
+        }
 
         if ($this->isModal) {
             $this->dispatch('closeModal');
@@ -142,7 +165,7 @@ class TreasuryMovementModal extends Component
         return sprintf('TM-%d-%06d', $year, $sequence);
     }
 
-    public function getBanksProperty()
+    public function getBanksProperty(): Collection
     {
         return Bank::where('client_id', auth()->user()->getCurrentClient()->id)
             ->where('status', 'active')
@@ -150,7 +173,7 @@ class TreasuryMovementModal extends Component
             ->get();
     }
 
-    public function getCashRegistersProperty()
+    public function getCashRegistersProperty(): Collection
     {
         return CashRegister::where('client_id', auth()->user()->getCurrentClient()->id)
             ->where('status', 'active')
@@ -158,7 +181,7 @@ class TreasuryMovementModal extends Component
             ->get();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.treasury.movement.treasury-movement-modal', [
             'banks' => $this->banks,

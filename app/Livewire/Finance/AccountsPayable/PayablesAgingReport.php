@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Finance\AccountsPayable;
 
-use App\Models\SupplierInvoice;
+use App\Models\Finance\SupplierInvoice;
 use Carbon\Carbon;
 use Livewire\Component;
 

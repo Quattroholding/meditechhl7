@@ -10,10 +10,19 @@ class PeriodCloseModal extends Component
 {
     public ?AccountingPeriod $period = null;
 
+    public bool $showModal = false;
+
     #[On('edit-period')]
     public function editPeriod(int $id): void
     {
         $this->period = AccountingPeriod::findOrFail($id);
+        $this->showModal = true;
+    }
+
+    public function closeModal(): void
+    {
+        $this->showModal = false;
+        $this->period = null;
     }
 
     public function close(): void
@@ -28,6 +37,7 @@ class PeriodCloseModal extends Component
             $this->period->close(auth()->user());
             session()->flash('message.success', 'Período cerrado exitosamente');
             $this->dispatch('period-closed');
+            $this->showModal = false;
             $this->period = null;
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al cerrar el período: '.$e->getMessage());

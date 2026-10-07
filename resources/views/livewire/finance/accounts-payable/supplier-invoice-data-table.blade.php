@@ -2,10 +2,10 @@
     <div class="row content">
         @component('components.page-header')
             @slot('title')
-                Facturas Proveedor (Detallado)
+                Módulo Financiero
             @endslot
             @slot('li_1')
-                Módulo Financiero
+                Facturas Proveedor (Detallado)
             @endslot
         @endcomponent
         <div class="col-sm-12">

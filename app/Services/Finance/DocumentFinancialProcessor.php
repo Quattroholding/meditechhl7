@@ -2,12 +2,12 @@
 
 namespace App\Services\Finance;
 
-use App\Models\AccountingAccount;
-use App\Models\CostDistribution;
+use App\Models\Accounting\AccountingAccount;
+use App\Models\Finance\CostDistribution;
 use App\Models\DocumentParseResult;
 use App\Models\DocumentUpload;
-use App\Models\Supplier;
-use App\Models\SupplierInvoice;
+use App\Models\Finance\Supplier;
+use App\Models\Finance\SupplierInvoice;
 use App\Services\Accounting\AccountingEngineService;
 use Illuminate\Support\Facades\DB;
 

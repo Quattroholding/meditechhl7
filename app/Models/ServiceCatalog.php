@@ -56,6 +56,10 @@ class ServiceCatalog extends BaseModel
         'practitioner_id',
         'created_by',
         'updated_by',
+        'accounting_account_id',
+        'income_classification',
+        'accounting_config_updated_at',
+        'accounting_config_updated_by',
     ];
 
     protected $casts = [

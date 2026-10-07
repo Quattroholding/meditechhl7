@@ -62,7 +62,7 @@ class CostCenterModal extends Component
         'name' => 'required|string|max:255',
         'description' => 'nullable|string|max:1000',
         'branch_id' => 'required|exists:branches,id',
-        'medical_speciality_id' => 'nullable|exists:medical_specialities,id',
+        'medical_speciality_id' => 'nullable|exists:medical_specialties,id',
         'status' => 'required|in:active,inactive',
     ];
 
@@ -105,7 +105,7 @@ class CostCenterModal extends Component
             ],
             'description' => 'nullable|string|max:1000',
             'branch_id' => 'required|exists:branches,id',
-            'medical_speciality_id' => 'nullable|exists:medical_specialities,id',
+            'medical_speciality_id' => 'nullable|exists:medical_specialties,id',
             'status' => 'required|in:active,inactive',
         ];
     }

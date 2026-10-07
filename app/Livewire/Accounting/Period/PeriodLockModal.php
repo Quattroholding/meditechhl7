@@ -10,10 +10,19 @@ class PeriodLockModal extends Component
 {
     public ?AccountingPeriod $period = null;
 
-    #[On('edit-period')]
+    public bool $showModal = false;
+
+    #[On('edit-period-lock')]
     public function editPeriod(int $id): void
     {
         $this->period = AccountingPeriod::findOrFail($id);
+        $this->showModal = true;
+    }
+
+    public function closeModal(): void
+    {
+        $this->showModal = false;
+        $this->period = null;
     }
 
     public function lock(): void
@@ -28,6 +37,7 @@ class PeriodLockModal extends Component
             $this->period->lock();
             session()->flash('message.success', 'Período bloqueado exitosamente');
             $this->dispatch('period-locked');
+            $this->showModal = false;
             $this->period = null;
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al bloquear el período: '.$e->getMessage());

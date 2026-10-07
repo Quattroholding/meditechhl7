@@ -1,60 +1,74 @@
-<div class="modal fade" id="periodLockModal" tabindex="-1" role="dialog" aria-labelledby="periodLockModalLabel"
-    aria-hidden="true" wire:ignore.self>
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="periodLockModalLabel">
-                    <i class="fas fa-lock"></i> Bloquear Período Contable
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+<div>
+    @if($showModal && $period)
+        <div class="modal-overlay" wire:click="closeModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div class="modal-content" wire:click.stop style="position: relative; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; background: white; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                <div class="modal-header" style="padding: 1.5rem; border-bottom: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center;">
+                    <h5 class="modal-title" style="margin: 0;">
+                        <i class="fas fa-lock"></i> Bloquear Período Contable
+                    </h5>
+                    <button type="button" class="btn-close" wire:click="closeModal" aria-label="Close"></button>
+                </div>
 
-            @if ($period)
-                <div class="modal-body">
-                    <div class="alert alert-danger mb-3">
+                <div class="modal-body" style="padding: 1.5rem;">
+                    <div class="alert alert-danger mb-4">
                         <i class="fas fa-lock"></i>
                         <strong>Acción Permanente:</strong> No se podrá desbloquear el período después de esta acción.
                     </div>
 
-                    <p>
-                        ¿Deseas bloquear permanentemente el período <strong>{{ $period->name }}</strong>?
-                    </p>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label" style="font-weight: 600;">Período</label>
+                            <p class="text-muted">{{ $period->name }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="font-weight: 600;">Año Fiscal</label>
+                            <p class="text-muted">{{ $period->fiscal_year }}</p>
+                        </div>
+                    </div>
 
-                    <div class="card bg-light mb-3">
-                        <div class="card-body">
-                            <p class="mb-1">
-                                <strong>Período:</strong> {{ $period->name }}
-                            </p>
-                            <p class="mb-1">
-                                <strong>Rango:</strong>
-                                {{ $period->start_date->format('d/m/Y') }} -
-                                {{ $period->end_date->format('d/m/Y') }}
-                            </p>
-                            <p class="mb-1">
-                                <strong>Estado Actual:</strong>
-                                <span class="badge bg-warning">Cerrado</span>
-                            </p>
-                            <p class="mb-0">
-                                <strong>Asientos:</strong>
-                                {{ $period->journalEntries()->count() }}
-                            </p>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label" style="font-weight: 600;">Fecha de Inicio</label>
+                            <p class="text-muted">{{ $period->start_date->format('d/m/Y') }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="font-weight: 600;">Fecha de Fin</label>
+                            <p class="text-muted">{{ $period->end_date->format('d/m/Y') }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label" style="font-weight: 600;">Asientos Contables</label>
+                            <p class="text-muted">{{ $period->journalEntries()->count() }} asientos registrados</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label" style="font-weight: 600;">Estado Actual</label>
+                            @if ($period->status === 'closed')
+                                <span class="badge bg-warning">
+                            <i class="fas fa-lock-open"></i> Cerrado
+                        </span>
+                            @else
+                                <span class="badge bg-danger">
+                            <i class="fas fa-lock"></i> Bloqueado
+                        </span>
+                            @endif
                         </div>
                     </div>
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <div class="modal-footer" style="padding: 1.5rem; border-top: 1px solid #e9ecef; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" wire:click="closeModal">
                         Cancelar
                     </button>
-                    <button type="button" wire:click="lock" class="btn btn-danger">
+                    <button type="button" class="btn btn-danger" wire:click="lock">
                         <i class="fas fa-lock"></i> Bloquear Período
                     </button>
                 </div>
-            @else
-                <div class="modal-body">
-                    <p class="text-muted">Selecciona un período para bloquear</p>
-                </div>
-            @endif
+            </div>
         </div>
-    </div>
+    @endif
 </div>

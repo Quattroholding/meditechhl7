@@ -3,7 +3,7 @@
 namespace App\Services\Finance;
 
 use App\Enums\ReceivableStatus;
-use App\Models\AccountsReceivable;
+use App\Models\Finance\AccountsReceivable;
 use App\Models\Invoice;
 use App\Services\Accounting\AccountingEngineService;
 use Illuminate\Support\Collection;

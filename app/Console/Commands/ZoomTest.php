@@ -12,6 +12,7 @@ use Illuminate\Console\Command;
 class ZoomTest extends Command
 {
     protected $signature = 'zoom:test {action?} {--appointment_id=}';
+
     protected $description = 'Test Zoom integration (Sandbox mode for development)';
 
     private ZoomService $zoomService;
@@ -68,7 +69,7 @@ class ZoomTest extends Command
         $this->line('  <fg=cyan>php artisan zoom:test simulate --appointment_id=1</>');
     }
 
-    private function testCreateMeeting(): void
+    private function test_create_meeting(): void
     {
         $this->info('Creating test meeting...');
 
@@ -124,6 +125,7 @@ class ZoomTest extends Command
 
         if ($appointments->isEmpty()) {
             $this->warn('No virtual appointments found');
+
             return;
         }
 
@@ -147,14 +149,16 @@ class ZoomTest extends Command
 
         $appointment = Appointment::find($appointmentId);
 
-        if (!$appointment) {
+        if (! $appointment) {
             $this->error("Appointment #$appointmentId not found");
+
             return;
         }
 
-        if (!$appointment->virtual_room_id) {
+        if (! $appointment->virtual_room_id) {
             $this->error('Appointment has no meeting ID. Create one first:');
             $this->line('  php artisan zoom:test create');
+
             return;
         }
 
@@ -222,7 +226,7 @@ class ZoomTest extends Command
 
     private function maskValue(?string $value): string
     {
-        if (!$value) {
+        if (! $value) {
             return 'NOT SET';
         }
 

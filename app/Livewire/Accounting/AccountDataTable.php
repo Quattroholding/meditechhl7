@@ -5,6 +5,7 @@ namespace App\Livewire\Accounting;
 use App\Models\Accounting\AccountingAccount;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -23,6 +24,10 @@ class AccountDataTable extends Component
     public $statusFilter = 'all'; // all, active, inactive
 
     public $typeFilter = 'all'; // all, asset, liability, equity, income, expense, cost
+
+    public $showModal = false;
+
+    public ?AccountingAccount $editingAccount = null;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -55,6 +60,33 @@ class AccountDataTable extends Component
     public function updatingTypeFilter()
     {
         $this->resetPage();
+    }
+
+    public function createAccount()
+    {
+        $this->editingAccount = null;
+        $this->showModal = true;
+    }
+
+    public function editAccount(AccountingAccount $account)
+    {
+        $this->editingAccount = $account;
+        $this->showModal = true;
+    }
+
+    #[On('account-saved')]
+    public function refreshAccounts()
+    {
+        $this->showModal = false;
+        $this->editingAccount = null;
+        $this->resetPage();
+    }
+
+    #[On('closeModal')]
+    public function closeModal()
+    {
+        $this->showModal = false;
+        $this->editingAccount = null;
     }
 
     public function render(): View

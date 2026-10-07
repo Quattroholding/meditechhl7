@@ -3,10 +3,10 @@
         <div class="content">
             @component('components.page-header')
                 @slot('title')
-                    Editar Caja
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Tesorería
+                    Editar Caja
                 @endslot
             @endcomponent
 

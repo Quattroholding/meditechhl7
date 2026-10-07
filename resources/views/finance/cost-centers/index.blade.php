@@ -4,14 +4,14 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Centros de Costo
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Centros de Costo
                 @endslot
             @endcomponent
 
-            @include('partials.message')
+
             <div class="card">
                 @livewire('finance.cost-center.data-table')
             </div>

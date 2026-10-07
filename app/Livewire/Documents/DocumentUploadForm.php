@@ -6,7 +6,7 @@ use App\Enums\DocumentType;
 use App\Jobs\ParseDocumentJob;
 use App\Models\Branch;
 use App\Models\Client;
-use App\Models\CostCenter;
+use App\Models\Finance\CostCenter;
 use App\Models\DocumentUpload;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Validate;

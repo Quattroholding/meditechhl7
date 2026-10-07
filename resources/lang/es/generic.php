@@ -50,4 +50,8 @@ return [
     'status' => 'Estatus',
     'active' => 'Activo',
     'inactive' => 'Inactivo',
+    'email' => 'Correo electrónico',
+    'phone' => 'Teléfono',
+    'address' => 'Dirección',
+    'notes' => 'Notas',
 ];

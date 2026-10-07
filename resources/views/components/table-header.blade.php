@@ -17,11 +17,18 @@ if(!isset($show_create)) $show_create=true;
                                 </form>
                             </div>
                             @if($show_create)
-                                <a href="{{ $li_1 }}" class="btn btn-primary submit-form add-pluss py-2 m-0" title="{{__('generic.new')}}">
-                                    {{--}} <i class="fa fa-plus" alt="{{__('generic.new')}}"></i> {{__('generic.new')}} {{--}}
-                                    <i class="fa fa-plus me-1"></i>
-                                    <span class="d-md-inline">{{__('generic.new')}}</span>
-                                </a>
+                                @if(isset($create_action))
+                                    <button type="button" wire:click="{{ $create_action }}" class="btn btn-primary submit-form add-pluss py-2 m-0" title="{{__('generic.new')}}">
+                                        <i class="fa fa-plus me-1"></i>
+                                        <span class="d-md-inline">{{__('generic.new')}}</span>
+                                    </button>
+                                @else
+                                    <a href="{{ $li_1 }}" class="btn btn-primary submit-form add-pluss py-2 m-0" title="{{__('generic.new')}}">
+                                        {{--}} <i class="fa fa-plus" alt="{{__('generic.new')}}"></i> {{__('generic.new')}} {{--}}
+                                        <i class="fa fa-plus me-1"></i>
+                                        <span class="d-md-inline">{{__('generic.new')}}</span>
+                                    </a>
+                                @endif
                             @endif
                             @if(isset($filters))
                                 <div class="staff-search-table m-0 p-0">

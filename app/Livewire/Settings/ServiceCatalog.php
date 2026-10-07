@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Settings;
 
+use App\Models\Accounting\AccountingAccount;
 use App\Models\CptCode;
 use App\Models\ServiceCatalog as ServiceCatalogModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -49,6 +51,8 @@ class ServiceCatalog extends Component
 
     public $cpt_patient_copay = 0;
 
+    public $cpt_accounting_account_id = null;
+
     // Fields for custom services
     public $custom_name;
 
@@ -72,10 +76,14 @@ class ServiceCatalog extends Component
 
     public $custom_revenue_code;
 
+    public $custom_accounting_account_id = null;
+
     // Edit mode
     public $editingId = null;
 
     public $editingService = [];
+
+    public $editing_accounting_account_id = null;
 
     protected $rules = [
         'cpt_id' => 'required',
@@ -86,9 +94,11 @@ class ServiceCatalog extends Component
         'cpt_requires_auth' => 'boolean',
         'cpt_covered_insurance' => 'boolean',
         'cpt_patient_copay' => 'nullable|numeric|min:0',
+        'cpt_accounting_account_id' => 'nullable|exists:accounting_accounts,id',
         'custom_name' => 'required|string|max:500',
         'custom_service_type' => 'required|string',
         'custom_price' => 'required|numeric|min:0',
+        'custom_accounting_account_id' => 'nullable|exists:accounting_accounts,id',
     ];
 
     protected $messages = [
@@ -237,6 +247,7 @@ class ServiceCatalog extends Component
                         'requires_authorization' => $this->cpt_requires_auth,
                         'covered_by_insurance' => $this->cpt_covered_insurance,
                         'patient_copay' => $this->cpt_patient_copay ?? 0,
+                        'accounting_account_id' => $this->cpt_accounting_account_id,
                         'is_active' => true,
                         'effective_date' => now(),
                         'client_id' => $this->clientId,
@@ -327,6 +338,7 @@ class ServiceCatalog extends Component
                         'covered_by_insurance' => $this->custom_covered_insurance,
                         'patient_copay' => $this->custom_patient_copay ?? 0,
                         'revenue_code' => $this->custom_revenue_code,
+                        'accounting_account_id' => $this->custom_accounting_account_id,
                         'is_active' => true,
                         'effective_date' => now(),
                         'created_by' => auth()->id(),
@@ -383,7 +395,8 @@ class ServiceCatalog extends Component
     {
         $service = ServiceCatalogModel::find($id);
 
-        if (! $service || $service->created_by !== auth()->id()) {
+        // Permitir edición solo si es del mismo cliente del usuario
+        if (! $service || $service->client_id !== $this->clientId) {
             return;
         }
 
@@ -402,6 +415,7 @@ class ServiceCatalog extends Component
             'cpt_code' => $service->cpt_code, // Track if this is a CPT service
             'is_cpt_service' => ! empty($service->cpt_code), // Flag for CPT services
         ];
+        $this->editing_accounting_account_id = $service->accounting_account_id;
     }
 
     public function updateService()
@@ -426,7 +440,8 @@ class ServiceCatalog extends Component
 
         $service = ServiceCatalogModel::find($this->editingId);
 
-        if (! $service || $service->created_by !== auth()->id()) {
+        // Permitir actualización solo si es del mismo cliente del usuario
+        if (! $service || $service->client_id !== $this->clientId) {
             return;
         }
 
@@ -435,6 +450,9 @@ class ServiceCatalog extends Component
             $service->update([
                 'base_price' => $this->editingService['base_price'],
                 'complexity' => $this->editingService['complexity'],
+                'accounting_account_id' => $this->editing_accounting_account_id,
+                'accounting_config_updated_at' => now(),
+                'accounting_config_updated_by' => auth()->id(),
                 'updated_by' => auth()->id(),
             ]);
         } else {
@@ -450,6 +468,9 @@ class ServiceCatalog extends Component
                 'covered_by_insurance' => $this->editingService['covered_by_insurance'],
                 'patient_copay' => $this->editingService['patient_copay'] ?? 0,
                 'revenue_code' => $this->editingService['revenue_code'],
+                'accounting_account_id' => $this->editing_accounting_account_id,
+                'accounting_config_updated_at' => now(),
+                'accounting_config_updated_by' => auth()->id(),
                 'updated_by' => auth()->id(),
             ]);
         }
@@ -467,6 +488,7 @@ class ServiceCatalog extends Component
     {
         $this->editingId = null;
         $this->editingService = [];
+        $this->editing_accounting_account_id = null;
     }
 
     public function toggleActive($id)
@@ -555,5 +577,14 @@ class ServiceCatalog extends Component
             'medium' => 'Media',
             'high' => 'Alta',
         ];
+    }
+
+    public function getAccountingAccountsProperty(): Collection
+    {
+        return AccountingAccount::where('client_id', $this->clientId)
+            ->where('status', 'active')
+            ->where('allows_transaction', true)
+            ->orderBy('code')
+            ->get();
     }
 }

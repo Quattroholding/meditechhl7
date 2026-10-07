@@ -3,10 +3,10 @@
         <div class="content">
             @component('components.page-header')
                 @slot('title')
-                    Crear Banco
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Tesorería
+                    Crear Banco
                 @endslot
             @endcomponent
 

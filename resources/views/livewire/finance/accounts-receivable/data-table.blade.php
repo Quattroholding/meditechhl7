@@ -1,14 +1,4 @@
-<div class="page-wrapper">
-    <div class="row content">
-        @component('components.page-header')
-            @slot('title')
-                Cuentas por Cobrar
-            @endslot
-            @slot('li_1')
-                Módulo Financiero
-            @endslot
-        @endcomponent
-        <div class="col-sm-12">
+<div class="col-sm-12">
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
@@ -64,7 +54,7 @@
                                         </td>
                                         <td data-column="patient" data-priority="2" data-label="Paciente">
                                             <span class="cell-content">
-                                                {{ $receivable->patient?->full_name ?? 'N/A' }}
+                                                {{ $receivable->patient?->name ?? 'N/A' }}
                                             </span>
                                         </td>
                                         <td data-column="original_amount" data-priority="3" data-label="Monto Original">
@@ -118,5 +108,3 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>

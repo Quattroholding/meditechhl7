@@ -2,6 +2,7 @@
 
 namespace App\Models\Accounting;
 
+use App\Enums\JournalEntryStatus;
 use App\Models\BaseModel;
 use App\Models\Scopes\JournalEntryScope;
 use App\Models\User;
@@ -34,7 +35,7 @@ class JournalEntry extends BaseModel
 
     protected $casts = [
         'entry_date' => 'date',
-        'status' => 'string',
+        'status' => JournalEntryStatus::class,
         'posted_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -87,17 +88,17 @@ class JournalEntry extends BaseModel
 
     public function isDraft(): bool
     {
-        return $this->status === 'draft';
+        return $this->status === JournalEntryStatus::DRAFT;
     }
 
     public function isPosted(): bool
     {
-        return $this->status === 'posted';
+        return $this->status === JournalEntryStatus::POSTED;
     }
 
     public function isReversed(): bool
     {
-        return $this->status === 'reversed';
+        return $this->status === JournalEntryStatus::REVERSED;
     }
 
     public function getTotalDebit(): float
@@ -122,7 +123,7 @@ class JournalEntry extends BaseModel
         }
 
         $this->update([
-            'status' => 'posted',
+            'status' => JournalEntryStatus::POSTED,
             'posted_at' => now(),
             'posted_by' => $user->id,
         ]);
@@ -153,7 +154,7 @@ class JournalEntry extends BaseModel
             'document_type' => $this->document_type,
             'document_number' => $this->document_number,
             'description' => 'Reversal of '.$this->entry_number,
-            'status' => 'posted',
+            'status' => JournalEntryStatus::POSTED,
             'accounting_period_id' => $this->accounting_period_id,
             'source_type' => $this->source_type,
             'source_id' => $this->source_id,
@@ -177,16 +178,16 @@ class JournalEntry extends BaseModel
         }
 
         // Update status
-        $this->update(['status' => 'reversed']);
+        $this->update(['status' => JournalEntryStatus::REVERSED]);
     }
 
     public function scopeDraft($query)
     {
-        return $query->where('status', 'draft');
+        return $query->where('status', JournalEntryStatus::DRAFT->value);
     }
 
     public function scopePosted($query)
     {
-        return $query->where('status', 'posted');
+        return $query->where('status', JournalEntryStatus::POSTED->value);
     }
 }

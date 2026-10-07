@@ -15,6 +15,9 @@
 use App\Livewire\Treasury\Bank\BankDataTable;
 use App\Livewire\Treasury\CashRegister\CashRegisterDataTable;
 use App\Livewire\Treasury\TreasuryMovement\TreasuryMovementDataTable;
+use App\Models\Treasury\Bank;
+use App\Models\Treasury\CashRegister;
+use App\Models\Treasury\TreasuryMovement;
 use Illuminate\Support\Facades\Route;
 
 // ============================================================================
@@ -36,12 +39,12 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.banks
         })->name('edit');
     });
 
-    Route::get('/{bank}', function () {
-        return view('treasury.banks.show');
+    Route::get('/{bank}', function (Bank $bank) {
+        return view('treasury.banks.show', compact('bank'));
     })->name('show');
 
-    Route::get('/{bank}/movements', function () {
-        return view('treasury.banks.movements');
+    Route::get('/{bank}/movements', function (Bank $bank) {
+        return view('treasury.banks.movements', compact('bank'));
     })->name('movements');
 
     Route::middleware('permission:treasury.banks.delete')->delete('/{bank}', function () {
@@ -68,12 +71,12 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.cash-
         })->name('edit');
     });
 
-    Route::get('/{cashRegister}', function () {
-        return view('treasury.cash-registers.show');
+    Route::get('/{cashRegister}', function (CashRegister $cashRegister) {
+        return view('treasury.cash-registers.show', compact('cashRegister'));
     })->name('show');
 
-    Route::get('/{cashRegister}/movements', function () {
-        return view('treasury.cash-registers.movements');
+    Route::get('/{cashRegister}/movements', function (CashRegister $cashRegister) {
+        return view('treasury.cash-registers.movements', compact('cashRegister'));
     })->name('movements');
 
     Route::middleware('permission:treasury.cash-registers.delete')->delete('/{cashRegister}', function () {
@@ -95,13 +98,13 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.movem
     });
 
     Route::middleware('permission:treasury.movements.edit')->group(function () {
-        Route::get('/{movement}/edit', function () {
-            return view('treasury.movements.edit');
+        Route::get('/{movement}/edit', function (TreasuryMovement $movement) {
+            return view('treasury.movements.edit', compact('movement'));
         })->name('edit');
     });
 
-    Route::get('/{movement}', function () {
-        return view('treasury.movements.show');
+    Route::get('/{movement}', function (TreasuryMovement $movement) {
+        return view('treasury.movements.show', compact('movement'));
     })->name('show');
 
     Route::middleware('permission:treasury.movements.delete')->delete('/{movement}', function () {

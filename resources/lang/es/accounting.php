@@ -16,6 +16,10 @@ return [
         'created_successfully' => 'Cuenta contable creada exitosamente',
         'updated_successfully' => 'Cuenta contable actualizada exitosamente',
         'deleted_successfully' => 'Cuenta contable eliminada exitosamente',
+        'level' => 'Nivel',
+        'type' => 'Tipo de Cuenta',
+        'parent' => 'Cuenta Padre',
+        'no_parent' => 'Sin cuenta Padre',
         'types' => [
             'asset' => 'Activo',
             'liability' => 'Pasivo',

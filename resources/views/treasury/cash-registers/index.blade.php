@@ -4,10 +4,10 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Cajas
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Cajas
                 @endslot
             @endcomponent
 
@@ -16,11 +16,7 @@
                     <div class="card card-table show-entire p-2">
 
                         <div class="card-body">
-                            <livewire:data-table model="\App\Models\Treasury\CashRegister"
-                                                 :columns="['id', 'name', 'branch_id', 'responsible_user_id', 'balance', 'status', 'acciones']"
-                                                 :actions="['edit','delete']"
-                                                 routename="treasury.cash-registers"
-                                                 wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
+                            @livewire('treasury.cash-register.cash-register-data-table')
                         </div>
                     </div>
                 </div>

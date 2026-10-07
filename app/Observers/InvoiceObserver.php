@@ -21,40 +21,19 @@ class InvoiceObserver
 
     /**
      * Handle the Invoice "created" event.
-     * Genera asientos contables automáticamente según el estado de pago
+     * NOTE: Accounting events are now handled by ConsultationInvoiceService::triggerAccountingEvents()
+     * This observer is kept for backward compatibility and for invoices created through other means
+     *
+     * @deprecated Use ConsultationInvoiceService instead
      */
     public function created(Invoice $invoice): void
     {
-        try {
-            // Validar precondiciones
-            if (! $this->shouldProcess($invoice)) {
-                return;
-            }
-
-            DB::transaction(function () use ($invoice) {
-                // Si es contado (paid)
-                if ($invoice->payment_status === 'paid') {
-                    $this->handleCashInvoice($invoice);
-                } // Si es a crédito
-                elseif ($invoice->payment_status !== 'paid') {
-                    $this->handleCreditInvoice($invoice);
-                }
-            });
-
-            Log::info('Invoice accounting event processed', [
-                'model' => 'Invoice',
-                'id' => $invoice->id,
-                'status' => $invoice->payment_status,
-                'client_id' => $invoice->client_id,
-            ]);
-        } catch (Exception $e) {
-            Log::error('Failed to process invoice accounting event', [
-                'model' => 'Invoice',
-                'id' => $invoice->id,
-                'error' => $e->getMessage(),
-                'client_id' => $invoice->client_id,
-            ]);
-        }
+        // Events are now handled in ConsultationInvoiceService to ensure correct totals
+        // This method is kept for safety in case invoices are created through other channels
+        Log::info('Invoice created event (events handled by ConsultationInvoiceService)', [
+            'model' => 'Invoice',
+            'id' => $invoice->id,
+        ]);
 
         $this->clearDashboardCache();
     }
@@ -199,6 +178,12 @@ class InvoiceObserver
     {
         // Solo procesar si client tiene accounting habilitado
         if (! $invoice->client?->accounting_enabled) {
+            return false;
+        }
+
+        // Evitar procesar facturas incompletas (creadas sin líneas/totales)
+        // Si total_amount es 0 y no tiene líneas, es probable que aún se esté creando
+        if ($invoice->total_amount <= 0 && $invoice->lineItems()->count() === 0) {
             return false;
         }
 

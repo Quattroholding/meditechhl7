@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Finance\Supplier;
 
-use App\Models\Supplier;
+use App\Models\Finance\Supplier;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
 use Livewire\Component;

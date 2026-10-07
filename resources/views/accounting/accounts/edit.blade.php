@@ -3,10 +3,10 @@
         <div class="row content">
             @component('components.page-header')
                 @slot('title')
-                    Editar Cuenta Contable
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Contabilidad
+                    Editar Cuenta Contable
                 @endslot
             @endcomponent
             <div class="col-sm-12">

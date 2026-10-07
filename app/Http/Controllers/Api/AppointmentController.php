@@ -723,7 +723,7 @@ class AppointmentController extends Controller
             'minutes_duration' => 'sometimes|integer|min:15|max:480',
             'description' => 'nullable|string|max:1000',
             'status' => 'sometimes|in:requested,confirmed,booked,arrived,fulfilled,cancelled,no_show,confirm',
-            'medical_speciality_id' => 'nullable|exists:medical_specialities,id',
+            'medical_speciality_id' => 'nullable|exists:medical_specialties,id',
             'consulting_room_id' => 'nullable|exists:consulting_rooms,id',
         ]);
 

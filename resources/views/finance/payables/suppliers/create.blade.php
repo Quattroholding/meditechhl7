@@ -3,10 +3,10 @@
         <div class="row content">
             @component('components.page-header')
                 @slot('title')
-                    Crear Proveedor
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Crear Proveedor
                 @endslot
             @endcomponent
             <div class="col-sm-12">

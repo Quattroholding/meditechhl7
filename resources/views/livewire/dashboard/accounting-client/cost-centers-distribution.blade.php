@@ -1,11 +1,33 @@
-<div class="card">
-    <div class="card-header bg-light">
-        <h5 class="card-title">Distribución Centros</h5>
+<div class="card flex-fill">
+    <div class="card-header">
+        <h5 class="card-title">Distribución por Centros de Costo</h5>
     </div>
     <div class="card-body">
-        <div class="text-center py-5">
-            <p class="text-muted">En construcción...</p>
-            <small class="text-secondary">Este componente será actualizado en la siguiente iteración</small>
-        </div>
+        @if(count($chartData['labels']) > 0)
+            <canvas id="costCentersChart"></canvas>
+            <script>
+                document.addEventListener('livewire:navigated', () => {
+                    const ctx = document.getElementById('costCentersChart');
+                    if (ctx) {
+                        new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {{ json_encode($chartData) }},
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            </script>
+        @else
+            <div class="text-center text-muted py-4">
+                <p>No hay datos de distribución de costos</p>
+            </div>
+        @endif
     </div>
 </div>

@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\SupplierInvoice;
+use App\Models\Finance\SupplierInvoice;
 use App\Services\Accounting\AccountingEngineService;
 use Exception;
 use Illuminate\Support\Facades\DB;

@@ -3,10 +3,10 @@
         <div class="row content">
             @component('components.page-header')
                 @slot('title')
-                    Crear Método de Pago
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Tesorería
+                    Crear Método de Pago
                 @endslot
             @endcomponent
             <div class="col-sm-12">

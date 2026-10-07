@@ -2,10 +2,8 @@
 
 namespace App\Services\Accounting;
 
-use App\Models\AccountingAccount;
-use App\Models\AccountingPeriod;
-use App\Models\CostCenter;
-use App\Models\JournalEntry;
+use App\Models\Accounting\AccountingAccount;
+use App\Models\Accounting\AccountingPeriod;
 use Illuminate\Support\Collection;
 
 class AccountingService

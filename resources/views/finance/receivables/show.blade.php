@@ -4,10 +4,10 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Detalle de Cuenta por Cobrar
+                    Módulo Financiero
                 @endslot
                 @slot('li_1')
-                    Módulo Financiero
+                    Detalle de Cuenta por Cobrar
                 @endslot
             @endcomponent
 
