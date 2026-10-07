@@ -2,6 +2,7 @@
 
 namespace App\Models\Accounting;
 
+use App\Enums\AccountType;
 use App\Models\BaseModel;
 use App\Models\Scopes\AccountingAccountScope;
 use App\Models\User;
@@ -30,7 +31,7 @@ class AccountingAccount extends BaseModel
     ];
 
     protected $casts = [
-        'account_type' => 'string',
+        'account_type' => AccountType::class,
         'level' => 'integer',
         'allows_transaction' => 'boolean',
         'status' => 'string',
