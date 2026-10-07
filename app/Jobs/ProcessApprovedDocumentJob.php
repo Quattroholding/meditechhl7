@@ -11,6 +11,7 @@ use App\Services\DocumentProcessors\RegisterElectricityBillProcessor;
 use App\Services\DocumentProcessors\RegisterGasBillProcessor;
 use App\Services\DocumentProcessors\RegisterWaterBillProcessor;
 use App\Services\DocumentProcessors\SaveReferenceDocumentProcessor;
+use App\Services\DocumentProcessors\SupplierInvoiceProcessor;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -130,7 +131,18 @@ class ProcessApprovedDocumentJob implements ShouldQueue
             DocumentType::ENSA => new SaveReferenceDocumentProcessor,
             DocumentType::NATURGY => new SaveReferenceDocumentProcessor,
             DocumentType::IDAAN => new SaveReferenceDocumentProcessor,
-            DocumentType::OTRO => new SaveReferenceDocumentProcessor,
+            DocumentType::OTRO => $this->detectOtroDocumentType(),
         };
+    }
+
+    /**
+     * Detect if document of type OTRO should be processed as supplier invoice
+     * based on extracted data
+     */
+    private function detectOtroDocumentType()
+    {
+        // For now, use SupplierInvoiceProcessor for OTRO documents
+        // In future, could check extracted_data to determine the correct processor
+        return new SupplierInvoiceProcessor;
     }
 }
