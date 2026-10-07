@@ -7,10 +7,20 @@ use App\Models\Branch;
 use App\Models\Finance\CostCenter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class JournalEntryLine extends BaseModel
 {
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::creating(function ($model) {
+            if (! $model->uuid) {
+                $model->uuid = Str::uuid();
+            }
+        });
+    }
 
     protected $fillable = [
         'uuid',
