@@ -108,3 +108,9 @@
                 </div>
             </div>
         </div>
+    </div>
+
+{{-- Payment Modal --}}
+@if ($showPaymentModal && $selectedReceivable)
+    @livewire('finance.accounts-receivable.payment-application-modal', ['receivable' => $selectedReceivable], key('payment-modal-' . $selectedReceivable->id))
+@endif

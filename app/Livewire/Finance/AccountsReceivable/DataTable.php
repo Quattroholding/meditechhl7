@@ -5,6 +5,7 @@ namespace App\Livewire\Finance\AccountsReceivable;
 use App\Models\Finance\AccountsReceivable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -21,6 +22,10 @@ class DataTable extends Component
     public $pagination = 10;
 
     public $statusFilter = 'all'; // all, pending, partial, paid, overdue, cancelled
+
+    public bool $showPaymentModal = false;
+
+    public ?AccountsReceivable $selectedReceivable = null;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -47,6 +52,41 @@ class DataTable extends Component
     public function updatingStatusFilter()
     {
         $this->resetPage();
+    }
+
+    public function applyPayment(int $receivableId): void
+    {
+        $receivable = AccountsReceivable::find($receivableId);
+        if ($receivable) {
+            $this->openPaymentModal($receivable);
+        }
+    }
+
+    public function openPaymentModal(AccountsReceivable $receivable): void
+    {
+        $this->authorize('receivables.apply-payment');
+        $this->selectedReceivable = $receivable;
+        $this->showPaymentModal = true;
+    }
+
+    public function closePaymentModal(): void
+    {
+        $this->showPaymentModal = false;
+        $this->selectedReceivable = null;
+    }
+
+    #[On('closePaymentModal')]
+    public function handleClosePaymentModal(): void
+    {
+        $this->closePaymentModal();
+    }
+
+    #[On('payment-applied')]
+    public function handlePaymentApplied(): void
+    {
+        $this->closePaymentModal();
+        // Opcional: refrescar los datos
+        $this->dispatch('receivable-updated');
     }
 
     public function render(): View
