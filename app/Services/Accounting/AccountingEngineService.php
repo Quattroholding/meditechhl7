@@ -58,6 +58,9 @@ class AccountingEngineService
         return DB::transaction(function () use ($invoice) {
             $period = $this->accountingService->getCurrentPeriod($invoice->client_id);
 
+            // Use the user who approved the invoice for all audit fields
+            $userId = $invoice->approved_by ?? auth()->id() ?? 1;
+
             $entry = JournalEntry::create([
                 'uuid' => Str::uuid(),
                 'entry_number' => $this->generateEntryNumber($invoice->client_id),
@@ -71,8 +74,9 @@ class AccountingEngineService
                 'source_type' => FinanceSupplierInvoice::class,
                 'source_id' => $invoice->id,
                 'posted_at' => now(),
-                'posted_by' => auth()->id(),
-                'created_by' => auth()->id(),
+                'posted_by' => $userId,
+                'created_by' => $userId,
+                'updated_by' => $userId,
             ]);
 
             // Obtener distribuciones de costos
@@ -176,6 +180,9 @@ class AccountingEngineService
             $invoice = $schedule->supplierInvoice;
             $period = $this->accountingService->getCurrentPeriod($invoice->client_id);
 
+            // Use the user who approved the invoice for all audit fields
+            $userId = $invoice->approved_by ?? auth()->id() ?? 1;
+
             $entry = JournalEntry::create([
                 'uuid' => Str::uuid(),
                 'entry_number' => $this->generateEntryNumber($invoice->client_id),
@@ -189,8 +196,9 @@ class AccountingEngineService
                 'source_type' => PaymentSchedule::class,
                 'source_id' => $schedule->id,
                 'posted_at' => now(),
-                'posted_by' => auth()->id(),
-                'created_by' => auth()->id(),
+                'posted_by' => $userId,
+                'created_by' => $userId,
+                'updated_by' => $userId,
             ]);
 
             // Obtener cuenta de banco o caja del movimiento de tesorería
@@ -278,6 +286,9 @@ class AccountingEngineService
                 $period = $this->accountingService->getCurrentPeriod($invoice->client_id);
                 $costCenterId = $this->getCostCenterIdForInvoice($invoice);
 
+                // Use current user for all audit fields
+                $userId = auth()->id() ?? 1;
+
                 $entry = JournalEntry::create([
                     'uuid' => Str::uuid(),
                     'entry_number' => $this->generateEntryNumber($invoice->client_id),
@@ -291,8 +302,9 @@ class AccountingEngineService
                     'source_type' => Invoice::class,
                     'source_id' => $invoice->id,
                     'posted_at' => now(),
-                    'posted_by' => auth()->id(),
-                    'created_by' => auth()->id(),
+                    'posted_by' => $userId,
+                    'created_by' => $userId,
+                    'updated_by' => $userId,
                 ]);
 
                 // Obtener cuenta contable de ingresos por servicios
@@ -357,6 +369,9 @@ class AccountingEngineService
                 $period = $this->accountingService->getCurrentPeriod($invoice->client_id);
                 $costCenterId = $this->getCostCenterIdForInvoice($invoice);
 
+                // Use current user for all audit fields
+                $userId = auth()->id() ?? 1;
+
                 $entry = JournalEntry::create([
                     'uuid' => Str::uuid(),
                     'entry_number' => $this->generateEntryNumber($invoice->client_id),
@@ -370,8 +385,9 @@ class AccountingEngineService
                     'source_type' => Invoice::class,
                     'source_id' => $invoice->id,
                     'posted_at' => now(),
-                    'posted_by' => auth()->id(),
-                    'created_by' => auth()->id(),
+                    'posted_by' => $userId,
+                    'created_by' => $userId,
+                    'updated_by' => $userId,
                 ]);
 
                 // Obtener cuentas
@@ -475,6 +491,9 @@ class AccountingEngineService
 
                 $period = $this->accountingService->getCurrentPeriod($clientId);
 
+                // Use current user for all audit fields
+                $userId = auth()->id() ?? 1;
+
                 $entry = JournalEntry::create([
                     'uuid' => Str::uuid(),
                     'entry_number' => $this->generateEntryNumber($clientId),
@@ -488,8 +507,9 @@ class AccountingEngineService
                     'source_type' => get_class($source),
                     'source_id' => $source->id,
                     'posted_at' => now(),
-                    'posted_by' => auth()->id(),
-                    'created_by' => auth()->id(),
+                    'posted_by' => $userId,
+                    'created_by' => $userId,
+                    'updated_by' => $userId,
                 ]);
 
                 // Obtener cuentas
