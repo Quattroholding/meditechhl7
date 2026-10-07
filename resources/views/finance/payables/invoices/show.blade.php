@@ -13,7 +13,7 @@
 
             <div class="row">
                 <!-- Columna Izquierda -->
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <!-- Información de Factura -->
                     <div class="card">
                         <div class="card-body">
@@ -97,27 +97,6 @@
                         </div>
                     </div>
 
-                    <!-- Acciones -->
-                    <div class="card mt-3">
-                        <div class="card-body">
-                            <h5 class="card-title mb-3">Acciones</h5>
-                            <div class="d-grid gap-2">
-                                @can('payables.invoices.create')
-                                    <a href="{{ route('finance.payables.invoices.edit', $invoice) }}"
-                                       class="btn btn-primary">
-                                        <i class="fas fa-edit me-2"></i>Editar
-                                    </a>
-                                @endcan
-                                <a href="{{ route('finance.payables.invoices.index') }}" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i>Volver
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Columna Central -->
-                <div class="col-md-4">
                     <!-- Montos -->
                     <div class="card">
                         <div class="card-body">
@@ -157,25 +136,29 @@
                         </div>
                     </div>
 
-                    <!-- Información de Costos -->
+                    <!-- Acciones -->
                     <div class="card mt-3">
                         <div class="card-body">
-                            <h5 class="card-title mb-3">Centro de Costo</h5>
-
-                            @if($invoice->costCenter)
-                                <div class="mb-3">
-                                    <label class="form-label text-muted">Centro de Costo</label>
-                                    <p class="mb-0 fw-bold">{{ $invoice->costCenter->code }} - {{ $invoice->costCenter->name }}</p>
-                                </div>
-                            @else
-                                <p class="text-muted mb-0">No hay centro de costo asignado</p>
-                            @endif
+                            <h5 class="card-title mb-3">Acciones</h5>
+                            <div class="d-grid gap-2">
+                                @can('payables.invoices.create')
+                                    <a href="{{ route('finance.payables.invoices.edit', $invoice) }}"
+                                       class="btn btn-primary">
+                                        <i class="fas fa-edit me-2"></i>Editar
+                                    </a>
+                                @endcan
+                                <a href="{{ route('finance.payables.invoices.index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Volver
+                                </a>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
-                <!-- Columna Derecha -->
-                <div class="col-md-4">
+                <!-- Columna Central -->
+                <div class="col-md-6">
+
                     <!-- Documento -->
                     @if($invoice->document_path)
                         <div class="card">
@@ -202,6 +185,24 @@
                             </div>
                         </div>
                     @endif
+
+                    <!-- Información de Costos -->
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Centro de Costo</h5>
+
+                            @if($invoice->costCenter)
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Centro de Costo</label>
+                                    <p class="mb-0 fw-bold">{{ $invoice->costCenter->code }} - {{ $invoice->costCenter->name }}</p>
+                                </div>
+                            @else
+                                <p class="text-muted mb-0">No hay centro de costo asignado</p>
+                            @endif
+                        </div>
+                    </div>
+
+
 
                     <!-- Asiento Contable -->
                     @if($invoice->journalEntry)
@@ -242,6 +243,12 @@
                             </div>
                         </div>
                     @endif
+                </div>
+
+                <!-- Columna Derecha -->
+                <div class="col-md-12">
+
+
                 </div>
             </div>
 

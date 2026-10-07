@@ -61,8 +61,9 @@ class DataTable extends Component
             }
 
             $this->authorize('receivables.apply-payment');
-            Log::info('Opening payment modal', ['receivable_id' => $receivableId]);
-            $this->dispatch('openPaymentModal', $receivableId);
+            Log::info('Opening payment modal', ['receivable_id' => $receivableId, 'invoice_id' => $receivable->invoice_id]);
+            // Dispatch to shared invoice payment modal using invoice ID
+            $this->dispatch('openPaymentModal', $receivable->invoice_id);
         } catch (\Exception $e) {
             Log::error('Error opening payment modal', ['error' => $e->getMessage()]);
             $this->dispatch('error', message: 'No tienes permiso para aplicar pagos: '.$e->getMessage());
