@@ -3,15 +3,17 @@
 namespace App\Services\Accounting;
 
 use App\Enums\JournalEntryStatus;
+use App\Models\Accounting\JournalEntry;
+use App\Models\Accounting\JournalEntryLine;
 use App\Models\AccountingAccount;
+use App\Models\Finance\SupplierInvoice as FinanceSupplierInvoice;
 use App\Models\Invoice;
-use App\Models\JournalEntry;
-use App\Models\JournalEntryLine;
 use App\Models\Payment;
 use App\Models\PaymentSchedule;
-use App\Models\SupplierInvoice;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AccountingEngineService
 {
@@ -51,12 +53,14 @@ class AccountingEngineService
      * Débito: Gasto/Inventario (según CostCenter)
      * Crédito: CxP
      */
-    public function processSupplierInvoiceCreated(SupplierInvoice $invoice): JournalEntry
+    public function processSupplierInvoiceCreated(FinanceSupplierInvoice $invoice): JournalEntry
     {
         return DB::transaction(function () use ($invoice) {
             $period = $this->accountingService->getCurrentPeriod($invoice->client_id);
 
             $entry = JournalEntry::create([
+                'uuid' => Str::uuid(),
+                'entry_number' => $this->generateEntryNumber($invoice->client_id),
                 'client_id' => $invoice->client_id,
                 'entry_date' => now()->toDateString(),
                 'document_type' => 'supplier_invoice',
@@ -64,7 +68,7 @@ class AccountingEngineService
                 'description' => "Factura del proveedor {$invoice->supplier->legal_name} - {$invoice->invoice_number}",
                 'status' => JournalEntryStatus::POSTED,
                 'accounting_period_id' => $period->id,
-                'source_type' => SupplierInvoice::class,
+                'source_type' => FinanceSupplierInvoice::class,
                 'source_id' => $invoice->id,
                 'posted_at' => now(),
                 'posted_by' => auth()->id(),
@@ -126,7 +130,11 @@ class AccountingEngineService
             $invoice->update(['journal_entry_id' => $entry->id]);
 
             // Actualizar balances de cuentas
-            $entry->lines->each(fn ($line) => $line->accountingAccount->updateBalance());
+            $entry->load('journalEntryLines.accountingAccount');
+            $entry->journalEntryLines->each(fn ($line) => $line->accountingAccount->updateBalance(
+                $line->getAmount(),
+                $line->isDebit() ? 'debit' : 'credit'
+            ));
 
             return $entry;
         });
@@ -135,7 +143,7 @@ class AccountingEngineService
     /**
      * Procesa cuando se aprueba una factura de proveedor
      */
-    public function processSupplierInvoiceApproved(SupplierInvoice $invoice): void
+    public function processSupplierInvoiceApproved(FinanceSupplierInvoice $invoice): void
     {
         // Regenerar asiento si la aprobación generó cambios
         if ($invoice->journal_entry_id) {
@@ -169,6 +177,8 @@ class AccountingEngineService
             $period = $this->accountingService->getCurrentPeriod($invoice->client_id);
 
             $entry = JournalEntry::create([
+                'uuid' => Str::uuid(),
+                'entry_number' => $this->generateEntryNumber($invoice->client_id),
                 'client_id' => $invoice->client_id,
                 'entry_date' => now()->toDateString(),
                 'document_type' => 'payment_schedule',
@@ -214,10 +224,28 @@ class AccountingEngineService
             }
 
             // Actualizar balances de cuentas
-            $entry->lines->each(fn ($line) => $line->accountingAccount->updateBalance());
+            $entry->load('journalEntryLines.accountingAccount');
+            $entry->journalEntryLines->each(fn ($line) => $line->accountingAccount->updateBalance(
+                $line->getAmount(),
+                $line->isDebit() ? 'debit' : 'credit'
+            ));
 
             return $entry;
         });
+    }
+
+    /**
+     * Genera un número único para el asiento contable
+     * Formato: JE-YYYY-NNNNNN
+     */
+    private function generateEntryNumber(int $clientId): string
+    {
+        $year = now()->year;
+        $count = JournalEntry::where('client_id', $clientId)
+            ->whereYear('created_at', $year)
+            ->count();
+
+        return sprintf('JE-%d-%06d', $year, $count + 1);
     }
 
     /**
@@ -231,7 +259,7 @@ class AccountingEngineService
         $entry->reverse('Regeneración de asiento');
 
         // Regenerar nuevo asiento
-        if ($source instanceof SupplierInvoice) {
+        if ($source instanceof FinanceSupplierInvoice) {
             return $this->processSupplierInvoiceCreated($source);
         }
 
@@ -248,13 +276,16 @@ class AccountingEngineService
         return DB::transaction(function () use ($invoice, $data) {
             try {
                 $period = $this->accountingService->getCurrentPeriod($invoice->client_id);
+                $costCenterId = $this->getCostCenterIdForInvoice($invoice);
 
                 $entry = JournalEntry::create([
+                    'uuid' => Str::uuid(),
+                    'entry_number' => $this->generateEntryNumber($invoice->client_id),
                     'client_id' => $invoice->client_id,
                     'entry_date' => now()->toDateString(),
                     'document_type' => 'invoice',
                     'document_number' => $invoice->invoice_number,
-                    'description' => "Factura de contado {$invoice->invoice_number} - Paciente: {$invoice->patient->full_name}",
+                    'description' => "Factura de contado {$invoice->invoice_number} - Paciente: {$invoice->patient->name}",
                     'status' => JournalEntryStatus::POSTED,
                     'accounting_period_id' => $period->id,
                     'source_type' => Invoice::class,
@@ -278,6 +309,7 @@ class AccountingEngineService
                     JournalEntryLine::create([
                         'journal_entry_id' => $entry->id,
                         'accounting_account_id' => $bankAccount->id,
+                        'cost_center_id' => $costCenterId,
                         'debit' => $invoice->total_amount,
                         'credit' => 0,
                         'description' => "Ingreso por factura {$invoice->invoice_number}",
@@ -288,13 +320,18 @@ class AccountingEngineService
                 JournalEntryLine::create([
                     'journal_entry_id' => $entry->id,
                     'accounting_account_id' => $revenueAccount->id,
+                    'cost_center_id' => $costCenterId,
                     'debit' => 0,
                     'credit' => $invoice->total_amount,
                     'description' => "Ingreso por servicios factura {$invoice->invoice_number}",
                 ]);
 
                 // Actualizar balances
-                $entry->lines->each(fn ($line) => $line->accountingAccount->updateBalance());
+                $entry->load('journalEntryLines.accountingAccount');
+                $entry->journalEntryLines->each(fn ($line) => $line->accountingAccount->updateBalance(
+                    $line->getAmount(),
+                    $line->isDebit() ? 'debit' : 'credit'
+                ));
 
                 return $entry;
             } catch (\Exception $e) {
@@ -318,13 +355,16 @@ class AccountingEngineService
         return DB::transaction(function () use ($invoice) {
             try {
                 $period = $this->accountingService->getCurrentPeriod($invoice->client_id);
+                $costCenterId = $this->getCostCenterIdForInvoice($invoice);
 
                 $entry = JournalEntry::create([
+                    'uuid' => Str::uuid(),
+                    'entry_number' => $this->generateEntryNumber($invoice->client_id),
                     'client_id' => $invoice->client_id,
                     'entry_date' => now()->toDateString(),
                     'document_type' => 'invoice',
                     'document_number' => $invoice->invoice_number,
-                    'description' => "Factura a crédito {$invoice->invoice_number} - Paciente: {$invoice->patient->full_name}",
+                    'description' => "Factura a crédito {$invoice->invoice_number} - Paciente: {$invoice->patient->name}",
                     'status' => JournalEntryStatus::POSTED,
                     'accounting_period_id' => $period->id,
                     'source_type' => Invoice::class,
@@ -336,28 +376,42 @@ class AccountingEngineService
 
                 // Obtener cuentas
                 $receivableAccount = $this->getReceivableAccount($invoice->client_id);
-                $revenueAccount = $this->getIncomeAccount($invoice->client_id);
+                $defaultRevenueAccount = $this->getIncomeAccount($invoice->client_id);
 
                 // Línea débito: Cuentas por Cobrar
                 JournalEntryLine::create([
                     'journal_entry_id' => $entry->id,
                     'accounting_account_id' => $receivableAccount->id,
+                    'cost_center_id' => $costCenterId,
                     'debit' => $invoice->total_amount,
                     'credit' => 0,
                     'description' => "CxC por factura {$invoice->invoice_number}",
                 ]);
 
-                // Línea crédito: Ingreso por Servicios
-                JournalEntryLine::create([
-                    'journal_entry_id' => $entry->id,
-                    'accounting_account_id' => $revenueAccount->id,
-                    'debit' => 0,
-                    'credit' => $invoice->total_amount,
-                    'description' => "Ingreso por servicios factura {$invoice->invoice_number}",
-                ]);
+                // Línea crédito: Ingreso por Servicios (agrupado por servicio/cuenta)
+                // Agrupar líneas de factura por servicio/cuenta contable
+                $groupedByAccount = $this->groupInvoiceLinesByAccount($invoice, $defaultRevenueAccount);
+
+                foreach ($groupedByAccount as $accountId => $lines) {
+                    $totalAmount = $lines->sum('line_total_gross');
+                    $serviceNames = $lines->pluck('service_description')->unique()->join(', ');
+
+                    JournalEntryLine::create([
+                        'journal_entry_id' => $entry->id,
+                        'accounting_account_id' => $accountId,
+                        'cost_center_id' => $costCenterId,
+                        'debit' => 0,
+                        'credit' => $totalAmount,
+                        'description' => "Servicios: {$serviceNames}",
+                    ]);
+                }
 
                 // Actualizar balances
-                $entry->lines->each(fn ($line) => $line->accountingAccount->updateBalance());
+                $entry->load('journalEntryLines.accountingAccount');
+                $entry->journalEntryLines->each(fn ($line) => $line->accountingAccount->updateBalance(
+                    $line->getAmount(),
+                    $line->isDebit() ? 'debit' : 'credit'
+                ));
 
                 return $entry;
             } catch (\Exception $e) {
@@ -369,6 +423,27 @@ class AccountingEngineService
                 return null;
             }
         });
+    }
+
+    /**
+     * Agrupa líneas de factura por cuenta contable
+     * Usa la cuenta del servicio si existe, sino usa la cuenta por defecto
+     */
+    private function groupInvoiceLinesByAccount(Invoice $invoice, $defaultAccount): Collection
+    {
+        return $invoice->lineItems->load(['chargeItem.serviceCatalog'])
+            ->groupBy(function ($lineItem) use ($defaultAccount) {
+                // Obtener la cuenta contable del servicio si existe
+                if ($lineItem->chargeItem && $lineItem->chargeItem->serviceCatalog) {
+                    $service = $lineItem->chargeItem->serviceCatalog;
+                    if ($service->accounting_account_id) {
+                        return $service->accounting_account_id;
+                    }
+                }
+
+                // Usar cuenta por defecto si no hay servicio o no tiene cuenta asignada
+                return $defaultAccount->id;
+            });
     }
 
     /**
@@ -401,6 +476,8 @@ class AccountingEngineService
                 $period = $this->accountingService->getCurrentPeriod($clientId);
 
                 $entry = JournalEntry::create([
+                    'uuid' => Str::uuid(),
+                    'entry_number' => $this->generateEntryNumber($clientId),
                     'client_id' => $clientId,
                     'entry_date' => now()->toDateString(),
                     'document_type' => $isPayment ? 'payment' : 'invoice',
@@ -443,7 +520,11 @@ class AccountingEngineService
                 ]);
 
                 // Actualizar balances
-                $entry->lines->each(fn ($line) => $line->accountingAccount->updateBalance());
+                $entry->load('journalEntryLines.accountingAccount');
+                $entry->journalEntryLines->each(fn ($line) => $line->accountingAccount->updateBalance(
+                    $line->getAmount(),
+                    $line->isDebit() ? 'debit' : 'credit'
+                ));
 
                 return $entry;
             } catch (\Exception $e) {
@@ -472,9 +553,9 @@ class AccountingEngineService
      */
     private function getReceivableAccount(int $clientId): AccountingAccount
     {
-        // Buscar cuenta de CxC (ej: 1201)
+        // Buscar cuenta de CxC (ej: 1102 - Cuentas por Cobrar Pacientes)
         return AccountingAccount::where('client_id', $clientId)
-            ->where('code', '1201') // Cuentas por Cobrar
+            ->where('code', '1102') // Cuentas por Cobrar Pacientes
             ->firstOrFail();
     }
 
@@ -494,5 +575,34 @@ class AccountingEngineService
         return AccountingAccount::where('client_id', $clientId)
             ->where('code', $accountCode)
             ->first();
+    }
+
+    /**
+     * Obtiene el centro de costo para una factura
+     * Primero intenta usar el cost_center_id de la factura
+     * Si no existe, intenta obtenerlo del encounter según su especialidad
+     */
+    private function getCostCenterIdForInvoice(Invoice $invoice): ?int
+    {
+        // Si la factura ya tiene cost_center_id asignado, usarlo
+        if ($invoice->cost_center_id) {
+            return $invoice->cost_center_id;
+        }
+
+        // Intentar obtenerlo del encounter
+        if ($invoice->encounter) {
+            $encounter = $invoice->encounter;
+
+            // Si el encounter tiene cost_center_id asignado directamente
+            if (isset($encounter->cost_center_id) && $encounter->cost_center_id) {
+                return $encounter->cost_center_id;
+            }
+
+            // Intentar mapear desde la especialidad médica
+            // Por ahora retorna null si no hay cost_center en la factura
+            // En el futuro se puede implementar un mapeo especialidad -> centro de costo
+        }
+
+        return null;
     }
 }
