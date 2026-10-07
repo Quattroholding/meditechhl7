@@ -3,8 +3,10 @@
 namespace App\Livewire\Finance\AccountsPayable;
 
 use App\Models\Finance\SupplierInvoice;
+use App\Models\Payment;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -28,9 +30,31 @@ class InvoiceDataTable extends Component
 
     public ?SupplierInvoice $selectedInvoice = null;
 
+    // Payment form fields
+    public $amount;
+
+    public $payment_date;
+
+    public $payment_method = 'cash';
+
+    public $reference_number;
+
+    public $transaction_id;
+
+    public $notes;
+
     protected $queryString = [
         'search' => ['except' => ''],
         'statusFilter' => ['except' => 'all'],
+    ];
+
+    protected $rules = [
+        'amount' => 'required|numeric|min:0.01',
+        'payment_date' => 'required|date',
+        'payment_method' => 'required|in:cash,credit_card,debit_card,bank_transfer,check,online,insurance,other',
+        'reference_number' => 'nullable|string|max:255',
+        'transaction_id' => 'nullable|string|max:255',
+        'notes' => 'nullable|string|max:1000',
     ];
 
     public function sortBy($field)
@@ -67,6 +91,9 @@ class InvoiceDataTable extends Component
 
             $this->authorize('payables.payments.process');
             $this->selectedInvoice = $invoice;
+            $this->amount = $invoice->balance > 0 ? $invoice->balance : null;
+            $this->payment_date = now()->format('Y-m-d');
+            $this->payment_method = 'cash';
             $this->showPaymentSchedulingModal = true;
             Log::info('Payment scheduling modal opened', ['invoice_id' => $invoiceId]);
         } catch (\Exception $e) {
@@ -79,6 +106,9 @@ class InvoiceDataTable extends Component
     {
         $this->showPaymentSchedulingModal = false;
         $this->selectedInvoice = null;
+        $this->reset(['amount', 'payment_method', 'reference_number', 'transaction_id', 'notes']);
+        $this->payment_date = now()->format('Y-m-d');
+        $this->payment_method = 'cash';
     }
 
     #[On('closePaymentSchedulingModal')]
@@ -92,6 +122,76 @@ class InvoiceDataTable extends Component
     {
         $this->closePaymentSchedulingModal();
         $this->dispatch('invoice-updated');
+    }
+
+    public function getPaymentMethodsProperty()
+    {
+        return [
+            'cash' => 'Efectivo',
+            'credit_card' => 'Tarjeta de Crédito',
+            'debit_card' => 'Tarjeta de Débito',
+            'bank_transfer' => 'Transferencia Bancaria',
+            'check' => 'Cheque',
+            'online' => 'Pago Online',
+            'insurance' => 'Seguro',
+            'other' => 'Otro',
+        ];
+    }
+
+    public function savePayment(): void
+    {
+        $this->validate();
+
+        if (! $this->selectedInvoice) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Factura no encontrada.',
+            );
+
+            return;
+        }
+
+        // Validate amount doesn't exceed balance
+        if ($this->amount > $this->selectedInvoice->balance) {
+            $this->addError('amount', 'El monto no puede ser mayor al saldo pendiente de B/. '.number_format($this->selectedInvoice->balance, 2));
+
+            return;
+        }
+
+        try {
+
+            DB::transaction(function () {
+                // Create payment record
+                $payment = Payment::create([
+                    'amount' => $this->amount,
+                    'payment_date' => $this->payment_date,
+                    'payment_method' => $this->payment_method,
+                    'reference_number' => $this->reference_number,
+                    'transaction_id' => $this->transaction_id,
+                    'notes' => $this->notes,
+                    'status' => 'completed',
+                    'created_by' => auth()->id(),
+                ]);
+
+                // Update supplier invoice amounts
+                $this->selectedInvoice->recordPayment($this->amount);
+            });
+
+            $this->dispatch('showToastr',
+                type: 'success',
+                message: '¡Pago registrado exitosamente!',
+            );
+
+            $this->dispatch('paymentSaved');
+            $this->closePaymentSchedulingModal();
+
+        } catch (\Exception $e) {
+            Log::error('Error saving supplier invoice payment', ['error' => $e->getMessage()]);
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Error al registrar el pago: '.$e->getMessage(),
+            );
+        }
     }
 
     public function render(): View

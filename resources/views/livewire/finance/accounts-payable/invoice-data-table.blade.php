@@ -121,41 +121,97 @@
     {{-- Payment Scheduling Modal --}}
     @if ($showPaymentSchedulingModal && $selectedInvoice)
         <div class="modal-overlay" wire:click="closePaymentSchedulingModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
-            <div class="modal-content" wire:click.stop style="position: relative; max-width: 400px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-content" wire:click.stop style="position: relative; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
                 <div class="modal-header">
-                    <h5 class="modal-title">Programar Pago</h5>
+                    <h5 class="modal-title">Registrar Pago</h5>
                     <button type="button" class="close" wire:click="closePaymentSchedulingModal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="">
+                <form wire:submit.prevent="savePayment">
                     <div class="modal-body">
                         {{-- Invoice Info --}}
                         <div class="alert alert-info mb-3">
-                            <p class="mb-2"><strong>Factura:</strong> {{ $selectedInvoice->invoice_number }}</p>
-                            <p class="mb-2"><strong>Proveedor:</strong> {{ $selectedInvoice->supplier?->legal_name ?? 'N/A' }}</p>
-                            <p class="mb-2"><strong>Total:</strong> B/. {{ number_format($selectedInvoice->total_amount, 2) }}</p>
-                            <p class="mb-0"><strong>Saldo Pendiente:</strong> B/. {{ number_format($selectedInvoice->balance, 2) }}</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2"><strong>Factura:</strong> {{ $selectedInvoice->invoice_number }}</p>
+                                    <p class="mb-1"><strong>Proveedor:</strong> {{ $selectedInvoice->supplier?->legal_name ?? 'N/A' }}</p>
+                                    <p class="mb-0"><strong>Fecha:</strong> {{ $selectedInvoice->invoice_date?->format('d/m/Y') }}</p>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <p class="mb-2"><strong>Total:</strong> B/. {{ number_format($selectedInvoice->total_amount, 2) }}</p>
+                                    <p class="mb-1"><strong>Pagado:</strong> B/. {{ number_format($selectedInvoice->paid_amount ?? 0, 2) }}</p>
+                                    <p class="mb-0 text-danger"><strong>Saldo:</strong> B/. {{ number_format($selectedInvoice->balance, 2) }}</p>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Monto a Programar *</label>
-                            <input type="number" step="0.01" class="form-control" max="{{ $selectedInvoice->balance }}" value="{{ $selectedInvoice->balance }}" />
+                        {{-- Amount and Date --}}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Monto a Pagar *</label>
+                                    <input wire:model="amount" type="number" step="0.01" class="form-control" max="{{ $selectedInvoice->balance }}" placeholder="0.00" />
+                                    @error('amount') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Fecha Pago *</label>
+                                    <input wire:model="payment_date" type="date" class="form-control" />
+                                    @error('payment_date') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Fecha Pago</label>
-                            <input type="date" class="form-control" />
+                        {{-- Payment Method and Reference --}}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Método de Pago *</label>
+                                    <select wire:model="payment_method" class="form-control">
+                                        <option value="cash">Efectivo</option>
+                                        <option value="credit_card">Tarjeta de Crédito</option>
+                                        <option value="debit_card">Tarjeta de Débito</option>
+                                        <option value="bank_transfer">Transferencia Bancaria</option>
+                                        <option value="check">Cheque</option>
+                                        <option value="online">Pago Online</option>
+                                        <option value="insurance">Seguro</option>
+                                        <option value="other">Otro</option>
+                                    </select>
+                                    @error('payment_method') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Número de Referencia</label>
+                                    <input wire:model="reference_number" type="text" class="form-control" placeholder="Opcional" />
+                                    @error('reference_number') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            </div>
                         </div>
 
+                        {{-- Transaction ID --}}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>ID de Transacción</label>
+                                    <input wire:model="transaction_id" type="text" class="form-control" placeholder="Opcional" />
+                                    @error('transaction_id') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Notes --}}
                         <div class="form-group">
                             <label>Notas</label>
-                            <textarea class="form-control" rows="2"></textarea>
+                            <textarea wire:model="notes" class="form-control" rows="2" placeholder="Notas adicionales (opcional)"></textarea>
+                            @error('notes') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">
-                            Programar Pago
+                        <button type="submit" class="btn btn-primary">
+                            Registrar Pago
                         </button>
                         <button type="button" class="btn btn-secondary" wire:click="closePaymentSchedulingModal">
                             Cancelar
