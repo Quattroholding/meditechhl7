@@ -4,6 +4,7 @@ namespace App\Models\Finance;
 
 use App\Models\Accounting\AccountingAccount;
 use App\Models\BaseModel;
+use App\Models\Client;
 use App\Models\Scopes\SupplierScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,6 +48,11 @@ class Supplier extends BaseModel
 
     // Relaciones
 
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
+
     public function accountingAccount(): BelongsTo
     {
         return $this->belongsTo(AccountingAccount::class);
@@ -77,6 +83,13 @@ class Supplier extends BaseModel
     public function getTotalPayable(): float
     {
         return $this->invoices()->whereNotIn('status', ['paid', 'cancelled'])->sum('balance');
+    }
+
+    public function getPendingBalance(): float
+    {
+        return (float) $this->invoices()
+            ->whereIn('status', ['registered', 'approved', 'partial', 'overdue'])
+            ->sum('balance');
     }
 
     public function scopeActive($query)
