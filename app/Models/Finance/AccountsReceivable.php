@@ -133,6 +133,14 @@ class AccountsReceivable extends BaseModel
         $this->save();
     }
 
+    /**
+     * Alias para recordPayment - aplica un pago a la cuenta por cobrar
+     */
+    public function applyPayment(float $amount): void
+    {
+        $this->recordPayment($amount);
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', 'pending');
