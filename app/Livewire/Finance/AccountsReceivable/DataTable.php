@@ -6,7 +6,6 @@ use App\Models\Finance\AccountsReceivable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -23,10 +22,6 @@ class DataTable extends Component
     public $pagination = 10;
 
     public $statusFilter = 'all'; // all, pending, partial, paid, overdue, cancelled
-
-    public bool $showPaymentModal = false;
-
-    public ?AccountsReceivable $selectedReceivable = null;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -66,44 +61,12 @@ class DataTable extends Component
             }
 
             $this->authorize('receivables.apply-payment');
-            $this->selectedReceivable = $receivable;
-            $this->showPaymentModal = true;
-            Log::info('Payment modal opened', ['receivable_id' => $receivableId]);
+            Log::info('Opening payment modal', ['receivable_id' => $receivableId]);
+            $this->dispatch('openPaymentModal', $receivableId);
         } catch (\Exception $e) {
             Log::error('Error opening payment modal', ['error' => $e->getMessage()]);
             $this->dispatch('error', message: 'No tienes permiso para aplicar pagos: '.$e->getMessage());
         }
-    }
-
-    public function openPaymentModal(AccountsReceivable $receivable): void
-    {
-        try {
-            $this->authorize('receivables.apply-payment');
-            $this->selectedReceivable = $receivable;
-            $this->showPaymentModal = true;
-        } catch (\Exception $e) {
-            $this->dispatch('error', message: 'No tienes permiso para aplicar pagos');
-        }
-    }
-
-    public function closePaymentModal(): void
-    {
-        $this->showPaymentModal = false;
-        $this->selectedReceivable = null;
-    }
-
-    #[On('closePaymentModal')]
-    public function handleClosePaymentModal(): void
-    {
-        $this->closePaymentModal();
-    }
-
-    #[On('payment-applied')]
-    public function handlePaymentApplied(): void
-    {
-        $this->closePaymentModal();
-        // Opcional: refrescar los datos
-        $this->dispatch('receivable-updated');
     }
 
     public function render(): View

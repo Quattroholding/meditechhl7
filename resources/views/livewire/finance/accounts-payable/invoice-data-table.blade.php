@@ -128,7 +128,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="savePayment">
+                <form wire:submit.prevent="savePaymentSchedule">
                     <div class="modal-body">
                         {{-- Invoice Info --}}
                         <div class="alert alert-info mb-3">
@@ -150,7 +150,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Monto a Pagar *</label>
+                                    <label>Monto a Programar *</label>
                                     <input wire:model="amount" type="number" step="0.01" class="form-control" max="{{ $selectedInvoice->balance }}" placeholder="0.00" />
                                     @error('amount') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
@@ -164,44 +164,6 @@
                             </div>
                         </div>
 
-                        {{-- Payment Method and Reference --}}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Método de Pago *</label>
-                                    <select wire:model="payment_method" class="form-control">
-                                        <option value="cash">Efectivo</option>
-                                        <option value="credit_card">Tarjeta de Crédito</option>
-                                        <option value="debit_card">Tarjeta de Débito</option>
-                                        <option value="bank_transfer">Transferencia Bancaria</option>
-                                        <option value="check">Cheque</option>
-                                        <option value="online">Pago Online</option>
-                                        <option value="insurance">Seguro</option>
-                                        <option value="other">Otro</option>
-                                    </select>
-                                    @error('payment_method') <small class="text-danger">{{ $message }}</small> @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Número de Referencia</label>
-                                    <input wire:model="reference_number" type="text" class="form-control" placeholder="Opcional" />
-                                    @error('reference_number') <small class="text-danger">{{ $message }}</small> @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Transaction ID --}}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>ID de Transacción</label>
-                                    <input wire:model="transaction_id" type="text" class="form-control" placeholder="Opcional" />
-                                    @error('transaction_id') <small class="text-danger">{{ $message }}</small> @enderror
-                                </div>
-                            </div>
-                        </div>
-
                         {{-- Notes --}}
                         <div class="form-group">
                             <label>Notas</label>
@@ -211,7 +173,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">
-                            Registrar Pago
+                            Programar Pago
                         </button>
                         <button type="button" class="btn btn-secondary" wire:click="closePaymentSchedulingModal">
                             Cancelar
