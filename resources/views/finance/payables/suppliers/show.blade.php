@@ -54,18 +54,18 @@
 
                             <div class="mb-3">
                                 <label class="form-label text-muted">Creado Por</label>
-                                <p class="mb-0">{{ $supplier->createdBy->name ?? 'N/A' }}</p>
+                                <p class="mb-0">{{ $supplier->createdBy->full_name ?? 'N/A' }}</p>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label text-muted">Fecha de Creación</label>
-                                <p class="mb-0">{{ $supplier->created_at->format('d/m/Y H:i') }}</p>
+                                <p class="mb-0">{{ $supplier->created_at }}</p>
                             </div>
 
                             @if($supplier->updated_at !== $supplier->created_at)
                                 <div class="mb-3">
                                     <label class="form-label text-muted">Última Actualización</label>
-                                    <p class="mb-0">{{ $supplier->updated_at->format('d/m/Y H:i') }}</p>
+                                    <p class="mb-0">{{ $supplier->updated_at }}</p>
                                 </div>
                             @endif
                         </div>
@@ -154,9 +154,9 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label class="form-label text-muted">Total Facturable</label>
+                                    <label class="form-label text-muted">Saldo Pendiente</label>
                                     <p class="mb-0 fw-bold text-warning">
-                                        B/. {{ number_format($supplier->getTotalPayable(), 2) }}
+                                        B/. {{ number_format($supplier->getPendingBalance(), 2) }}
                                     </p>
                                 </div>
 
