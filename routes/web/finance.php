@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\Storage;
 
 Route::middleware(['auth', 'verified'])->get('/documents/invoices/{path}', function ($path) {
     $filePath = 'documents/'.$path;
-    $disk = Storage::disk('private');
+    $disk = Storage::disk('local');
 
     if (! $disk->exists($filePath)) {
         abort(404, 'Archivo no encontrado');
