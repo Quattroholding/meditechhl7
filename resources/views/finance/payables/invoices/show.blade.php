@@ -87,7 +87,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label text-muted">Aprobado Por</label>
-                                <p class="mb-0">{{ $invoice->approvedBy->name ?? 'N/A' }}</p>
+                                <p class="mb-0">{{ $invoice->approvedBy->full_name ?? 'N/A' }}</p>
                             </div>
 
                             <div class="mb-3">
@@ -179,10 +179,17 @@
                     <!-- Documento -->
                     @if($invoice->document_path)
                         <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title mb-3">Documento</h5>
-
-                                <div class="mb-3">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Vista Previa del Documento</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <embed src="{{ asset('storage/' . $invoice->document_path) }}"
+                                       type="application/pdf"
+                                       class="w-100"
+                                       style="height: 500px;" />
+                            </div>
+                            <div class="card-body border-top">
+                                <div class="mb-0">
                                     <label class="form-label text-muted">Archivo</label>
                                     <p class="mb-0">
                                         <i class="fas fa-file-pdf me-2 text-danger"></i>
@@ -191,11 +198,6 @@
                                             {{ $invoice->document_filename }}
                                         </a>
                                     </p>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label text-muted">Ruta</label>
-                                    <p class="mb-0 small text-muted">{{ $invoice->document_path }}</p>
                                 </div>
                             </div>
                         </div>
