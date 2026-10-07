@@ -107,52 +107,52 @@
                     @include('partials.pagination', ['data' => $data])
                 </div>
             </div>
-        </div>
-    </div>
 
-{{-- Payment Modal --}}
-@if ($showPaymentModal && $selectedReceivable)
-    <div class="modal fade show d-block" tabindex="-1" role="dialog" style="background-color: rgba(0, 0, 0, 0.5);">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Aplicar Pago</h5>
-                    <button type="button" class="close" wire:click="closePaymentModal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+            {{-- Payment Modal --}}
+            @if ($showPaymentModal && $selectedReceivable)
+                <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" style="display: block; background-color: rgba(0, 0, 0, 0.5); z-index: 1050;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Aplicar Pago</h5>
+                                <button type="button" class="close" wire:click="closePaymentModal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                            <form wire:submit.prevent="">
+                                <div class="modal-body">
+                                    {{-- Invoice Info --}}
+                                    <div class="alert alert-info mb-3">
+                                        <p class="mb-2"><strong>Factura:</strong> {{ $selectedReceivable->invoice_number }}</p>
+                                        <p class="mb-2"><strong>Paciente:</strong> {{ $selectedReceivable->patient->full_name ?? 'N/A' }}</p>
+                                        <p class="mb-2"><strong>Total:</strong> B/. {{ number_format($selectedReceivable->original_amount, 2) }}</p>
+                                        <p class="mb-0"><strong>Saldo Pendiente:</strong> B/. {{ number_format($selectedReceivable->balance, 2) }}</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Monto a Aplicar *</label>
+                                        <input type="number" step="0.01" class="form-control" max="{{ $selectedReceivable->balance }}" value="{{ $selectedReceivable->balance }}" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Notas</label>
+                                        <textarea class="form-control" rows="2"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" wire:click="closePaymentModal">
+                                        Cancelar
+                                    </button>
+                                    <button type="button" class="btn btn-primary">
+                                        Aplicar Pago
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-
-                <form wire:submit.prevent="">
-                    <div class="modal-body">
-                        {{-- Invoice Info --}}
-                        <div class="alert alert-info">
-                            <p><strong>Factura:</strong> {{ $selectedReceivable->invoice_number }}</p>
-                            <p><strong>Paciente:</strong> {{ $selectedReceivable->patient->full_name ?? 'N/A' }}</p>
-                            <p><strong>Total:</strong> B/. {{ number_format($selectedReceivable->original_amount, 2) }}</p>
-                            <p><strong>Saldo Pendiente:</strong> B/. {{ number_format($selectedReceivable->balance, 2) }}</p>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Monto a Aplicar *</label>
-                            <input type="number" step="0.01" class="form-control" max="{{ $selectedReceivable->balance }}" value="{{ $selectedReceivable->balance }}" />
-                        </div>
-
-                        <div class="form-group">
-                            <label>Notas</label>
-                            <textarea class="form-control" rows="2"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" wire:click="closePaymentModal">
-                            Cancelar
-                        </button>
-                        <button type="button" class="btn btn-primary" onclick="alert('Pago aplicado')">
-                            Aplicar Pago
-                        </button>
-                    </div>
-                </form>
-            </div>
+            @endif
         </div>
     </div>
-@endif
