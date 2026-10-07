@@ -4,16 +4,18 @@ namespace App\Enums;
 
 enum TreasuryMovementType: string
 {
-    case INCOME = 'income';         // Ingreso
-    case EXPENSE = 'expense';       // Egreso
-    case TRANSFER = 'transfer';     // Transferencia
+    case DEPOSIT = 'deposit';           // Depósito/Ingreso
+    case WITHDRAWAL = 'withdrawal';     // Retiro/Egreso
+    case TRANSFER = 'transfer';         // Transferencia
+    case ADJUSTMENT = 'adjustment';     // Ajuste
 
     public function label(): string
     {
         return match ($this) {
-            self::INCOME => 'Ingreso',
-            self::EXPENSE => 'Egreso',
+            self::DEPOSIT => 'Depósito',
+            self::WITHDRAWAL => 'Retiro',
             self::TRANSFER => 'Transferencia',
+            self::ADJUSTMENT => 'Ajuste',
         };
     }
 }

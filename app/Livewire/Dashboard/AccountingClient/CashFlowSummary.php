@@ -23,15 +23,15 @@ class CashFlowSummary extends Component
         $clientId = auth()->user()->getCurrentClient()->id;
         $currentMonth = now()->startOfMonth();
 
-        // Ingresos del mes
+        // Ingresos del mes (depósitos)
         $this->totalIncome = TreasuryMovement::where('client_id', $clientId)
-            ->where('movement_type', 'income')
+            ->where('movement_type', 'deposit')
             ->where('movement_date', '>=', $currentMonth)
             ->sum('amount');
 
-        // Egresos del mes
+        // Egresos del mes (retiros)
         $this->totalExpense = TreasuryMovement::where('client_id', $clientId)
-            ->where('movement_type', 'expense')
+            ->where('movement_type', 'withdrawal')
             ->where('movement_date', '>=', $currentMonth)
             ->sum('amount');
 

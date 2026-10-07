@@ -244,9 +244,8 @@ class Payment extends BaseModel
         }
 
         $treasuryMovement = TreasuryMovement::create([
-            'uuid' => Str::uuid(),
             'client_id' => $this->client_id,
-            'movement_type' => 'income',
+            'movement_type' => 'deposit',
             'source_type' => Payment::class,
             'source_id' => $this->id,
             'amount' => $this->amount,

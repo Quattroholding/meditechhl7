@@ -78,7 +78,7 @@ class PaymentObserver
 
     /**
      * Crea movimiento de tesorería (ingreso)
-     * movement_type: 'income'
+     * movement_type: 'deposit'
      * source_type: Payment::class
      * source_id: payment.id
      * bank_id/cash_register_id: según payment_method
@@ -99,7 +99,7 @@ class PaymentObserver
 
         $invoiceNumber = $payment->invoice?->invoice_number ?? 'N/A';
         $movementData = [
-            'movement_type' => 'income',
+            'movement_type' => 'deposit',
             'amount' => $payment->amount,
             'movement_date' => $payment->payment_date ?? now()->toDateString(),
             'description' => "Pago de factura {$invoiceNumber}",

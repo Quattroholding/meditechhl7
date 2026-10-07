@@ -5,7 +5,7 @@ namespace App\Services\Treasury;
 use App\Enums\TreasuryMovementType;
 use App\Models\Bank;
 use App\Models\CashRegister;
-use App\Models\TreasuryMovement;
+use App\Models\Treasury\TreasuryMovement;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -114,11 +114,11 @@ class CashFlowService
         $movements = $this->getMovements($clientId, $startDate, $endDate);
 
         $income = $movements
-            ->where('movement_type', TreasuryMovementType::INCOME)
+            ->where('movement_type', TreasuryMovementType::DEPOSIT)
             ->sum('amount');
 
         $expenses = $movements
-            ->where('movement_type', TreasuryMovementType::EXPENSE)
+            ->where('movement_type', TreasuryMovementType::WITHDRAWAL)
             ->sum('amount');
 
         $transfers = $movements
@@ -301,9 +301,9 @@ class CashFlowService
             $amount = $movement->amount;
             $type = $movement->movement_type;
 
-            if ($type === TreasuryMovementType::INCOME) {
+            if ($type === TreasuryMovementType::DEPOSIT) {
                 $grouped[$date]['income'] += $amount;
-            } elseif ($type === TreasuryMovementType::EXPENSE) {
+            } elseif ($type === TreasuryMovementType::WITHDRAWAL) {
                 $grouped[$date]['expenses'] += $amount;
             } elseif ($type === TreasuryMovementType::TRANSFER) {
                 $grouped[$date]['transfers'] += $amount;
@@ -352,8 +352,8 @@ class CashFlowService
      */
     protected function calculateFlowSummary($movements, $openingBalances, $cumulativeFlow): array
     {
-        $income = $movements->where('movement_type', TreasuryMovementType::INCOME)->sum('amount');
-        $expenses = $movements->where('movement_type', TreasuryMovementType::EXPENSE)->sum('amount');
+        $income = $movements->where('movement_type', TreasuryMovementType::DEPOSIT)->sum('amount');
+        $expenses = $movements->where('movement_type', TreasuryMovementType::WITHDRAWAL)->sum('amount');
         $transfers = $movements->where('movement_type', TreasuryMovementType::TRANSFER)->sum('amount');
         $netFlow = $income - $expenses;
 
@@ -386,8 +386,8 @@ class CashFlowService
         }
 
         $days = $movements->pluck('movement_date')->unique()->count();
-        $totalIncome = $movements->where('movement_type', TreasuryMovementType::INCOME)->sum('amount');
-        $totalExpenses = $movements->where('movement_type', TreasuryMovementType::EXPENSE)->sum('amount');
+        $totalIncome = $movements->where('movement_type', TreasuryMovementType::DEPOSIT)->sum('amount');
+        $totalExpenses = $movements->where('movement_type', TreasuryMovementType::WITHDRAWAL)->sum('amount');
 
         return [
             'average_income' => round($days > 0 ? $totalIncome / $days : 0, 2),
@@ -472,7 +472,7 @@ class CashFlowService
             }
 
             $currentDate = $movement->movement_date->toDateString();
-            $adjustment = $movement->movement_type === TreasuryMovementType::EXPENSE
+            $adjustment = $movement->movement_type === TreasuryMovementType::WITHDRAWAL
                 ? -$movement->amount
                 : $movement->amount;
             $dayTotal += $adjustment;
@@ -518,7 +518,7 @@ class CashFlowService
         $movementsLast30 = TreasuryMovement::where('client_id', $clientId)
             ->whereBetween('movement_date', [$thirtyDaysAgo, $asOfDate])
             ->sum(DB::raw('CASE WHEN movement_type = ? THEN amount ELSE -amount END',
-                [TreasuryMovementType::EXPENSE->value]));
+                [TreasuryMovementType::WITHDRAWAL->value]));
 
         if ($movementsLast30 == 0) {
             return 1.0; // Neutral
@@ -536,13 +536,13 @@ class CashFlowService
             return (float) TreasuryMovement::where('bank_id', $entity->id)
                 ->whereDate('movement_date', '<=', $asOfDate)
                 ->sum(DB::raw('CASE WHEN movement_type = ? THEN amount ELSE -amount END',
-                    [TreasuryMovementType::EXPENSE->value]));
+                    [TreasuryMovementType::WITHDRAWAL->value]));
         }
 
         return (float) TreasuryMovement::where('cash_register_id', $entity->id)
             ->whereDate('movement_date', '<=', $asOfDate)
             ->sum(DB::raw('CASE WHEN movement_type = ? THEN amount ELSE -amount END',
-                [TreasuryMovementType::EXPENSE->value]));
+                [TreasuryMovementType::WITHDRAWAL->value]));
     }
 
     /**

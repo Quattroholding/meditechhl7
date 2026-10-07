@@ -5,7 +5,7 @@ namespace App\Services\Treasury;
 use App\Enums\TreasuryMovementType;
 use App\Models\Bank;
 use App\Models\CashRegister;
-use App\Models\TreasuryMovement;
+use App\Models\Treasury\TreasuryMovement;
 use App\Services\Accounting\AccountingEngineService;
 use Illuminate\Support\Facades\DB;
 
@@ -160,7 +160,7 @@ class TreasuryService
     {
         if ($movement->bank_id) {
             $bank = $movement->bank;
-            $adjustment = $movement->movement_type === TreasuryMovementType::EXPENSE
+            $adjustment = $movement->movement_type === TreasuryMovementType::WITHDRAWAL
                 ? -$movement->amount
                 : $movement->amount;
 
@@ -169,7 +169,7 @@ class TreasuryService
             ]);
         } elseif ($movement->cash_register_id) {
             $register = $movement->cashRegister;
-            $adjustment = $movement->movement_type === TreasuryMovementType::EXPENSE
+            $adjustment = $movement->movement_type === TreasuryMovementType::WITHDRAWAL
                 ? -$movement->amount
                 : $movement->amount;
 
@@ -217,11 +217,11 @@ class TreasuryService
             ->get();
 
         return [
-            'income' => $movements->where('movement_type', TreasuryMovementType::INCOME)->sum('amount'),
-            'expense' => $movements->where('movement_type', TreasuryMovementType::EXPENSE)->sum('amount'),
+            'income' => $movements->where('movement_type', TreasuryMovementType::DEPOSIT)->sum('amount'),
+            'expense' => $movements->where('movement_type', TreasuryMovementType::WITHDRAWAL)->sum('amount'),
             'transfer' => $movements->where('movement_type', TreasuryMovementType::TRANSFER)->sum('amount'),
-            'net' => $movements->where('movement_type', TreasuryMovementType::INCOME)->sum('amount')
-                - $movements->where('movement_type', TreasuryMovementType::EXPENSE)->sum('amount'),
+            'net' => $movements->where('movement_type', TreasuryMovementType::DEPOSIT)->sum('amount')
+                - $movements->where('movement_type', TreasuryMovementType::WITHDRAWAL)->sum('amount'),
         ];
     }
 }
