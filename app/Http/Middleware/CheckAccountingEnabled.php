@@ -23,13 +23,11 @@ class CheckAccountingEnabled
             abort(401, 'Unauthorized');
         }
 
-        // Load client if not already loaded
-        if (! $user->relationLoaded('client')) {
-            $user->load('client');
-        }
+        // Get user's current client
+        $client = $user->getCurrentClient();
 
         // Check if accounting is enabled for the client
-        if (! $user->client?->accounting_enabled) {
+        if (! $client?->accounting_enabled) {
             abort(403, 'El módulo de contabilidad no está habilitado para tu cliente.');
         }
 
