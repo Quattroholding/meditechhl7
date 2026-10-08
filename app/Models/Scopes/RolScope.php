@@ -101,11 +101,11 @@ class RolScope implements Scope
 
             $clientId = $user->default_client_id;
 
-            // Obtener el paquete del cliente
+            // Obtener el paquete del cliente y validar si contabilidad está habilitada
             $client = DB::table('clients')
                 ->join('packages', 'clients.package_id', '=', 'packages.id')
                 ->where('clients.id', $clientId)
-                ->select('packages.id as package_id', 'packages.max_users', 'packages.max_doctors_included')
+                ->select('packages.id as package_id', 'packages.max_users', 'packages.max_doctors_included', 'clients.accounting_enabled')
                 ->first();
 
             if (! $client) {
@@ -120,6 +120,14 @@ class RolScope implements Scope
                 'recepcionista' => 3,
                 'asistente medico' => 6,
             ];
+
+            // Si contabilidad está deshabilitada, excluir roles de contabilidad
+            if (! $client->accounting_enabled) {
+                // No permitir crear roles de contabilidad si accounting_enabled = false
+                $accountingRoles = [13, 14]; // contabilidad_client, contabilidad_asistente_client
+            } else {
+                $accountingRoles = [];
+            }
 
             // Determinar si es paquete empresarial (permite múltiples usuarios del mismo rol)
             // Paquetes 1-3 (Básico, Estándar, Premium): un usuario por rol
@@ -157,6 +165,11 @@ class RolScope implements Scope
                     $availableRoles[] = 6; // asistente medico
                 }
 
+                // Excluir roles de contabilidad si no está habilitado
+                if (! empty($accountingRoles)) {
+                    $availableRoles = array_diff($availableRoles, $accountingRoles);
+                }
+
                 // Si no hay roles disponibles, mostrar vacío
                 if (empty($availableRoles)) {
                     $builder->whereIn('id', []);
@@ -180,6 +193,11 @@ class RolScope implements Scope
 
                 // Filtrar roles que no existen aún
                 $availableRoles = array_diff(array_values($allowedRoles), $existingRoles);
+
+                // Excluir roles de contabilidad si no está habilitado
+                if (! empty($accountingRoles)) {
+                    $availableRoles = array_diff($availableRoles, $accountingRoles);
+                }
 
                 // Si no queda ningún rol disponible, devolvemos vacío
                 if (empty($availableRoles)) {
