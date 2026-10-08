@@ -50,7 +50,7 @@ Route::middleware(['auth', 'verified'])->get('/documents/invoices/{path}', funct
 // COST CENTERS (Centros de Costo)
 // ============================================================================
 
-Route::middleware(['auth', 'verified', 'first.login', 'permission:cost-centers.view'])->prefix('finance/cost-centers')->name('finance.cost-centers.')->group(function () {
+Route::middleware(['auth', 'verified', 'first.login', 'check.accounting.enabled', 'permission:cost-centers.view'])->prefix('finance/cost-centers')->name('finance.cost-centers.')->group(function () {
 
     Route::middleware('permission:cost-centers.view')->group(function () {
         Route::get('/', function () {
@@ -79,7 +79,7 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:cost-centers.v
 // ACCOUNTING (Contabilidad General)
 // ============================================================================
 
-Route::middleware(['auth', 'verified', 'first.login', 'permission:accounting.view'])->prefix('accounting')->name('accounting.')->group(function () {
+Route::middleware(['auth', 'verified', 'first.login', 'check.accounting.enabled', 'permission:accounting.view'])->prefix('accounting')->name('accounting.')->group(function () {
 
     // Plan de Cuentas
     Route::get('/accounts', function () {
@@ -151,7 +151,7 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:accounting.vie
 // ACCOUNTS RECEIVABLE (Cuentas por Cobrar)
 // ============================================================================
 
-Route::middleware(['auth', 'verified', 'first.login', 'permission:receivables.view'])->prefix('finance/receivables')->name('finance.receivables.')->group(function () {
+Route::middleware(['auth', 'verified', 'first.login', 'check.accounting.enabled', 'permission:receivables.view'])->prefix('finance/receivables')->name('finance.receivables.')->group(function () {
     // Route::get('/', ReceivablesDataTable::class)->name('index');
 
     Route::middleware('permission:receivables.view')->group(function () {
@@ -179,7 +179,7 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:receivables.vi
 // ACCOUNTS PAYABLE (Cuentas por Pagar)
 // ============================================================================
 
-Route::middleware(['auth', 'verified', 'first.login', 'permission:payables.view'])->prefix('finance/payables')->name('finance.payables.')->group(function () {
+Route::middleware(['auth', 'verified', 'first.login', 'check.accounting.enabled', 'permission:payables.view'])->prefix('finance/payables')->name('finance.payables.')->group(function () {
 
     // Proveedores
     Route::middleware('permission:payables.suppliers.manage')->prefix('suppliers')->name('suppliers.')->group(function () {
@@ -238,7 +238,7 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:payables.view'
 // TREASURY (Tesorería)
 // ============================================================================
 
-Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.view'])->prefix('treasury')->name('treasury.')->group(function () {
+Route::middleware(['auth', 'verified', 'first.login', 'check.accounting.enabled', 'permission:treasury.view'])->prefix('treasury')->name('treasury.')->group(function () {
 
     // Bancos
     Route::middleware('permission:treasury.banks.manage')->prefix('banks')->name('banks.')->group(function () {

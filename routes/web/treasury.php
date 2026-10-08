@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 // BANKS (Bancos)
 // ============================================================================
 
-Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.banks.view'])->prefix('treasury/banks')->name('treasury.banks.')->group(function () {
+Route::middleware(['auth', 'verified', 'first.login', 'check.accounting.enabled', 'permission:treasury.banks.view'])->prefix('treasury/banks')->name('treasury.banks.')->group(function () {
     Route::get('/', BankDataTable::class)->name('index');
 
     Route::middleware('permission:treasury.banks.create')->group(function () {
@@ -56,7 +56,7 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.banks
 // CASH REGISTERS (Cajas)
 // ============================================================================
 
-Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.cash-registers.view'])->prefix('treasury/cash-registers')->name('treasury.cash-registers.')->group(function () {
+Route::middleware(['auth', 'verified', 'first.login', 'check.accounting.enabled', 'permission:treasury.cash-registers.view'])->prefix('treasury/cash-registers')->name('treasury.cash-registers.')->group(function () {
     Route::get('/', CashRegisterDataTable::class)->name('index');
 
     Route::middleware('permission:treasury.cash-registers.create')->group(function () {
@@ -88,7 +88,7 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.cash-
 // TREASURY MOVEMENTS (Movimientos de Tesorería)
 // ============================================================================
 
-Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.movements.view'])->prefix('treasury/movements')->name('treasury.movements.')->group(function () {
+Route::middleware(['auth', 'verified', 'first.login', 'check.accounting.enabled', 'permission:treasury.movements.view'])->prefix('treasury/movements')->name('treasury.movements.')->group(function () {
     Route::get('/', TreasuryMovementDataTable::class)->name('index');
 
     Route::middleware('permission:treasury.movements.create')->group(function () {
@@ -116,7 +116,7 @@ Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.movem
 // TREASURY REPORTS (Reportes de Tesorería)
 // ============================================================================
 
-Route::middleware(['auth', 'verified', 'first.login', 'permission:treasury.reports.view'])->prefix('treasury/reports')->name('treasury.reports.')->group(function () {
+Route::middleware(['auth', 'verified', 'first.login', 'check.accounting.enabled', 'permission:treasury.reports.view'])->prefix('treasury/reports')->name('treasury.reports.')->group(function () {
     Route::get('/cash-flow', function () {
         return view('treasury.reports.cash-flow');
     })->name('cash-flow');

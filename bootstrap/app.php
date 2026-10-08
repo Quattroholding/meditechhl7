@@ -3,6 +3,7 @@
 use App\Http\Middleware\ApiDocsIpRestriction;
 use App\Http\Middleware\ApiTokenMiddleware;
 use App\Http\Middleware\CanManageSubscription;
+use App\Http\Middleware\CheckAccountingEnabled;
 use App\Http\Middleware\CheckActiveUserMiddleware;
 use App\Http\Middleware\DebugIpRestriction;
 use App\Http\Middleware\DetectConcurrentSession;
@@ -107,6 +108,7 @@ return Application::configure(basePath: dirname(__DIR__))
             '2fa.enforce' => EnsureTwoFactorIsEnabled::class,
             'restrict.ip' => RestrictByIp::class,
             'log.patient.access' => LogPatientAccess::class,
+            'check.accounting.enabled' => CheckAccountingEnabled::class,
         ]);
 
         // Agregar middleware de tema del cliente a todas las rutas web
