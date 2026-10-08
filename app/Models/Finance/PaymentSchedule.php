@@ -3,7 +3,10 @@
 namespace App\Models\Finance;
 
 use App\Models\BaseModel;
+use App\Models\Treasury\Bank;
+use App\Models\Treasury\CashRegister;
 use App\Models\Treasury\TreasuryMovement;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -20,6 +23,9 @@ class PaymentSchedule extends BaseModel
         'paid_at',
         'treasury_movement_id',
         'notes',
+        'updated_by',
+        'bank_id',
+        'cash_register_id',
     ];
 
     protected $casts = [
@@ -42,6 +48,21 @@ class PaymentSchedule extends BaseModel
     public function treasuryMovement(): BelongsTo
     {
         return $this->belongsTo(TreasuryMovement::class);
+    }
+
+    public function scheduledBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function bank(): BelongsTo
+    {
+        return $this->belongsTo(Bank::class);
+    }
+
+    public function cashRegister(): BelongsTo
+    {
+        return $this->belongsTo(CashRegister::class);
     }
 
     // Métodos de negocio

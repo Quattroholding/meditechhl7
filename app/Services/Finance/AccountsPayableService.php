@@ -8,6 +8,7 @@ use App\Models\Finance\SupplierInvoice;
 use App\Services\Accounting\AccountingEngineService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * Servicio para gestionar Cuentas por Pagar
@@ -79,9 +80,11 @@ class AccountsPayableService
      */
     public function createPaymentSchedule(
         SupplierInvoice $invoice,
-        array $schedule
+        array $schedule,
+        ?int $bankId = null,
+        ?int $cashRegisterId = null
     ): Collection {
-        return DB::transaction(function () use ($invoice, $schedule) {
+        return DB::transaction(function () use ($invoice, $schedule, $bankId, $cashRegisterId) {
             $totalAmount = collect($schedule)->sum('amount');
 
             if (abs($totalAmount - $invoice->total_amount) > 0.01) {
@@ -91,10 +94,14 @@ class AccountsPayableService
             $schedules = collect();
             foreach ($schedule as $payment) {
                 $schedules->push(PaymentSchedule::create([
+                    'uuid' => Str::uuid(),
                     'supplier_invoice_id' => $invoice->id,
                     'payment_date' => $payment['payment_date'],
                     'amount' => $payment['amount'],
                     'notes' => $payment['notes'] ?? null,
+                    'updated_by' => auth()->id(),
+                    'bank_id' => $bankId,
+                    'cash_register_id' => $cashRegisterId,
                 ]));
             }
 

@@ -4,6 +4,7 @@ namespace App\Models\Finance;
 
 use App\Models\Accounting\JournalEntry;
 use App\Models\BaseModel;
+use App\Models\Client;
 use App\Models\Scopes\SupplierInvoiceScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -62,6 +63,11 @@ class SupplierInvoice extends BaseModel
     }
 
     // Relaciones
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
 
     public function supplier(): BelongsTo
     {

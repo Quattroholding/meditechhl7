@@ -7,7 +7,6 @@ use App\Models\Treasury\TreasuryMovement;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 #[Signature('payments:reconcile-treasury {--fix : Corregir inconsistencias encontradas}')]
 #[Description('Valida que PaymentSchedule y TreasuryMovement estén sincronizados')]

@@ -45,6 +45,11 @@ class ProcessScheduledPaymentsCommand extends Command
 
         foreach ($pendingPayments as $schedule) {
             try {
+                // Validar que al menos se haya seleccionado banco o caja
+                if (! $schedule->bank_id && ! $schedule->cash_register_id) {
+                    throw new \Exception('PaymentSchedule no tiene banco o caja especificada');
+                }
+
                 // Crear TreasuryMovement para el pago
                 $movement = $treasuryService->recordMovement(
                     $schedule->supplierInvoice->client_id,
@@ -52,8 +57,8 @@ class ProcessScheduledPaymentsCommand extends Command
                         'movement_type' => 'withdrawal',
                         'source_type' => PaymentSchedule::class,
                         'source_id' => $schedule->id,
-                        'bank_id' => null, // Se puede mejorar para permitir seleccionar banco
-                        'cash_register_id' => null,
+                        'bank_id' => $schedule->bank_id,
+                        'cash_register_id' => $schedule->cash_register_id,
                         'amount' => $schedule->amount,
                         'description' => "Pago factura {$schedule->supplierInvoice->invoice_number} - {$schedule->supplierInvoice->supplier->legal_name}",
                         'reference_number' => $schedule->supplierInvoice->invoice_number,
@@ -77,7 +82,7 @@ class ProcessScheduledPaymentsCommand extends Command
                     'balance' => $schedule->supplierInvoice->total_amount - $invoicePaidAmount,
                 ]);
 
-                $this->line("✓ Pago procesado: {$schedule->supplierInvoice->invoice_number} - B/. " . number_format($schedule->amount, 2));
+                $this->line("✓ Pago procesado: {$schedule->supplierInvoice->invoice_number} - B/. ".number_format($schedule->amount, 2));
                 $processed++;
             } catch (\Exception $e) {
                 $this->error("✗ Error procesando pago {$schedule->id}: {$e->getMessage()}");
@@ -91,7 +96,7 @@ class ProcessScheduledPaymentsCommand extends Command
         }
 
         $this->newLine();
-        $this->info("Procesamiento completado:");
+        $this->info('Procesamiento completado:');
         $this->info("  Pagos procesados: {$processed}");
         $this->info("  Errores: {$failed}");
     }

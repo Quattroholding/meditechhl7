@@ -82,15 +82,15 @@ class CalculateAgingReportCommand extends Command
         // Resumen
         $this->newLine();
         $this->info('=== RESUMEN ===');
-        $this->line('Actual (0-30):   ' . $this->formatBucket($current));
-        $this->line('31-60:           ' . $this->formatBucket($days30));
-        $this->line('61-90:           ' . $this->formatBucket($days60));
-        $this->line('91-120:          ' . $this->formatBucket($days90));
-        $this->line('Más de 120:      ' . $this->formatBucket($daysOver90));
+        $this->line('Actual (0-30):   '.$this->formatBucket($current));
+        $this->line('31-60:           '.$this->formatBucket($days30));
+        $this->line('61-90:           '.$this->formatBucket($days60));
+        $this->line('91-120:          '.$this->formatBucket($days90));
+        $this->line('Más de 120:      '.$this->formatBucket($daysOver90));
 
         $totalBalance = $invoices->sum('balance');
         $this->newLine();
-        $this->info("Total pendiente: B/. " . number_format($totalBalance, 2));
+        $this->info('Total pendiente: B/. '.number_format($totalBalance, 2));
     }
 
     private function showAgingBucket(string $label, array $invoices): void
@@ -114,7 +114,7 @@ class CalculateAgingReportCommand extends Command
             ));
         }
 
-        $this->line("Subtotal: B/. " . number_format($total, 2));
+        $this->line('Subtotal: B/. '.number_format($total, 2));
     }
 
     private function formatBucket(array $invoices): string
@@ -122,6 +122,6 @@ class CalculateAgingReportCommand extends Command
         $count = count($invoices);
         $total = collect($invoices)->sum('balance');
 
-        return "{$count} facturas | B/. " . number_format($total, 2);
+        return "{$count} facturas | B/. ".number_format($total, 2);
     }
 }

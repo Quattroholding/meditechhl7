@@ -60,24 +60,21 @@ class DocumentApprovalService
             }
 
             // Calculate totals if not available from OCR
-            $subtotal = (float) ($extractedData['subtotal'] ?? 0);
-            $totalTax = (float) ($extractedData['total_tax'] ?? 0);
-            $totalInvoice = (float) ($extractedData['total'] ?? 0);
+            // Support both naming conventions: subtotal/total vs subtotal_amount/total_amount
+            $subtotal = (float) ($extractedData['subtotal'] ?? $extractedData['subtotal_amount'] ?? 0);
+            $totalTax = (float) ($extractedData['total_tax'] ?? $extractedData['itbms_amount'] ?? $extractedData['other_taxes'] ?? 0);
+            $totalInvoice = (float) ($extractedData['total'] ?? $extractedData['total_amount'] ?? 0);
 
-            // Update parse result with totals
+            // Update parse result with totals - preserve all original extracted data
+            $updatedData = $extractedData;
+            $updatedData['items'] = $filteredItems;
+            // Add calculated totals in both naming conventions for compatibility
+            $updatedData['subtotal'] = $subtotal;
+            $updatedData['total_tax'] = $totalTax;
+            $updatedData['total'] = $totalInvoice;
+
             $document->parseResult->update([
-                'extracted_data' => json_encode([
-                    'items' => $filteredItems,
-                    'confidence' => $extractedData['confidence'] ?? 0.9,
-                    'subtotal' => $subtotal,
-                    'total_tax' => $totalTax,
-                    'total' => $totalInvoice,
-                    'invoice_number' => $extractedData['invoice_number'] ?? null,
-                    'invoice_date' => $extractedData['invoice_date'] ?? null,
-                    'supplier_ruc' => $extractedData['supplier_ruc'] ?? null,
-                    'supplier_dv' => $extractedData['supplier_dv'] ?? null,
-                    'supplier_name' => $extractedData['supplier_name'] ?? null,
-                ]),
+                'extracted_data' => json_encode($updatedData),
                 'manually_edited' => ! empty($editedItems),
                 'edited_by_user_id' => auth()->id(),
                 'edited_at' => now(),

@@ -54,4 +54,7 @@ return [
     'phone' => 'Teléfono',
     'address' => 'Dirección',
     'notes' => 'Notas',
+    'amount' => 'Monto',
+    'action' => 'Acción',
+    'pending' => 'Pendiente',
 ];

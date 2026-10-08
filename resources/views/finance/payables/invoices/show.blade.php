@@ -147,6 +147,14 @@
                                         <i class="fas fa-edit me-2"></i>Editar
                                     </a>
                                 @endcan
+                                @if(($invoice->status === 'approved' || $invoice->status === 'partial') && auth()->user()->can('payables.payments.process'))
+                                    <button onclick="Livewire.dispatch('openPaymentModal')" class="btn btn-success">
+                                        <i class="fas fa-calendar me-2"></i>Programar Pago
+                                    </button>
+                                    <button onclick="Livewire.dispatch('openPaymentImmediateModal')" class="btn btn-info">
+                                        <i class="fas fa-money-bill me-2"></i>Pago Inmediato
+                                    </button>
+                                @endif
                                 <a href="{{ route('finance.payables.invoices.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left me-2"></i>Volver
                                 </a>
@@ -309,6 +317,12 @@
                     </div>
                 </div>
             @endif
+
+            <!-- Payment Schedule Modal -->
+            @livewire('finance.accounts-payable.payment-schedule-modal', ['invoice' => $invoice])
+
+            <!-- Supplier Invoice Payment Modal -->
+            @livewire('finance.accounts-payable.supplier-invoice-payment-modal', ['invoice' => $invoice])
         </div>
     </div>
 </x-app-layout>

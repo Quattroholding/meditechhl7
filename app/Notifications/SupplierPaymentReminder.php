@@ -36,7 +36,7 @@ class SupplierPaymentReminder extends Notification implements ShouldQueue
         $mail = (new MailMessage)
             ->subject('⏰ Recordatorio: Pagos Vencidos a Proveedores')
             ->greeting("Hola {$notifiable->name},")
-            ->line("Se han detectado **{$this->paymentCount} pagos vencidos** por un total de **B/. " . number_format($this->totalDue, 2) . "** en {$this->clientName}.")
+            ->line("Se han detectado **{$this->paymentCount} pagos vencidos** por un total de **B/. ".number_format($this->totalDue, 2)."** en {$this->clientName}.")
             ->line('')
             ->line('**Detalle de Pagos Vencidos:**')
             ->line('');

@@ -150,4 +150,9 @@ class Bank extends BaseModel
     {
         return $query->where('account_type', 'savings');
     }
+
+    public function getBalanceNameAttribute()
+    {
+        return $this->bank_name.' ($'.number_format($this->balance, 2).')';
+    }
 }

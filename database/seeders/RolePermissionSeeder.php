@@ -274,7 +274,7 @@ class RolePermissionSeeder extends Seeder
 
         // Create roles and assign permissions
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $adminRole->givePermissionTo(Permission::whereNotIn('name', ['dashboard.doctor', 'dashboard.patient', 'dashboard.client', 'dashboard.assistence', 'dashboard.accounting', 'dashboard.accounting-client'])->get());
+        $adminRole->givePermissionTo(Permission::whereNotIn('name', ['dashboard.doctor', 'dashboard.patient', 'dashboard.client', 'dashboard.assistence', 'dashboard.accounting', 'dashboard.accounting-client'])->where('module', '<>', 'finanzas')->get());
 
         $doctorRole = Role::firstOrCreate(['name' => 'doctor']);
         $doctorRole->givePermissionTo([

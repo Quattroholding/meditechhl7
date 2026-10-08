@@ -4,7 +4,13 @@ namespace App\Livewire\Finance\AccountsPayable;
 
 use App\Models\Finance\PaymentSchedule;
 use App\Models\Finance\SupplierInvoice;
+use App\Models\Treasury\Bank;
+use App\Models\Treasury\CashRegister;
 use App\Services\Finance\AccountsPayableService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class PaymentScheduleModal extends Component
@@ -19,10 +25,32 @@ class PaymentScheduleModal extends Component
 
     public bool $showModal = false;
 
+    public ?int $defaultBankId = null;
+
+    public ?int $defaultCashRegisterId = null;
+
     public function mount(SupplierInvoice $invoice): void
     {
         $this->invoice = $invoice;
         $this->loadSchedules();
+    }
+
+    #[On('openPaymentModal')]
+    public function openModal(): void
+    {
+        $this->showModal = true;
+    }
+
+    #[On('openPaymentScheduleFromDataTable')]
+    public function openModalFromDataTable(): void
+    {
+        $this->showModal = true;
+        $this->loadSchedules();
+    }
+
+    public function closeModal(): void
+    {
+        $this->showModal = false;
     }
 
     public function loadSchedules(): void
@@ -81,35 +109,70 @@ class PaymentScheduleModal extends Component
             return;
         }
 
-        $service = app(AccountsPayableService::class);
+        // Validar que al menos se seleccione banco o caja
+        if (! $this->defaultBankId && ! $this->defaultCashRegisterId) {
+            $this->dispatch('error', message: 'Debes seleccionar un banco o una caja para los pagos programados');
 
-        // Eliminar schedules anteriores
-        $this->invoice->paymentSchedules()->delete();
+            return;
+        }
 
-        // Crear nuevos schedules
-        $scheduleData = [];
-        foreach ($this->schedules as $schedule) {
-            if ($schedule['amount'] > 0) {
-                $scheduleData[] = [
-                    'payment_date' => $schedule['payment_date'],
-                    'amount' => $schedule['amount'],
-                    'notes' => null,
-                ];
+        try {
+            $service = app(AccountsPayableService::class);
+
+            // Eliminar schedules anteriores
+            $this->invoice->paymentSchedules()->delete();
+
+            // Crear nuevos schedules
+            $scheduleData = [];
+            foreach ($this->schedules as $schedule) {
+                if ($schedule['amount'] > 0) {
+                    $scheduleData[] = [
+                        'payment_date' => $schedule['payment_date'],
+                        'amount' => $schedule['amount'],
+                        'notes' => null,
+                    ];
+                }
             }
-        }
 
-        if (! empty($scheduleData)) {
-            $service->createPaymentSchedule($this->invoice, $scheduleData);
-        }
+            if (! empty($scheduleData)) {
+                $service->createPaymentSchedule(
+                    $this->invoice,
+                    $scheduleData,
+                    $this->defaultBankId,
+                    $this->defaultCashRegisterId
+                );
+            }
 
-        $this->dispatch('schedules-saved');
-        $this->showModal = false;
+            $this->dispatch('schedules-saved');
+            $this->showModal = false;
+        } catch (\Exception $e) {
+            Log::error('Error saving payment schedules', ['error' => $e->getMessage()]);
+            $this->dispatch('error', message: 'Error al guardar pagos programados: '.$e->getMessage());
+        }
+    }
+
+    public function getBanksProperty(): Collection
+    {
+        return Bank::where('client_id', Auth::user()->getCurrentClient()->id)
+            ->where('status', 'active')
+            ->orderBy('bank_name')
+            ->get();
+    }
+
+    public function getCashRegistersProperty(): Collection
+    {
+        return CashRegister::where('client_id', Auth::user()->getCurrentClient()->id)
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get();
     }
 
     public function render()
     {
         return view('livewire.finance.accounts-payable.payment-schedule-modal', [
             'invoice' => $this->invoice,
+            'banks' => $this->banks,
+            'cashRegisters' => $this->cashRegisters,
         ]);
     }
 }

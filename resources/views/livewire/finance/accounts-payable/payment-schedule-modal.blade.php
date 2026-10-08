@@ -1,24 +1,15 @@
-@if($isModal)
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="sticky top-0 bg-light px-6 py-4 border-b d-flex justify-content-between align-items-center">
-                <h3 class="text-lg font-bold">
-                    {{ __('finance.payment_schedule.title', ['invoice' => $invoice->invoice_number]) }}
-                </h3>
-                <button
-                    type="button"
-                    wire:click="$set('showModal', false)"
-                    class="text-gray-500 hover:text-gray-700"
-                    style="border: none; background: none; cursor: pointer;"
-                >
-                    ×
-                </button>
-            </div>
+<div>
+    @if($showModal)
+        <div class="modal-overlay" wire:click="closePaymentSchedulingModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div class="modal-content" wire:click.stop style="position: relative; max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ __('finance.payment_schedule.title', ['invoice' => $invoice->invoice_number]) }}</h5>
+                    <button type="button" class="close" wire:click="closeModal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
-            <div class="p-6">
-@else
-    <div>
-@endif
+                <div class="p-6">
                 <!-- Invoice Info -->
                 <div class="row mb-3">
                     <div class="col-12">
@@ -97,6 +88,32 @@
                         </button>
                     </div>
 
+                    <!-- Payment Method Selection -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Banco *</label>
+                                <select wire:model="defaultBankId" class="form-select form-select-sm">
+                                    <option value="">Selecciona un banco</option>
+                                    @foreach($banks as $bank)
+                                        <option value="{{ $bank->id }}">{{ $bank->balance_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Caja</label>
+                                <select wire:model="defaultCashRegisterId" class="form-select form-select-sm">
+                                    <option value="">Selecciona una caja</option>
+                                    @foreach($cashRegisters as $register)
+                                        <option value="{{ $register->id }}">{{ $register->balance_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Remaining Info -->
                     <div class="alert alert-info mb-3">
                         <div class="d-flex justify-content-between align-items-center">
@@ -112,15 +129,13 @@
                         <button type="submit" class="btn btn-primary me-2">
                             {{ __('finance.payment_schedule.save_schedule') }}
                         </button>
-                        @if($isModal)
-                            <button type="button" wire:click="$set('showModal', false)" class="btn btn-secondary">
-                                {{ __('button.cancel') }}
-                            </button>
-                        @endif
+                        <button type="button" wire:click="closeModal" class="btn btn-secondary">
+                            {{ __('button.cancel') }}
+                        </button>
                     </div>
                 </form>
-            </div>
-        @if($isModal)
+                </div>
             </div>
         </div>
-        @endif
+    @endif
+</div>

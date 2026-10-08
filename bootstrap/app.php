@@ -176,6 +176,29 @@ return Application::configure(basePath: dirname(__DIR__))
             ->emailOutputOnFailure('business@meditecpty.com')
             ->appendOutputTo(storage_path('logs/appointments-noshow.log'));
 
+        // === Tareas Financieras (Cuentas por Pagar) ===
+
+        // Procesar pagos programados (crear movimientos de tesorería)
+        $schedule->command('supplier-invoices:process-scheduled-payments')
+            ->dailyAt('06:00')
+            ->description('Procesa pagos programados con fecha <= hoy y crea movimientos de tesorería')
+            ->emailOutputOnFailure('business@meditecpty.com')
+            ->appendOutputTo(storage_path('logs/scheduled-payments.log'));
+
+        // Enviar recordatorios de pagos vencidos
+        $schedule->command('supplier-invoices:send-payment-reminders --days=1')
+            ->dailyAt('09:00')
+            ->description('Envía recordatorios de pagos vencidos a proveedores')
+            ->emailOutputOnFailure('business@meditecpty.com')
+            ->appendOutputTo(storage_path('logs/payment-reminders.log'));
+
+        // Reconciliación semanal de tesorería (lunes a las 8 AM)
+        $schedule->command('payments:reconcile-treasury')
+            ->weeklyOn(1, '08:00')
+            ->description('Valida sincronización entre PaymentSchedule y TreasuryMovement')
+            ->emailOutputOnFailure('business@meditecpty.com')
+            ->appendOutputTo(storage_path('logs/treasury-reconciliation.log'));
+
         $schedule->job(new RetryFailedSubscriptionPayments)->hourly();
     })
     ->create();

@@ -106,6 +106,11 @@ class SupplierInvoiceObserver
      */
     private function shouldProcess(SupplierInvoice $invoice): bool
     {
+        // Load client relation if not already loaded
+        if (! $invoice->relationLoaded('client')) {
+            $invoice->load('client');
+        }
+
         // Validar que client existe y tiene accounting habilitado
         if (! $invoice->client || ! $invoice->client->accounting_enabled) {
             Log::warning('Accounting not enabled for client', [

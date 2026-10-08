@@ -65,13 +65,13 @@
                                     <span class="cell-content">{{ \Carbon\Carbon::parse($invoice->due_date)->format('d-m-Y') }}</span>
                                 </td>
                                 <td data-column="total_amount" data-priority="5" data-label="Total">
-                                    <span class="cell-content">B/. {{ number_format($invoice->total_amount, 2) }}</span>
+                                    <span class="cell-content">${{ number_format($invoice->total_amount, 2) }}</span>
                                 </td>
                                 <td data-column="paid_amount" data-priority="6" data-label="Pagado">
-                                    <span class="cell-content">B/. {{ number_format($invoice->paid_amount, 2) }}</span>
+                                    <span class="cell-content">${{ number_format($invoice->paid_amount, 2) }}</span>
                                 </td>
                                 <td data-column="balance" data-priority="7" data-label="Balance">
-                                    <span class="cell-content font-weight-bold">B/. {{ number_format($invoice->balance, 2) }}</span>
+                                    <span class="cell-content font-weight-bold">${{ number_format($invoice->balance, 2) }}</span>
                                 </td>
                                 <td data-column="status" data-priority="8" data-label="Estatus">
                                     <span class="cell-content badge me-1
@@ -83,7 +83,7 @@
                                     <td data-column="acciones" data-priority="1" data-label="{{ __('Acciones') }}" class="text-end">
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ route('finance.payables.invoices.show', $invoice->id) }}" class="btn btn-info btn-sm" title="Ver">
-                                                <i class="fa-solid fa-eye m-r-5"></i>
+                                                <i class="fa-solid fa-eye m-r-5 text-white"></i>
                                             </a>
                                             @if($invoice->status === 'draft' && auth()->user()->can('payables.invoices.create'))
                                                 <a href="{{ route('finance.payables.invoices.edit', $invoice->id) }}" class="btn btn-success btn-sm" title="Editar">
@@ -96,8 +96,11 @@
                                                 </button>
                                             @endif
                                             @if(($invoice->status === 'approved' || $invoice->status === 'partial') && auth()->user()->can('payables.payments.process'))
-                                                <button wire:click="schedulePayment({{ $invoice->id }})" class="btn btn-success btn-sm" title="Programar Pago">
+                                                <button wire:click="schedulePayment({{ $invoice->id }})" class="btn btn-warning btn-sm" title="Programar Pago">
                                                     <i class="fa-solid fa-calendar m-r-5"></i>
+                                                </button>
+                                                <button wire:click="paymentImmediate({{ $invoice->id }})" class="btn btn-primary btn-sm" title="Pago Inmediato">
+                                                    <i class="fa-solid fa-money-bill m-r-5"></i>
                                                 </button>
                                             @endif
                                         </div>
@@ -118,69 +121,13 @@
         </div>
     </div>
 
-    {{-- Payment Scheduling Modal --}}
-    @if ($showPaymentSchedulingModal && $selectedInvoice)
-        <div class="modal-overlay" wire:click="closePaymentSchedulingModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
-            <div class="modal-content" wire:click.stop style="position: relative; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
-                <div class="modal-header">
-                    <h5 class="modal-title">Registrar Pago</h5>
-                    <button type="button" class="close" wire:click="closePaymentSchedulingModal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form wire:submit.prevent="savePaymentSchedule">
-                    <div class="modal-body">
-                        {{-- Invoice Info --}}
-                        <div class="alert alert-info mb-3">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="mb-2"><strong>Factura:</strong> {{ $selectedInvoice->invoice_number }}</p>
-                                    <p class="mb-1"><strong>Proveedor:</strong> {{ $selectedInvoice->supplier?->legal_name ?? 'N/A' }}</p>
-                                    <p class="mb-0"><strong>Fecha:</strong> {{ $selectedInvoice->invoice_date?->format('d/m/Y') }}</p>
-                                </div>
-                                <div class="col-md-6 text-end">
-                                    <p class="mb-2"><strong>Total:</strong> B/. {{ number_format($selectedInvoice->total_amount, 2) }}</p>
-                                    <p class="mb-1"><strong>Pagado:</strong> B/. {{ number_format($selectedInvoice->paid_amount ?? 0, 2) }}</p>
-                                    <p class="mb-0 text-danger"><strong>Saldo:</strong> B/. {{ number_format($selectedInvoice->balance, 2) }}</p>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Payment Schedule Modal -->
+    @if($selectedInvoice)
+        <livewire:finance.accounts-payable.payment-schedule-modal :invoice="$selectedInvoice" wire:key="psc-{{ $selectedInvoice->id }}" />
+    @endif
 
-                        {{-- Amount and Date --}}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Monto a Programar *</label>
-                                    <input wire:model="amount" type="number" step="0.01" class="form-control" max="{{ $selectedInvoice->balance }}" placeholder="0.00" />
-                                    @error('amount') <small class="text-danger">{{ $message }}</small> @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Fecha Pago *</label>
-                                    <input wire:model="payment_date" type="date" class="form-control" />
-                                    @error('payment_date') <small class="text-danger">{{ $message }}</small> @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Notes --}}
-                        <div class="form-group">
-                            <label>Notas</label>
-                            <textarea wire:model="notes" class="form-control" rows="2" placeholder="Notas adicionales (opcional)"></textarea>
-                            @error('notes') <small class="text-danger">{{ $message }}</small> @enderror
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">
-                            Programar Pago
-                        </button>
-                        <button type="button" class="btn btn-secondary" wire:click="closePaymentSchedulingModal">
-                            Cancelar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <!-- Supplier Invoice Payment Modal -->
+    @if($selectedInvoice)
+        <livewire:finance.accounts-payable.supplier-invoice-payment-modal :invoice="$selectedInvoice" wire:key="pip-{{ $selectedInvoice->id }}" />
     @endif
 </div>

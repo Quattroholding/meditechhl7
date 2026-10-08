@@ -210,7 +210,7 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
         $taxAmount = (float) ($extractedData['itbms_amount'] ?? 0);
         $totalAmount = (float) ($extractedData['total_amount'] ?? $subtotal + $taxAmount);
 
-        return SupplierInvoice::create([
+        $invoice = SupplierInvoice::create([
             'uuid' => Str::uuid(),
             'client_id' => $document->client_id,
             'supplier_id' => $supplier->id,
@@ -230,6 +230,18 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
             'created_by' => auth()->id() ?? 1,
             'updated_by' => auth()->id() ?? 1,
         ]);
+
+        // Load client relation before approving (Observer needs it)
+        $invoice->load('client');
+
+        // Approve the invoice to trigger Observer and generate journal entry
+        $invoice->update([
+            'status' => 'approved',
+            'approved_at' => now(),
+            'approved_by' => auth()->id() ?? 1,
+        ]);
+
+        return $invoice;
     }
 
     /**

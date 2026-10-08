@@ -139,4 +139,9 @@ class CashRegister extends BaseModel
     {
         return $query->where('status', 'active');
     }
+
+    public function getBalanceNameAttribute()
+    {
+        return $this->name.' ($'.number_format($this->balance, 2).')';
+    }
 }
