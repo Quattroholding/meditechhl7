@@ -78,6 +78,22 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row mt-3">
+                            <!-- Accounting Account -->
+                            <div class="col-12 col-md-12">
+                                <div class="input-block local-forms">
+                                    <x-input-label for="cpt_accounting_account_id" :value="__('Cuenta Contable (Ingreso)')"/>
+                                    <select wire:model="cpt_accounting_account_id" class="form-control" id="cpt_accounting_account_id" name="cpt_accounting_account_id">
+                                        <option value="">-- Seleccionar cuenta --</option>
+                                        @foreach($this->accountingAccounts as $account)
+                                            <option value="{{ $account->id }}">{{ $account->code }} - {{ $account->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted">Selecciona la cuenta contable a la que irán los ingresos de este servicio</small>
+                                </div>
+                            </div>
+                        </div>
                         {{--}}
 
                         <div class="flex items-center justify-end mt-4">
@@ -232,6 +248,22 @@
                                 </div>
                             </div>
 
+                        </div>
+
+                        <div class="row mt-3">
+                            <!-- Accounting Account -->
+                            <div class="col-12 col-md-12">
+                                <div class="input-block local-forms">
+                                    <x-input-label for="custom_accounting_account_id" :value="__('Cuenta Contable (Ingreso)')"/>
+                                    <select wire:model="custom_accounting_account_id" class="form-control" id="custom_accounting_account_id" name="custom_accounting_account_id">
+                                        <option value="">-- Seleccionar cuenta --</option>
+                                        @foreach($this->accountingAccounts as $account)
+                                            <option value="{{ $account->id }}">{{ $account->code }} - {{ $account->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted">Selecciona la cuenta contable a la que irán los ingresos de este servicio</small>
+                                </div>
+                            </div>
                         </div>
                         {{--}}
                         <div class="flex items-center justify-end mt-4">
@@ -426,6 +458,53 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal para asignar cuenta contable -->
+    @if($editingId)
+        <div class="modal d-block" style="background: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Asignar Cuenta Contable</h5>
+                        <button type="button" class="close" wire:click="cancelEdit" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label class="form-label"><strong>Servicio:</strong></label>
+                            <p class="text-muted">{{ $editingService['name'] ?? 'N/A' }}</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editing_accounting_account_id" class="form-label">
+                                <strong>Cuenta Contable (Ingreso)</strong>
+                            </label>
+                            <select wire:model="editing_accounting_account_id" class="form-control" id="editing_accounting_account_id">
+                                <option value="">-- Seleccionar cuenta --</option>
+                                @foreach($this->accountingAccounts as $account)
+                                    <option value="{{ $account->id }}">
+                                        {{ $account->code }} - {{ $account->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small class="form-text text-muted d-block mt-2">
+                                Selecciona la cuenta contable a la que irán los ingresos de este servicio cuando se cobre
+                            </small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" wire:click="cancelEdit">
+                            {{ __('Cancelar') }}
+                        </button>
+                        <button type="button" class="btn btn-primary" wire:click="updateService">
+                            {{ __('Guardar') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <script>
         document.addEventListener('livewire:initialized', () => {

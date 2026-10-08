@@ -22,7 +22,7 @@ class ZoomOAuthController extends Controller
     /**
      * Redirigir al usuario a Zoom para autorización
      */
-    public function authorize()
+    public function redirectToZoom()
     {
         $clientId = config('services.zoom.client_id');
         $redirectUri = route('zoom.callback');

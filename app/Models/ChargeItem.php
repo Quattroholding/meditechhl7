@@ -134,6 +134,11 @@ class ChargeItem extends BaseModel
         return $this->hasMany(InvoiceLineItem::class);
     }
 
+    public function serviceCatalog(): BelongsTo
+    {
+        return $this->belongsTo(ServiceCatalog::class, 'service_catalog_id');
+    }
+
     // Scopes
     public function scopeByStatus($query, $status)
     {

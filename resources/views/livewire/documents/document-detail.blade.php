@@ -97,12 +97,18 @@
     @if ($document->document_type->value === 'inventory')
         @include('livewire.documents.document-detail-inventory')
     @else
+        <!-- Supplier Information (for OTRO type documents) -->
+        @if ($document->document_type->value === 'otro')
+            @include('livewire.documents.document-detail-otros')
+        @endif
         <!-- IA-Processed Document -->
         @include('livewire.documents.document-detail-ia')
+
+
     @endif
 
     <!-- Totals (Inventory Documents) -->
-    @if (!$document->document_type->value === 'inventory')
+    @if ($document->document_type->value !== 'inventory')
     <!-- Notes Section (Utility Bills) -->
     <div class="card mb-6">
         <div class="card-header">

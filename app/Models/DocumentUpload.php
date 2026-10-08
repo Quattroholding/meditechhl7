@@ -28,6 +28,9 @@ class DocumentUpload extends BaseModel
         'subtotal',
         'total_tax',
         'total',
+        'supplier_id',
+        'cost_center_id',
+        'supplier_invoice_id',
     ];
 
     protected $casts = [

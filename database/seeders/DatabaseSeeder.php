@@ -36,5 +36,10 @@ class DatabaseSeeder extends Seeder
         $this->call(PatientSatisfactionSurveySeeder::class);
         $this->call(DiagnosticSeeder::class);
         $this->call(PackageSeeder::class);
+        // Financial Module Seeders
+        $this->call(CostCenterSeeder::class);
+        $this->call(AccountingAccountSeeder::class);
+        $this->call(PaymentMethodSeeder::class);
+        $this->call(AccountingEventSeeder::class);
     }
 }

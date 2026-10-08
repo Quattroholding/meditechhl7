@@ -80,6 +80,8 @@ class DebugLoginController extends Controller
             $route = route('patient.dashboard');
         } elseif ($user->hasRole('recepcionista')) {
             $route = route('assistence.dashboard');
+        } elseif ($user->hasRole('contabilidad_client')) {
+            $route = route('accounting-client.dashboard');
         } elseif ($user->hasRole('contabilidad')) {
             $route = route('accounting.dashboard');
         } elseif ($user->hasRole('admin client')) {

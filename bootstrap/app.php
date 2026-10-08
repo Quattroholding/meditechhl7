@@ -3,6 +3,7 @@
 use App\Http\Middleware\ApiDocsIpRestriction;
 use App\Http\Middleware\ApiTokenMiddleware;
 use App\Http\Middleware\CanManageSubscription;
+use App\Http\Middleware\CheckAccountingEnabled;
 use App\Http\Middleware\CheckActiveUserMiddleware;
 use App\Http\Middleware\DebugIpRestriction;
 use App\Http\Middleware\DetectConcurrentSession;
@@ -69,6 +70,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('routes/web/accounting.php'));
 
             Route::middleware('web')
+                ->group(base_path('routes/web/finance.php'));
+
+            Route::middleware('web')
                 ->group(base_path('routes/web/subscriptions.php'));
 
             Route::middleware('web')
@@ -104,6 +108,7 @@ return Application::configure(basePath: dirname(__DIR__))
             '2fa.enforce' => EnsureTwoFactorIsEnabled::class,
             'restrict.ip' => RestrictByIp::class,
             'log.patient.access' => LogPatientAccess::class,
+            'check.accounting.enabled' => CheckAccountingEnabled::class,
         ]);
 
         // Agregar middleware de tema del cliente a todas las rutas web
@@ -172,6 +177,29 @@ return Application::configure(basePath: dirname(__DIR__))
             ->description('Marcar como noshow las citas propuestas, reservadas, pendientes o confirmadas que no se completaron después de 7 días')
             ->emailOutputOnFailure('business@meditecpty.com')
             ->appendOutputTo(storage_path('logs/appointments-noshow.log'));
+
+        // === Tareas Financieras (Cuentas por Pagar) ===
+
+        // Procesar pagos programados (crear movimientos de tesorería)
+        $schedule->command('supplier-invoices:process-scheduled-payments')
+            ->dailyAt('06:00')
+            ->description('Procesa pagos programados con fecha <= hoy y crea movimientos de tesorería')
+            ->emailOutputOnFailure('business@meditecpty.com')
+            ->appendOutputTo(storage_path('logs/scheduled-payments.log'));
+
+        // Enviar recordatorios de pagos vencidos
+        $schedule->command('supplier-invoices:send-payment-reminders --days=1')
+            ->dailyAt('09:00')
+            ->description('Envía recordatorios de pagos vencidos a proveedores')
+            ->emailOutputOnFailure('business@meditecpty.com')
+            ->appendOutputTo(storage_path('logs/payment-reminders.log'));
+
+        // Reconciliación semanal de tesorería (lunes a las 8 AM)
+        $schedule->command('payments:reconcile-treasury')
+            ->weeklyOn(1, '08:00')
+            ->description('Valida sincronización entre PaymentSchedule y TreasuryMovement')
+            ->emailOutputOnFailure('business@meditecpty.com')
+            ->appendOutputTo(storage_path('logs/treasury-reconciliation.log'));
 
         $schedule->job(new RetryFailedSubscriptionPayments)->hourly();
     })

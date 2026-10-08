@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\EncounterSection;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class EncounterSectionIconPathSeeder extends Seeder
@@ -71,7 +70,7 @@ class EncounterSectionIconPathSeeder extends Seeder
 
             // Actualizar la sección con la ruta del icono
             if ($iconPath) {
-                $section->update(['icon_path' => 'images/consultation_icons/' . $iconPath]);
+                $section->update(['icon_path' => 'images/consultation_icons/'.$iconPath]);
                 $this->command->info("Icon path asignado a: {$section->name_esp} → {$iconPath}");
             } else {
                 $this->command->warn("No se encontró icono para: {$section->name_esp}");

@@ -33,6 +33,9 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                     'subtotal' => 0,
                     'total_tax' => 0,
                     'total' => 0,
+                    'supplier_ruc' => null,
+                    'supplier_dv' => null,
+                    'supplier_name' => null,
                     'model_used' => null,
                     'input_tokens' => null,
                     'output_tokens' => null,
@@ -65,6 +68,9 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                     'subtotal' => 0,
                     'total_tax' => 0,
                     'total' => 0,
+                    'supplier_ruc' => $extractedData['supplier_ruc'] ?? null,
+                    'supplier_dv' => $extractedData['supplier_dv'] ?? null,
+                    'supplier_name' => $extractedData['supplier_name'] ?? null,
                     'model_used' => $this->modelUsed,
                     'input_tokens' => $this->inputTokens,
                     'output_tokens' => $this->outputTokens,
@@ -101,6 +107,8 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 'total' => $totals['total'],
                 'invoice_number' => $extractedData['invoice_number'] ?? null,
                 'invoice_date' => $extractedData['invoice_date'] ?? null,
+                'supplier_ruc' => $extractedData['supplier_ruc'] ?? null,
+                'supplier_dv' => $extractedData['supplier_dv'] ?? null,
                 'supplier_name' => $extractedData['supplier_name'] ?? null,
                 'batch_info' => $extractedData['batch_info'] ?? [],
                 'detected_format' => 'ai_parsed',
@@ -119,6 +127,9 @@ class InventoryAiDocumentParser extends BaseDocumentParser
                 'subtotal' => 0,
                 'total_tax' => 0,
                 'total' => 0,
+                'supplier_ruc' => null,
+                'supplier_dv' => null,
+                'supplier_name' => null,
                 'model_used' => $this->modelUsed,
                 'input_tokens' => $this->inputTokens,
                 'output_tokens' => $this->outputTokens,
@@ -274,6 +285,8 @@ The text is from a scanned invoice document. Some information may be fragmented 
 Fields may be separated by pipes (|) when extracted from PDF tables.
 
 Extract:
+- supplier_ruc: RUC/Tax ID number (look for "RUC", "NIT", "CUIT", "NIIF", "RUC:" or similar. Extract just the numbers without dashes/spaces. Example: from "RUC: 196-8-47222" extract "196847222")
+- supplier_dv: DV/Check digit (look for "DV:", "DV" or "Dígito Verificador" following the RUC. Extract just the number. Example: from "DV: 21" extract "21")
 - supplier_name: Company name (look for "Emisor:")
 - invoice_number: Invoice number (look for "Número:" or "No. Factura")
 - invoice_date: Date in YYYY-MM-DD format (look for "Fecha de emisión" or date like "30/7/2024")
@@ -310,6 +323,8 @@ Rules for parsing:
 
 Output format:
 {
+  "supplier_ruc": null,
+  "supplier_dv": null,
   "supplier_name": null,
   "invoice_number": null,
   "invoice_date": null,

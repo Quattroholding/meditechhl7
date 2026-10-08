@@ -2,11 +2,12 @@
 <div class="card mb-6">
     <div class="card-header">
         <h5 class="card-title mb-0">
-            <i class="feather icon-cpu"></i> Información Extraída por IA
+            <i class="feather icon-cpu"></i> Información de la factura
         </h5>
     </div>
     <div class="card-body">
         <!-- Provider & Service Type (always show) -->
+        {{--}}
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="mb-3">
@@ -31,7 +32,7 @@
                 </div>
             </div>
         </div>
-
+        {{--}}
         <!-- Bill Information -->
         <div class="row mb-4">
             <div class="col-md-6">

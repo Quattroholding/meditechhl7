@@ -208,7 +208,7 @@ class ZoomService
             $doctorZoomProfile = $appointment->practitioner->zoomProfile;
             $zoomUserId = $doctorZoomProfile?->zoom_user_id ?? $this->hostUserId;
 
-            if (!$zoomUserId) {
+            if (! $zoomUserId) {
                 throw new \Exception('Doctor no tiene cuenta de Zoom configurada y no hay cuenta por defecto');
             }
 

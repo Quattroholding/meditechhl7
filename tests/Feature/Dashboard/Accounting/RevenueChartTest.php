@@ -14,7 +14,7 @@ class RevenueChartTest extends TestCase
 
     public function test_revenue_chart_loads_data_for_last_six_months(): void
     {
-        $component = new RevenueChart();
+        $component = new RevenueChart;
         $component->mount();
 
         $this->assertCount(6, $component->months);
@@ -47,7 +47,7 @@ class RevenueChartTest extends TestCase
                 'tax_amount' => 16.35,
             ]);
 
-        $component = new RevenueChart();
+        $component = new RevenueChart;
         $component->mount();
 
         // Should be 750 for current month (last in array)
@@ -78,7 +78,7 @@ class RevenueChartTest extends TestCase
                 'tax_amount' => 7.00,
             ]);
 
-        $component = new RevenueChart();
+        $component = new RevenueChart;
         $component->mount();
 
         // Should be (100-20) + (100-0) = 180 for current month
@@ -105,7 +105,7 @@ class RevenueChartTest extends TestCase
                 'tax_amount' => 25.00,
             ]);
 
-        $component = new RevenueChart();
+        $component = new RevenueChart;
         $component->mount();
 
         // Should be 75.00 for current month
@@ -135,7 +135,7 @@ class RevenueChartTest extends TestCase
                 'tax_amount' => 19.63,
             ]);
 
-        $component = new RevenueChart();
+        $component = new RevenueChart;
         $component->mount();
 
         // Should only include the paid invoice

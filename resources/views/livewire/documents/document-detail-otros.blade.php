@@ -2,25 +2,53 @@
 <div class="card mb-6">
     <div class="card-header bg-secondary-light">
         <h5 class="card-title mb-0">
-            <i class="feather icon-file"></i> Detalles del Documento
+            <i class="feather icon-file"></i> Información del Proveedor
         </h5>
     </div>
     <div class="card-body">
-        <!-- Action Selector -->
-        <div class="mb-4">
-            <label class="form-label fw-semibold">¿Qué acción deseas realizar con este documento?</label>
-            <select wire:model="selectedAction" class="form-select" @disabled($isApproving)>
-                <option value="">-- Selecciona una acción --</option>
-                @foreach($availableActions as $value => $label)
-                    <option value="{{ $value }}">{{ $label }}</option>
-                @endforeach
-            </select>
-        </div>
+        <!-- Supplier Information Section (For supplier invoices) -->
+        @if (!empty($genericData['supplier_name']) || !empty($genericData['supplier_ruc']) || !empty($genericData['supplier_dv']))
+        <div class="card mb-4 border-primary">
 
-        @if ($selectedAction)
-        <div class="alert alert-info">
-            <i class="feather icon-check"></i>
-            Acción seleccionada: <strong>{{ $availableActions[$selectedAction] ?? 'Desconocida' }}</strong>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Nombre del Proveedor</label>
+                        <input type="text"
+                            wire:model="genericData.supplier_name"
+                            class="form-control"
+                            placeholder="Nombre del proveedor"
+                            @disabled($isApproving)>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">RUC</label>
+                        <input type="text"
+                            wire:model="genericData.supplier_ruc"
+                            class="form-control"
+                            placeholder="RUC (12 dígitos)"
+                            @disabled($isApproving)>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">DV</label>
+                        <input type="text"
+                            wire:model="genericData.supplier_dv"
+                            class="form-control"
+                            placeholder="Dígito Verificador"
+                            maxlength="1"
+                            @disabled($isApproving)>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Teléfono del Proveedor (Opcional)</label>
+                        <input type="text"
+                            wire:model="genericData.supplier_phone"
+                            class="form-control"
+                            placeholder="Teléfono"
+                            @disabled($isApproving)>
+                    </div>
+                </div>
+            </div>
         </div>
         @endif
 

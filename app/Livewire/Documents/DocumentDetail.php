@@ -106,6 +106,20 @@ class DocumentDetail extends Component
                 // For non-inventory documents (utility bills, AI-processed), store the bill data
                 // This includes: ensa, idaan, naturgy, otro, and any AI-processed documents
                 $this->billData = $extractedData;
+
+                // Initialize genericData with supplier information for manual correction/completion
+                $this->genericData = [
+                    'supplier_name' => $extractedData['supplier_name'] ?? null,
+                    'supplier_ruc' => $extractedData['supplier_ruc'] ?? null,
+                    'supplier_dv' => $extractedData['supplier_dv'] ?? null,
+                    'supplier_phone' => $extractedData['supplier_phone'] ?? null,
+                    'supplier_email' => $extractedData['supplier_email'] ?? null,
+                    'supplier_address' => $extractedData['supplier_address'] ?? null,
+                    'confidence' => $extractedData['confidence'] ?? 0,
+                ];
+
+                // Build editable fields for generic documents
+                $this->editableFields = $this->buildEditableFields($extractedData);
             }
 
         } catch (\Exception $e) {
@@ -173,9 +187,19 @@ class DocumentDetail extends Component
             $parseResult = $this->document->parseResult;
             $extractedData = json_decode($parseResult->extracted_data, true) ?? [];
 
-            // Update with edited fields and selected action
-            $extractedData['edited_fields'] = $this->editableFields;
-            $extractedData['selected_action'] = $this->selectedAction;
+            // Only update supplier fields that user can edit - preserve all other extracted data
+            // This ensures financial data (amounts, dates, etc.) are preserved
+            $extractedData['supplier_name'] = $this->genericData['supplier_name'] ?? null;
+            $extractedData['supplier_ruc'] = $this->genericData['supplier_ruc'] ?? null;
+            $extractedData['supplier_dv'] = $this->genericData['supplier_dv'] ?? null;
+            $extractedData['supplier_phone'] = $this->genericData['supplier_phone'] ?? null;
+            $extractedData['supplier_email'] = $this->genericData['supplier_email'] ?? null;
+            $extractedData['supplier_address'] = $this->genericData['supplier_address'] ?? null;
+
+            // Update with edited fields from other sections if they were modified
+            if (! empty($this->editableFields)) {
+                $extractedData['edited_fields'] = $this->editableFields;
+            }
 
             $parseResult->update([
                 'extracted_data' => json_encode($extractedData),
@@ -509,16 +533,8 @@ class DocumentDetail extends Component
             return;
         }
 
-        // Validate generic documents have action selected
-        if ($this->isGenericDocument() && empty($this->selectedAction)) {
-            $this->dispatch('showToastr',
-                type: 'error',
-                message: 'Debes seleccionar una acción para procesar el documento',
-            );
-            session()->flash('error', 'Debes seleccionar una acción para procesar el documento');
-
-            return;
-        }
+        // Note: OTRO documents always process as supplier invoices
+        // No action selection needed - ProcessApprovedDocumentJob handles routing
 
         // Validate at least one item is selected (only for inventory documents)
         if ($this->document->document_type === DocumentType::INVENTORY && ! in_array(true, $this->selectedItems)) {

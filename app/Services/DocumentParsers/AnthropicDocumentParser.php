@@ -189,35 +189,56 @@ class AnthropicDocumentParser extends BaseDocumentParser
         return <<<'PROMPT'
 Analiza el siguiente documento y extrae la información en formato JSON válido.
 
-El documento puede ser una factura de servicios (electricidad, agua, gas, internet, teléfono, etc) de cualquier proveedor.
+El documento puede ser:
+1. Una factura de servicios (electricidad, agua, gas, internet, teléfono, etc)
+2. Una factura de proveedor (compra de productos/servicios a un proveedor)
 
-Extrae estos campos si están disponibles:
+CAMPOS GENERALES (aplican a ambos tipos):
 - bill_number: Número de factura/recibo
+- issue_date: Fecha de emisión (formato YYYY-MM-DD)
+- due_date: Fecha de vencimiento (formato YYYY-MM-DD)
+- subtotal_amount: Subtotal antes de impuestos (número decimal)
+- itbms_amount: ITBMS/IVA/ISV (impuesto) (número decimal)
+- other_taxes: Otros impuestos si existen (número decimal)
+- total_amount: Monto total a pagar (número decimal)
+
+CAMPOS PARA FACTURAS DE SERVICIOS:
 - customer_name: Nombre del cliente
 - service_address: Dirección de servicio
 - billing_period_start: Fecha inicio del período (formato YYYY-MM-DD)
 - billing_period_end: Fecha fin del período (formato YYYY-MM-DD)
-- issue_date: Fecha de emisión (formato YYYY-MM-DD)
-- due_date: Fecha de vencimiento (formato YYYY-MM-DD)
 - consumption_value: Cantidad de consumo (número)
 - consumption_unit: Unidad de consumo (kWh, m³, GB, etc)
 - consumption_kwh: Si es electricidad, consumo en kWh (número)
 - consumption_cubic_meters: Si es agua/gas, consumo en m³ (número)
 - meter_number: Número del medidor si existe
-- subtotal_amount: Subtotal antes de impuestos (número decimal)
-- itbms_amount: ITBMS/IVA/ISV (impuesto) (número decimal)
-- other_taxes: Otros impuestos si existen (número decimal)
-- total_amount: Monto total a pagar (número decimal)
 - provider_name: Nombre del proveedor de servicios
 - service_type: Tipo de servicio (electricity, water, gas, internet, phone, other)
+
+CAMPOS PARA FACTURAS DE PROVEEDOR (MUY IMPORTANTE - BUSCA ESTOS):
+- supplier_name: Nombre comercial o legal del proveedor ⭐
+- supplier_ruc: RUC del proveedor (ej: 123456789012) ⭐
+- supplier_dv: Dígito verificador del RUC (ej: 7) ⭐
+- supplier_phone: Teléfono del proveedor
+- supplier_email: Email del proveedor
+- supplier_address: Dirección del proveedor
+- invoice_items: Array de artículos (código, descripción, cantidad, precio unitario, total)
+
+INSTRUCCIONES CRÍTICAS PARA EXTRAER RUC Y DV:
+1. Busca "RUC" o "R.U.C" o similar en el documento
+2. El RUC típicamente es un número de 12 dígitos
+3. El DV está generalmente después del RUC, es un dígito simple
+4. Formatos comunes: "RUC: 123456789012-7" o "RUC 123456789012 DV: 7"
+5. Si encuentras "Cédula" o "ID" del proveedor, también podría ser relevante
+6. Busca en encabezados, firmas del proveedor, o datos fiscales
 
 IMPORTANTE:
 1. Retorna SOLO un objeto JSON válido, sin explicaciones adicionales
 2. Usa null para campos que no encuentres
 3. Convierte números: "1,562" → 1562, "B/. 253.49" → 253.49
 4. Convierte fechas al formato YYYY-MM-DD
-5. Deduce el tipo de servicio del contenido
-6. Extrae ITBMS/impuestos si aparecen en el documento bajo cualquier nombre
+5. Limpia números: elimina espacios, guiones innecesarios. "123-456-789-012" → "123456789012"
+6. Si no encuentras RUC/DV, deja los campos en null (esto es NORMAL)
 
 DOCUMENTO A ANALIZAR:
 

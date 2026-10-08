@@ -11,6 +11,7 @@ use App\Services\DocumentProcessors\RegisterElectricityBillProcessor;
 use App\Services\DocumentProcessors\RegisterGasBillProcessor;
 use App\Services\DocumentProcessors\RegisterWaterBillProcessor;
 use App\Services\DocumentProcessors\SaveReferenceDocumentProcessor;
+use App\Services\DocumentProcessors\SupplierInvoiceProcessor;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -56,6 +57,17 @@ class ProcessApprovedDocumentJob implements ShouldQueue
                 Log::warning('ProcessApprovedDocumentJob: Document is not approved', [
                     'document_id' => $document->id,
                     'status' => $document->status->value,
+                ]);
+
+                return;
+            }
+
+            // Check if accounting is enabled for financial document processing
+            if (! $this->shouldProcess($document)) {
+                Log::info('ProcessApprovedDocumentJob: Accounting not enabled for document processing', [
+                    'document_id' => $document->id,
+                    'type' => $document->document_type->value,
+                    'client_id' => $document->client_id,
                 ]);
 
                 return;
@@ -130,7 +142,54 @@ class ProcessApprovedDocumentJob implements ShouldQueue
             DocumentType::ENSA => new SaveReferenceDocumentProcessor,
             DocumentType::NATURGY => new SaveReferenceDocumentProcessor,
             DocumentType::IDAAN => new SaveReferenceDocumentProcessor,
-            DocumentType::OTRO => new SaveReferenceDocumentProcessor,
+            DocumentType::OTRO => $this->detectOtroDocumentType(),
         };
+    }
+
+    /**
+     * Detect if document of type OTRO should be processed as supplier invoice
+     * based on extracted data
+     */
+    private function detectOtroDocumentType()
+    {
+        // For now, use SupplierInvoiceProcessor for OTRO documents
+        // In future, could check extracted_data to determine the correct processor
+        return new SupplierInvoiceProcessor;
+    }
+
+    /**
+     * Check if document should be processed based on accounting settings
+     * Some document types (like supplier invoices) require accounting to be enabled
+     */
+    private function shouldProcess(DocumentUpload $document): bool
+    {
+        // Determine if this document type requires accounting
+        $requiresAccounting = match ($document->document_type) {
+            DocumentType::OTRO => true, // OTRO documents are typically supplier invoices
+            default => false, // Other document types don't require accounting
+        };
+
+        // If accounting is not required, always process
+        if (! $requiresAccounting) {
+            return true;
+        }
+
+        // Load client relation if not already loaded
+        if (! $document->relationLoaded('client')) {
+            $document->load('client');
+        }
+
+        // Check if client has accounting enabled
+        if (! $document->client?->accounting_enabled) {
+            Log::warning('Document processing skipped: accounting not enabled for client', [
+                'document_id' => $document->id,
+                'client_id' => $document->client_id,
+                'document_type' => $document->document_type->value,
+            ]);
+
+            return false;
+        }
+
+        return true;
     }
 }

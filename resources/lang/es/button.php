@@ -7,4 +7,5 @@ return [
     'delete' => 'Eliminar',
     'edit' => 'Editar',
     'save' => 'Guardar',
+    'add' => 'Agregar',
 ];

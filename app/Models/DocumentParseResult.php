@@ -41,7 +41,6 @@ class DocumentParseResult extends BaseModel
         'processing_cost_usd' => 'float',
     ];
 
-
     // ===== Relationships =====
 
     public function documentUpload(): BelongsTo

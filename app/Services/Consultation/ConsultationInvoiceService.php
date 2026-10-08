@@ -11,6 +11,8 @@ use App\Models\InvoiceLineItem;
 use App\Models\Patient;
 use App\Models\Practitioner;
 use App\Models\ServiceCatalog;
+use App\Services\Accounting\AccountingEngineService;
+use App\Services\Finance\AccountsReceivableService;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -42,10 +44,35 @@ class ConsultationInvoiceService
         // Crear líneas de factura desde ChargeItems
         $this->createInvoiceLineItems($invoice, $chargeItems);
 
+        // Recargar la factura para obtener las líneas recién creadas
+        $invoice->refresh();
+
         // Calcular totales de factura
         $this->calculateInvoiceTotals($invoice);
 
+        // Disparar eventos contables DESPUÉS de que todo esté listo
+        $this->triggerAccountingEvents($invoice);
+
         return $invoice;
+    }
+
+    /**
+     * Disparar eventos contables después de crear la factura completamente
+     */
+    private function triggerAccountingEvents(Invoice $invoice): void
+    {
+        $accountingEngine = app(AccountingEngineService::class);
+        $receivablesService = app(AccountsReceivableService::class);
+
+        // Determinar si es crédito o contado
+        if ($invoice->payment_status === 'paid') {
+            $accountingEngine->processEvent('INVOICE_CASH', $invoice, ['payment_method' => $invoice->payment_method]);
+        } else {
+            $accountingEngine->processEvent('INVOICE_CREDIT', $invoice);
+
+            // Crear AccountsReceivable
+            $receivablesService->createFromInvoice($invoice);
+        }
     }
 
     /**
@@ -284,6 +311,11 @@ class ConsultationInvoiceService
     protected function calculateInvoiceTotals(Invoice $invoice): void
     {
         $subtotal = 0;
+
+        // Asegurar que las líneas están cargadas
+        if (! $invoice->relationLoaded('lineItems')) {
+            $invoice->load('lineItems');
+        }
 
         // Calcular subtotal desde líneas de factura
         foreach ($invoice->lineItems as $lineItem) {

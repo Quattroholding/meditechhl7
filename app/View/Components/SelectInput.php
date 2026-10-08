@@ -12,11 +12,18 @@ class SelectInput extends Component
 
     public ?array $selected;
 
-    public function __construct(string $name, array $options = [], array $selected = [])
+    public function __construct(string $name, array $options = [], $selected = null)
     {
         $this->name = $name;
         $this->options = $options;
-        $this->selected = $selected;
+        // Convert single value to array, null to empty array
+        if ($selected === null) {
+            $this->selected = [];
+        } elseif (is_array($selected)) {
+            $this->selected = $selected;
+        } else {
+            $this->selected = [$selected];
+        }
     }
 
     public function render()

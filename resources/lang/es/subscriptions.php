@@ -4,5 +4,5 @@ return [
     'title' => 'Subscripción',
     'titles' => 'subscripciones',
     'earnings' => 'Ganancias',
-    'receivable'=>'Por Cobrar',
+    'receivable' => 'Por Cobrar',
 ];
