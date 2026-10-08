@@ -22,6 +22,11 @@ class InvoiceFinanceObserver
      */
     public function created(Invoice $invoice): void
     {
+        // Validar si contabilidad está habilitada
+        if (! $this->shouldProcess($invoice)) {
+            return;
+        }
+
         // Si la factura es a crédito (no pagada), crear CxC
         if ($invoice->payment_status !== InvoivePatientStatus::PAID) {
             try {
@@ -38,6 +43,11 @@ class InvoiceFinanceObserver
      */
     public function updated(Invoice $invoice): void
     {
+        // Validar si contabilidad está habilitada
+        if (! $this->shouldProcess($invoice)) {
+            return;
+        }
+
         // Si el pago cambió a PAID, actualizar CxC
         if ($invoice->isDirty('payment_status') && $invoice->accountsReceivable) {
             if ($invoice->payment_status === InvoivePatientStatus::PAID) {
@@ -48,5 +58,23 @@ class InvoiceFinanceObserver
                 ]);
             }
         }
+    }
+
+    /**
+     * Validar si se debe procesar el evento contable
+     */
+    private function shouldProcess(Invoice $invoice): bool
+    {
+        // Load client relation if not already loaded
+        if (! $invoice->relationLoaded('client')) {
+            $invoice->load('client');
+        }
+
+        // Solo procesar si client tiene accounting habilitado
+        if (! $invoice->client?->accounting_enabled) {
+            return false;
+        }
+
+        return true;
     }
 }

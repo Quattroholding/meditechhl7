@@ -18,6 +18,11 @@ class TreasuryMovementObserver
     public function created(TreasuryMovement $treasuryMovement): void
     {
         try {
+            // Validar si contabilidad está habilitada para este cliente
+            if (! $this->shouldProcess($treasuryMovement)) {
+                return;
+            }
+
             // Get the open accounting period for the client
             $period = AccountingPeriod::where('client_id', $treasuryMovement->client_id)
                 ->where('status', 'open')
@@ -250,5 +255,28 @@ class TreasuryMovementObserver
                 ->where('allows_transaction', true)
                 ->first();
         }
+    }
+
+    /**
+     * Validar si se debe procesar el evento contable
+     */
+    private function shouldProcess(TreasuryMovement $treasuryMovement): bool
+    {
+        // Load client relation if not already loaded
+        if (! $treasuryMovement->relationLoaded('client')) {
+            $treasuryMovement->load('client');
+        }
+
+        // Validar que client existe y tiene accounting habilitado
+        if (! $treasuryMovement->client || ! $treasuryMovement->client->accounting_enabled) {
+            \Log::warning('Accounting not enabled for client', [
+                'client_id' => $treasuryMovement->client_id,
+                'treasury_movement_id' => $treasuryMovement->id,
+            ]);
+
+            return false;
+        }
+
+        return true;
     }
 }
