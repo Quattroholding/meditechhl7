@@ -61,17 +61,7 @@
                                     </td>
                                     <td data-column="account_type" data-priority="3" data-label="Tipo">
                                         <span class="cell-content">
-                                            @php
-                                                $typeLabels = [
-                                                    'asset' => 'Activo',
-                                                    'liability' => 'Pasivo',
-                                                    'equity' => 'Patrimonio',
-                                                    'income' => 'Ingreso',
-                                                    'expense' => 'Gasto',
-                                                    'cost' => 'Costo',
-                                                ];
-                                            @endphp
-                                            {{ $typeLabels[$account->account_type] ?? $account->account_type }}
+                                            {{ $account->account_type->label() }}
                                         </span>
                                     </td>
                                     <td data-column="level" data-priority="4" data-label="Nivel">
