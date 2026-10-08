@@ -62,6 +62,17 @@ class ProcessApprovedDocumentJob implements ShouldQueue
                 return;
             }
 
+            // Check if accounting is enabled for financial document processing
+            if (! $this->shouldProcess($document)) {
+                Log::info('ProcessApprovedDocumentJob: Accounting not enabled for document processing', [
+                    'document_id' => $document->id,
+                    'type' => $document->document_type->value,
+                    'client_id' => $document->client_id,
+                ]);
+
+                return;
+            }
+
             Log::info('ProcessApprovedDocumentJob: Starting processing', [
                 'document_id' => $document->id,
                 'type' => $document->document_type->value,
@@ -144,5 +155,41 @@ class ProcessApprovedDocumentJob implements ShouldQueue
         // For now, use SupplierInvoiceProcessor for OTRO documents
         // In future, could check extracted_data to determine the correct processor
         return new SupplierInvoiceProcessor;
+    }
+
+    /**
+     * Check if document should be processed based on accounting settings
+     * Some document types (like supplier invoices) require accounting to be enabled
+     */
+    private function shouldProcess(DocumentUpload $document): bool
+    {
+        // Determine if this document type requires accounting
+        $requiresAccounting = match ($document->document_type) {
+            DocumentType::OTRO => true, // OTRO documents are typically supplier invoices
+            default => false, // Other document types don't require accounting
+        };
+
+        // If accounting is not required, always process
+        if (! $requiresAccounting) {
+            return true;
+        }
+
+        // Load client relation if not already loaded
+        if (! $document->relationLoaded('client')) {
+            $document->load('client');
+        }
+
+        // Check if client has accounting enabled
+        if (! $document->client?->accounting_enabled) {
+            Log::warning('Document processing skipped: accounting not enabled for client', [
+                'document_id' => $document->id,
+                'client_id' => $document->client_id,
+                'document_type' => $document->document_type->value,
+            ]);
+
+            return false;
+        }
+
+        return true;
     }
 }

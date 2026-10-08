@@ -22,6 +22,16 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
                 'client_id' => $document->client_id,
             ]);
 
+            // Validate accounting is enabled for this client
+            if (! $this->shouldProcess($document)) {
+                $this->logStep('Supplier invoice processing skipped: accounting not enabled', [
+                    'document_id' => $document->id,
+                    'client_id' => $document->client_id,
+                ]);
+
+                return false;
+            }
+
             // Validate document is approved
             if ($document->approval()->where('approved_at', '!=', null)->doesntExist()) {
                 throw new \RuntimeException('Document is not approved');
@@ -264,5 +274,24 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
         }
 
         return now();
+    }
+
+    /**
+     * Validate if supplier invoice processing should proceed
+     * Checks if accounting is enabled for the client
+     */
+    private function shouldProcess(DocumentUpload $document): bool
+    {
+        // Load client relation if not already loaded
+        if (! $document->relationLoaded('client')) {
+            $document->load('client');
+        }
+
+        // Supplier invoice processing requires accounting to be enabled
+        if (! $document->client?->accounting_enabled) {
+            return false;
+        }
+
+        return true;
     }
 }
