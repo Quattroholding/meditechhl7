@@ -7,6 +7,7 @@ use App\Models\Accounting\AccountingAccount;
 use App\Models\Client;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class AccountingAccountSeeder extends Seeder
 {
@@ -17,7 +18,6 @@ class AccountingAccountSeeder extends Seeder
     {
         // Get admin user
         $adminUser = User::where('email', 'rgasperi@smartcarebilling.com')->first()
-            ?? User::where('email', 'atenorio@smartcarebilling.com')->first()
             ?? User::whereHas('roles', fn ($q) => $q->where('name', 'admin'))->first()
             ?? User::first();
 
@@ -58,6 +58,7 @@ class AccountingAccountSeeder extends Seeder
                 }
 
                 AccountingAccount::create([
+                    'uuid' => Str::uuid(),
                     'client_id' => $client->id,
                     'code' => $accountData['code'],
                     'name' => $accountData['name'],
