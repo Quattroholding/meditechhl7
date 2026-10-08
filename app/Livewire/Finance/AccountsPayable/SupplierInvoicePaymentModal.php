@@ -82,7 +82,7 @@ class SupplierInvoicePaymentModal extends Component
         $this->validate();
 
         if (! $this->invoice) {
-            $this->dispatch('showToastr',
+            $this->dispatch('showToastrSupplierPaymentModal',
                 type: 'error',
                 message: 'Factura no encontrada.',
             );
@@ -99,7 +99,7 @@ class SupplierInvoicePaymentModal extends Component
 
         // Validate amount doesn't exceed balance
         if ($this->amount > $this->invoice->balance) {
-            $this->addError('amount', 'El monto no puede ser mayor al saldo pendiente de B/. '.number_format($this->invoice->balance, 2));
+            $this->addError('amount', 'El monto no puede ser mayor al saldo pendiente de $/. '.number_format($this->invoice->balance, 2));
 
             return;
         }
@@ -163,7 +163,7 @@ class SupplierInvoicePaymentModal extends Component
                 ]);
             });
 
-            $this->dispatch('showToastr',
+            $this->dispatch('showToastrSupplierPaymentModal',
                 type: 'success',
                 message: '¡Pago registrado exitosamente!',
             );
@@ -173,7 +173,7 @@ class SupplierInvoicePaymentModal extends Component
 
         } catch (\Exception $e) {
             Log::error('Error registering supplier invoice payment', ['error' => $e->getMessage()]);
-            $this->dispatch('showToastr',
+            $this->dispatch('showToastrSupplierPaymentModal',
                 type: 'error',
                 message: 'Error al registrar el pago: '.$e->getMessage(),
             );
