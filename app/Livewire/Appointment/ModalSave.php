@@ -623,6 +623,18 @@ class ModalSave extends Component
                 $client_id = $rooms->branch->client_id;
             }
 
+            // Validar que el usuario pueda agendar citas nuevas
+            if (! $this->appointment && ! Auth::user()->canScheduleAppointments()) {
+                $this->closeModal();
+                session()->flash('message.error', 'No puede agendar citas. Su suscripción está vencida o suspendida.');
+                $this->dispatch('showToastrModalSave',
+                    type: 'error',
+                    message: 'No puede agendar citas. Su suscripción está vencida o suspendida.',
+                );
+
+                return;
+            }
+
             $start = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
             $original_requested_datetime = null;
             $practitioner_suggested_datetime = null;
