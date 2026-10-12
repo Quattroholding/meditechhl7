@@ -195,6 +195,7 @@ class AppointmentController extends Controller
                 ]);
                 $app->addPatientToPractitionerClient();
                 $app->notifyPractitionerAboutProposal();
+                $app->notifyRececeptionistsAboutProposal();
             }
 
             return response()->json([

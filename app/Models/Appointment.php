@@ -314,6 +314,20 @@ class Appointment extends BaseModel
         );
     }
 
+    public function notifyRececeptionistsAboutProposal()
+    {
+        // Obtener receptionistas asociados a este cliente
+        $receptionists = User::whereHas('roles', fn ($q) => $q->where('name', 'recepcionista'))
+            ->whereHas('clients', fn ($q) => $q->where('client_id', $this->client_id))
+            ->get();
+
+        foreach ($receptionists as $receptionist) {
+            $receptionist->notify(
+                new AppointmentProposedNotification($this)
+            );
+        }
+    }
+
     // Notificación al practitioner sobre cita agendada
     public function notifyPractitionerAboutBooking()
     {
