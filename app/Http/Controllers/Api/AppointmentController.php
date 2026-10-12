@@ -196,6 +196,7 @@ class AppointmentController extends Controller
                 $app->addPatientToPractitionerClient();
                 $app->notifyPractitionerAboutProposal();
                 $app->notifyRececeptionistsAboutProposal();
+                $app->notifyPatientAboutProposal();
             }
 
             return response()->json([
@@ -655,6 +656,8 @@ class AppointmentController extends Controller
                 $appointment->notifyPractitionerAboutProposal();
                 // Notificación a recepcionistas del cliente
                 $appointment->notifyRececeptionistsAboutProposal();
+                // Notificación al paciente que su cita está pendiente de confirmación
+                $appointment->notifyPatientAboutProposal();
             }
 
             // Load relationships

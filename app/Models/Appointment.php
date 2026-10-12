@@ -343,6 +343,13 @@ class Appointment extends BaseModel
         );
     }
 
+    public function notifyPatientAboutProposal()
+    {
+        $this->patient->notify(
+            new AppointmentProposedNotification($this)
+        );
+    }
+
     public function wasDateTimeChanged(): bool
     {
         return $this->practitioner_suggested_datetime &&
