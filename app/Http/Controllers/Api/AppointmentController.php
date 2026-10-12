@@ -631,7 +631,7 @@ class AppointmentController extends Controller
                 'practitioner_id' => $request->practitioner_id,
                 'start' => $startTime,
                 'end' => $endTime,
-                'status' => 'booked',
+                'status' => 'proposed',
                 'service_type' => $request->service_type,
                 'description' => $request->description,
                 'minutes_duration' => $request->minutes_duration,
@@ -651,12 +651,10 @@ class AppointmentController extends Controller
                     'user_id' => 1, // Asume que estás usando autenticación
                 ]);
                 $appointment->addPatientToPractitionerClient();
-                // Notificación al paciente sobre cita agendada
-                $appointment->notifyPatientAboutBooking();
-                // Notificación al médico con botones de acción
-                $appointment->notifyPractitionerAboutBooking();
-                // Programar recordatorio 2 horas antes de la cita
-                $appointment->notifyPatientAboutAppointment();
+                // Notificación al médico sobre cita propuesta
+                $appointment->notifyPractitionerAboutProposal();
+                // Notificación a recepcionistas del cliente
+                $appointment->notifyRececeptionistsAboutProposal();
             }
 
             // Load relationships
