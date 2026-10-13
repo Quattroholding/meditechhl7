@@ -29,57 +29,41 @@ class UserFormRequest extends FormRequest
 
         // Reglas de validación base
         $rules['rol'] = 'required|integer';
-        $rules['clients'] = 'required|array|min:1';
+        $rules['clients'] = [
+            'required',
+            'array',
+            'min:1',
+        ];
+        $rules['clients.*'] = 'required|integer|exists:clients,id';
+        $rules['password'] = [
+            'required',
+            'string',
+            'confirmed',
+            'min:4',
+            /*'regex:/[a-z]/',      // debe contener al menos una letra minúscula
+            'regex:/[A-Z]/',      // debe contener al menos una letra mayúscula
+            'regex:/[0-9]/',      // debe contener al menos un número*/
+        ];
         switch ($rol) {
             case '2':
                 /* ------VALIDACIÓN PARA DOCTOR------ */
                 $rules['first_name'] = 'required|string|max:255';
                 $rules['last_name'] = 'required|string|max:255';
                 $rules['email'] = 'required|email|unique:users,email'.($userId ? ','.$userId : '');
-                /*$rules['password'] = [
-                    'required',
-                    'string',
-                    'confirmed',
-                    'min:8',
-                    'regex:/[a-z]/',      // debe contener al menos una letra minúscula
-                    'regex:/[A-Z]/',      // debe contener al menos una letra mayúscula
-                    'regex:/[0-9]/',      // debe contener al menos un número
-                ];*/
                 $rules['id_number'] = 'required|string|max:255|unique:practitioners,identifier'.($this->getPractitionerId($userId) ? ','.$this->getPractitionerId($userId) : '');
                 $rules['registry'] = 'nullable|string|max:60|unique:practitioners,registry'.($this->getPractitionerId($userId) ? ','.$this->getPractitionerId($userId) : '');
-                $rules['clients'] = 'required|array|min:1';
                 break;
             case '3':
                 /* ------VALIDACIÓN PARA RECEPCIONISTA------ */
                 $rules['first_name'] = 'required|string|max:255';
                 $rules['last_name'] = 'required|string|max:255';
                 $rules['email'] = 'required|email|unique:users,email';
-                $rules['password'] = [
-                    'required',
-                    'string',
-                    'confirmed',
-                    'min:8',
-                    'regex:/[a-z]/',      // debe contener al menos una letra minúscula
-                    'regex:/[A-Z]/',      // debe contener al menos una letra mayúscula
-                    'regex:/[0-9]/',      // debe contener al menos un número
-                ];
-                $rules['clients'] = 'required|array|min:1';
                 break;
             case '5':
                 $rules['first_name'] = 'required|string|max:255';
                 $rules['last_name'] = 'required|string|max:255';
                 $rules['email'] = 'required|email|unique:users,email';
-                $rules['password'] = [
-                    'required',
-                    'string',
-                    'confirmed',
-                    'min:8',
-                    'regex:/[a-z]/',      // debe contener al menos una letra minúscula
-                    'regex:/[A-Z]/',      // debe contener al menos una letra mayúscula
-                    'regex:/[0-9]/',      // debe contener al menos un número
-                ];
                 $rules['avatar'] = 'image|mimes:jpeg,png,jpg,gif|max:2048';
-                $rules['clients'] = 'required|array|min:1';
                 break;
             default:
                 break;
@@ -101,7 +85,11 @@ class UserFormRequest extends FormRequest
             'first_name.required' => 'El nombre es obligatorio.',
             'last_name.required' => 'El apellido es obligatorio.',
             'clients.required' => 'Debe seleccionar al menos un cliente.',
+            'clients.array' => 'Los clientes deben ser un conjunto válido.',
             'clients.min' => 'Debe seleccionar al menos un cliente.',
+            'clients.*.required' => 'Todos los clientes deben ser válidos.',
+            'clients.*.integer' => 'Todos los clientes deben ser válidos.',
+            'clients.*.exists' => 'Uno o más de los clientes seleccionados no existen.',
             'avatar.required' => 'La imagen de perfil es obligatoria.',
             'avatar.image' => 'El archivo debe ser una imagen.',
             'avatar.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg o gif.',
@@ -111,6 +99,18 @@ class UserFormRequest extends FormRequest
             'id_number.unique' => 'Este número de identificación ya está registrado.',
             'registry.unique' => 'Este número de registro médico ya está registrado.',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        // Asegurar que clients sea un array
+        $clients = $this->input('clients');
+        if ($clients === null || $clients === '' || (is_string($clients) && empty($clients))) {
+            $this->merge(['clients' => []]);
+        } elseif (is_string($clients)) {
+            // Si viene como string, convertir a array
+            $this->merge(['clients' => [$clients]]);
+        }
     }
 
     protected function failedValidation(Validator $validator)
