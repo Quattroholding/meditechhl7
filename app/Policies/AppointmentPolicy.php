@@ -84,7 +84,9 @@ class AppointmentPolicy
 
     public function edit(User $user, Appointment $appointment): bool
     {
-        return $this->booked($user, $appointment) or $this->arrived($user, $appointment) or ($user->hasRole('paciente') && $appointment->status->value == 'proposed');
+        return $this->booked($user, $appointment) or $this->arrived($user, $appointment) or
+               ($user->hasRole('paciente') && $appointment->status->value == 'proposed') or
+               ($user->hasRole('recepcionista') && $appointment->status->value == 'proposed');
     }
 
     public function delete(User $user, Appointment $appointment): bool
