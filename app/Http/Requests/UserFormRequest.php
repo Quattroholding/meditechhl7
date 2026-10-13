@@ -29,6 +29,7 @@ class UserFormRequest extends FormRequest
 
         // Reglas de validación base
         $rules['rol'] = 'required|integer';
+        $rules['clients'] = 'required|array|min:1';
         switch ($rol) {
             case '2':
                 /* ------VALIDACIÓN PARA DOCTOR------ */
