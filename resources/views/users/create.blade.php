@@ -169,20 +169,20 @@
                                 <div class="col-12 col-md-6 col-xl-4" style="display: none" id="client_id">
                                     <!-- CLIENTS -->
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="client" :value="__('user.client')" />
+                                        <x-input-label for="client" :value="__('user.client')" required />
                                         @if(auth()->user()->clients()->count()==1 and !auth()->user()->hasRole('admin'))
                                             <input type="text" name="cliente_default" value="{{auth()->user()->getCurrentClient()->name}}" readonly class="form-control">
                                             <input type="hidden" name="clients[]" value="{{auth()->user()->getCurrentClient()->id}}" readonly class="form-control">
                                         @else
                                             @if(auth()->user()->hasRole('admin'))
-                                                <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" class="block  w-full"/>
+                                                <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" class="block w-full" multiple />
                                             @elseif(auth()->user()->hasRole('doctor') or auth()->user()->hasRole('admin client'))
-                                                <x-select-input name="clients[{{auth()->user()->getCurrentClient()->id}}]" :options="auth()->user()->clients()->pluck('clients.name','clients.id')->toArray()" multiple class="block  w-full"/>
+                                                <x-select-input name="clients[]" :options="auth()->user()->clients()->pluck('clients.name','clients.id')->toArray()" class="block w-full" multiple />
                                             @else
-                                                <x-select-input name="clients[]" :options="\App\Models\Client::whereIn('id',[3,5])->pluck('name','id')->toArray()" class="block  w-full"/>
+                                                <x-select-input name="clients[]" :options="\App\Models\Client::whereIn('id',[3,5])->pluck('name','id')->toArray()" class="block w-full" multiple />
                                             @endif
-                                            <x-input-error class="mt-2" :messages="$errors->get('clients')" />
                                         @endif
+                                        <x-input-error class="mt-2" :messages="$errors->get('clients')" />
                                     </div>
                                 </div>
                             </div>
