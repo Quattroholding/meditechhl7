@@ -40,7 +40,8 @@ class AppointmentPolicy
     public function booked(User $user, Appointment $appointment): bool
     {
         return in_array($appointment->status->value, ['pending', 'proposed'])
-            && (($user->hasRole('doctor') && $user->practitioner->id == $appointment->practitioner_id) or $user->hasRole('recepcionista'));
+            && ($user->hasAnyRole('doctor', 'recepcionista', 'asistente medico') &&
+                (! $user->hasRole('doctor') || $user->practitioner->id == $appointment->practitioner_id));
     }
 
     public function arrived(User $user, Appointment $appointment): bool

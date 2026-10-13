@@ -29,8 +29,19 @@ return new class extends Migration
         if (Schema::hasColumn('banks', 'uuid')) {
             Schema::table('banks', function (Blueprint $table) {
                 // Only add unique constraint if it doesn't exist
-                $indexExists = DB::select("SELECT 1 FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'banks' AND COLUMN_NAME = 'uuid' AND SEQ_IN_INDEX = 1 AND NON_UNIQUE = 0", [DB::getDatabaseName()]);
-                if (empty($indexExists)) {
+                $indexExists = false;
+                if (DB::getDriverName() === 'mysql') {
+                    $indexExists = ! empty(DB::select("SELECT 1 FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'banks' AND COLUMN_NAME = 'uuid' AND SEQ_IN_INDEX = 1 AND NON_UNIQUE = 0", [DB::getDatabaseName()]));
+                } else {
+                    // For SQLite and other databases, check if constraint exists
+                    try {
+                        DB::table('banks')->whereNull('uuid')->limit(1)->first();
+                    } catch (\Exception $e) {
+                        // Constraint exists
+                        $indexExists = true;
+                    }
+                }
+                if (! $indexExists) {
                     $table->unique('uuid');
                 }
             });

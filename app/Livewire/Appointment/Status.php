@@ -89,7 +89,7 @@ class Status extends Component
             new_status: $newStatus
         );
 
-        if ($current_status == 'proposed' && $newStatus == 'booked') {
+        if ($current_status->value == 'proposed' && $newStatus == 'booked') {
             $appointment = $this->appointment;
             dispatch(function () use ($appointment) {
                 $appointment->notifyPatientAboutConfirmation();

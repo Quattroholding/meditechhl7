@@ -219,6 +219,7 @@ class ModalSave extends Component
         $this->appointment_time = $time ?? '';
         $this->duration = 30;
         $this->status = 'booked';
+        $this->confirm = false;
         $this->assisted_by = '';
         $this->assistants = [];
 
@@ -626,7 +627,10 @@ class ModalSave extends Component
             $start = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
             $original_requested_datetime = null;
             $practitioner_suggested_datetime = null;
+            $originalStart = null;
+            $newStart = null;
             $hasDateTimeChanged = false;
+            $hasAssistantChanged = false;
 
             if ($this->appointment) {
                 $original_requested_datetime = $this->appointment->original_requested_datetime;
@@ -637,8 +641,6 @@ class ModalSave extends Component
                 $hasDateTimeChanged = ! $originalStart->equalTo($newStart);
                 // Detectar si cambió el asistente médico
                 $hasAssistantChanged = $this->appointment->assisted_by !== $this->assisted_by;
-            } else {
-                $hasAssistantChanged = false;
             }
 
             // Verificar disponibilidad si es nueva cita, si cambió fecha/hora o si cambió el asistente
@@ -706,12 +708,52 @@ class ModalSave extends Component
                     }
                 }
 
+                // Si es una confirmación de cita propuesta, notificar al paciente
                 if ($this->confirm) {
                     $this->appointment->notifyPatientAboutConfirmation();
-                }
 
-                // Si cambió la fecha/hora y la cita está confirmada, notificar al paciente
-                if ($hasDateTimeChanged && $this->appointment->status->value === 'booked') {
+                    // Si además cambió la fecha/hora al confirmar, notificar sobre reprogramación
+                    if ($hasDateTimeChanged) {
+                        $this->appointment->notifyPatientAboutReschedule($originalStart, $this->notes);
+
+                        // Notificar al médico si quien confirma no es el médico
+                        $currentUser = auth()->user();
+                        $isPractitioner = $currentUser->hasRole('doctor') &&
+                                        $this->appointment->practitioner->user_id === $currentUser->id;
+
+                        if (! $isPractitioner) {
+                            $changedBy = $currentUser->first_name.' '.$currentUser->last_name;
+                            $this->appointment->notifyPractitionerAboutReschedule($originalStart, $this->notes, $changedBy);
+
+                            Log::info('Médico notificado sobre reprogramación al confirmar cita', [
+                                'appointment_id' => $this->appointment->id,
+                                'practitioner_id' => $this->appointment->practitioner_id,
+                                'changed_by' => $changedBy,
+                                'changed_by_user_id' => $currentUser->id,
+                            ]);
+                        }
+
+                        // Clear reminder tracking and schedule new reminder
+                        $this->appointment->clearReminderTracking();
+                        $this->appointment->notifyPatientAboutAppointment();
+
+                        Log::info('Confirmación con reprogramación - notificaciones enviadas', [
+                            'appointment_id' => $this->appointment->id,
+                            'original_datetime' => $originalStart->format('Y-m-d H:i:s'),
+                            'new_datetime' => $newStart->format('Y-m-d H:i:s'),
+                        ]);
+                    } else {
+                        // Confirmación sin cambio de horario, programar recordatorio
+                        $this->appointment->notifyPatientAboutAppointment();
+
+                        Log::info('Confirmación de cita sin cambios de horario', [
+                            'appointment_id' => $this->appointment->id,
+                            'appointment_datetime' => $this->appointment->start->format('Y-m-d H:i:s'),
+                        ]);
+                    }
+                }
+                // Si cambió la fecha/hora pero NO es confirmación (cita ya estava booked), notificar reprogramación
+                elseif ($hasDateTimeChanged && $this->appointment->status->value === 'booked') {
 
                     $this->appointment->notifyPatientAboutReschedule($originalStart, $this->notes);
 
@@ -745,7 +787,7 @@ class ModalSave extends Component
                     ]);
                 }
                 // Si la cita está confirmada (booked) pero no cambió la hora, enviar notificaciones normales
-                elseif ($this->appointment->status === 'booked' && ! $hasDateTimeChanged) {
+                elseif ($this->appointment->status->value === 'booked' && ! $hasDateTimeChanged) {
                     // Notificación inmediata de confirmación
                     $this->appointment->notifyPatientAboutBooking();
                     // Programar recordatorio para 2 horas antes
@@ -847,15 +889,9 @@ class ModalSave extends Component
         $this->appointment = Appointment::find($appointment_id);
         $this->title = 'Actualizar Cita';
         $this->buttonSaveTitle = 'Actualizar Cita';
+        $this->confirm = false;
 
         if ($this->appointment) {
-
-            if ($this->appointment->status == 'proposed' && auth()->user()->can('booked', $this->appointment)) {
-                $this->title = 'Confirmar Cita';
-                $this->buttonSaveTitle = 'Confirmar Cita';
-                $this->confirm = true;
-                $this->status = 'booked';
-            }
 
             $practitioner = Practitioner::find($this->appointment->practitioner_id);
 
@@ -888,7 +924,7 @@ class ModalSave extends Component
             $this->appointment_date = $this->appointment->start->format('Y-m-d');
             $this->appointment_time = $this->appointment->start->format('H:i');
             $this->duration = $this->appointment->minutes_duration;
-            $this->status = $this->appointment->status;
+            $this->status = $this->appointment->status->value;
             $this->medical_speciality_id = $this->appointment->medical_speciality_id;
             $this->consultation_type = $this->appointment->consultation_type ?? 'presencial';
             $this->consulting_room_id = $this->appointment->consulting_room_id;
@@ -900,6 +936,14 @@ class ModalSave extends Component
             $this->canEdit = auth()->user()->can('edit', $this->appointment);
             $this->checkVirtualAppointmentsEnabled();
             $this->loadAssistants();
+
+            // Detectar si es una confirmación de cita propuesta
+            if ($this->status === 'proposed' && auth()->user()->can('booked', $this->appointment)) {
+                $this->title = 'Confirmar Cita';
+                $this->buttonSaveTitle = 'Confirmar Cita';
+                $this->confirm = true;
+            }
+
             $this->showModal = true;
             // $this->dispatch('cita-message', message: 'Cita actualizada exitosamente.');
         }
