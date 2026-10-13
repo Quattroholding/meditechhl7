@@ -50,11 +50,18 @@ class UserController extends Controller
                 throw new \ErrorException(__('user.plan_error_message'));
             }
 
+            // Obtener clientes (ya validados por UserFormRequest)
+            $clients = $request->input('clients', []);
+            if (empty($clients)) {
+                throw new \ErrorException('Debe seleccionar al menos un cliente para el usuario.');
+            }
+
             $model = new User;
-            $model->fill($request->all());
+            // Solo llenar los campos seguros (excluir 'clients' que es para relación)
+            $model->fill($request->except('clients'));
             $model->created_by = auth()->user()->id;
             $temporaryPassword = $request->password;
-            $model->default_client_id = $request->clients[0] ?? auth()->user()->default_client_id;
+            $model->default_client_id = $clients[0];
             // SE ASIGNA EL ROL SEGÚN EL ID
             $rol = Rol::find($request->rol);
 
@@ -160,14 +167,17 @@ class UserController extends Controller
 
         try {
             $user = User::find($id);
-            $fields = $request->except('id');
+            $fields = $request->except('id', 'clients');
             if (empty($request->password)) {
                 unset($fields['password']);
             }
             $user->fill($fields);
 
-            if ($request->has('clients')) {
-                $user->clients()->sync($request->get('clients'));
+            if ($request->has('clients') && ! empty($request->input('clients'))) {
+                $clientIds = $request->input('clients');
+                $user->clients()->sync($clientIds);
+                // Asignar el primer cliente como default
+                $user->default_client_id = $clientIds[0] ?? $user->default_client_id;
             }
 
             if ($request->file('avatar')) {
@@ -175,7 +185,6 @@ class UserController extends Controller
                 $filename = 'profile_picture_'.$user->id;
                 $user->profile_picture = $service->uploadSingleFile($request->file('avatar'), 'users', $filename);
             }
-            $user->default_client_id = $request->clients[0] ?? 1;
 
             if ($user->save()) {
 
@@ -212,7 +221,6 @@ class UserController extends Controller
 
     public function activate(User $user)
     {
-        $user = User::find($id);
         $user->activate();
         session()->flash('message.succes', 'usuario activado correctamente');
 
