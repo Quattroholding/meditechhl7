@@ -202,13 +202,16 @@ class EncounterObserver
             }
 
             // Check for unsent prescriptions
-            $hasUnsentMedications = $encounter->medicationRequests()
+            $unsentMedications = $encounter->medicationRequests()
                 ->whereNull('notification_sent_at')
-                ->exists();
+                ->get();
 
-            $hasUnsentServiceRequests = $encounter->serviceRequests()
+            $unsentServiceRequests = $encounter->serviceRequests()
                 ->whereNull('notification_sent_at')
-                ->exists();
+                ->get();
+
+            $hasUnsentMedications = $unsentMedications->isNotEmpty();
+            $hasUnsentServiceRequests = $unsentServiceRequests->isNotEmpty();
 
             // If no unsent prescriptions, skip
             if (! $hasUnsentMedications && ! $hasUnsentServiceRequests) {
@@ -218,6 +221,16 @@ class EncounterObserver
                 ]);
 
                 return;
+            }
+
+            // IMPORTANTE: Marcar como enviadas ANTES de enviar notificaciones
+            // Esto evita que el observer envíe duplicados si el encounter se actualiza múltiples veces
+            if ($hasUnsentMedications) {
+                $pdfService->markMedicationsAsSent($encounter);
+            }
+
+            if ($hasUnsentServiceRequests) {
+                $pdfService->markServiceRequestsAsSent($encounter);
             }
 
             // Send notification to patient
@@ -274,15 +287,6 @@ class EncounterObserver
                     'receptionists_notified' => $notifiedCount,
                     'total_receptionists' => $receptionists->count(),
                 ]);
-            }
-
-            // Mark prescriptions as sent
-            if ($hasUnsentMedications) {
-                $pdfService->markMedicationsAsSent($encounter);
-            }
-
-            if ($hasUnsentServiceRequests) {
-                $pdfService->markServiceRequestsAsSent($encounter);
             }
 
             $this->safeLog('info', 'Notificacion de recetas medicas completada', [
