@@ -8,6 +8,7 @@ use App\Models\Scopes\TreasuryMovementScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class TreasuryMovement extends BaseModel
 {
@@ -59,6 +60,11 @@ class TreasuryMovement extends BaseModel
     public function journalEntry(): BelongsTo
     {
         return $this->belongsTo(JournalEntry::class);
+    }
+
+    public function sourceModel(): MorphTo
+    {
+        return $this->morphTo('source');
     }
 
     public function createdBy(): BelongsTo
