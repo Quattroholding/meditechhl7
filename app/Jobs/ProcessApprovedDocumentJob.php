@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
 use App\Models\DocumentUpload;
+use App\Services\DocumentProcessors\ContractProcessor;
 use App\Services\DocumentProcessors\DiscardDocumentProcessor;
 use App\Services\DocumentProcessors\InventoryDocumentProcessor;
 use App\Services\DocumentProcessors\RegisterElectricityBillProcessor;
@@ -139,6 +140,7 @@ class ProcessApprovedDocumentJob implements ShouldQueue
     {
         return match ($type) {
             DocumentType::INVENTORY => new InventoryDocumentProcessor,
+            DocumentType::CONTRACT => new ContractProcessor,
             DocumentType::ENSA => new SupplierInvoiceProcessor,
             DocumentType::NATURGY => new SupplierInvoiceProcessor,
             DocumentType::IDAAN => new SupplierInvoiceProcessor,
@@ -159,13 +161,14 @@ class ProcessApprovedDocumentJob implements ShouldQueue
 
     /**
      * Check if document should be processed based on accounting settings
-     * Some document types (like supplier invoices) require accounting to be enabled
+     * Some document types (like supplier invoices and contracts) require accounting to be enabled
      */
     private function shouldProcess(DocumentUpload $document): bool
     {
         // Determine if this document type requires accounting
         $requiresAccounting = match ($document->document_type) {
             DocumentType::OTRO => true, // OTRO documents are typically supplier invoices
+            DocumentType::CONTRACT => true, // CONTRACT documents generate supplier invoices
             default => false, // Other document types don't require accounting
         };
 

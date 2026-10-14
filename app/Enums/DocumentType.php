@@ -6,11 +6,9 @@ enum DocumentType: string
 {
     case INVENTORY = 'inventory';
     case ENSA = 'ensa';
-
     case NATURGY = 'naturgy';
-
     case IDAAN = 'idaan';
-
+    case CONTRACT = 'contract';
     case OTRO = 'otro';
 
     public function label(): string
@@ -20,6 +18,7 @@ enum DocumentType: string
             self::ENSA => 'ENSA',
             self::NATURGY => 'NATURGY',
             self::IDAAN => 'IDAAN',
+            self::CONTRACT => 'CONTRATO',
             self::OTRO => 'OTRO',
         };
     }

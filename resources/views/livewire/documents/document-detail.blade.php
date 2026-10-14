@@ -96,6 +96,8 @@
     <!-- Document Detail - Include based on Type -->
     @if ($document->document_type->value === 'inventory')
         @include('livewire.documents.document-detail-inventory')
+    @elseif ($document->document_type->value === 'contract')
+        @include('livewire.documents.document-detail-contract')
     @else
         <!-- Supplier Information (for OTRO type documents) -->
         @if ($document->document_type->value === 'otro')

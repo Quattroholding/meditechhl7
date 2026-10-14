@@ -319,7 +319,7 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
             'total_amount' => $totalAmount,
             'paid_amount' => 0,
             'balance' => $totalAmount,
-            'status' => SupplierInvoiceStatus::REGISTERED,
+            'status' => SupplierInvoiceStatus::REGISTERED->value,
             'document_path' => $document->file_path,
             'document_filename' => $document->original_filename,
             'created_by' => auth()->id() ?? 1,
@@ -331,7 +331,7 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
 
         // Approve the invoice to trigger Observer and generate journal entry
         $invoice->update([
-            'status' => SupplierInvoiceStatus::APPROVED,
+            'status' => SupplierInvoiceStatus::APPROVED->value,
             'approved_at' => now(),
             'approved_by' => auth()->id() ?? 1,
         ]);

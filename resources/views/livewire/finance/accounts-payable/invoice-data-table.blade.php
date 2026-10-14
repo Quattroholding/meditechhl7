@@ -73,10 +73,9 @@
                                 <td data-column="balance" data-priority="7" data-label="Balance">
                                     <span class="cell-content font-weight-bold">${{ number_format($invoice->balance, 2) }}</span>
                                 </td>
-                                <td data-column="status" data-priority="8" data-label="Estatus">
-                                    <span class="cell-content badge me-1
-                                        {{ $invoice->status === 'draft' ? 'bg-warning' : ($invoice->status === 'approved' ? 'bg-info' : ($invoice->status === 'paid' ? 'bg-success' : ($invoice->status === 'overdue' ? 'bg-danger' : 'bg-secondary'))) }}">
-                                        {{ ucfirst(str_replace('_', ' ', $invoice->status)) }}
+                                <td data-column="status" data-priority="7" data-label="Estado">
+                                    <span class="cell-content badge me-1 {{ $invoice->status->badgeClass() }}">
+                                        {{ $invoice->status->label() }}
                                     </span>
                                 </td>
                                 @canany(['payables.invoices.create', 'payables.invoices.approve', 'payables.payments.process'])
@@ -85,17 +84,17 @@
                                             <a href="{{ route('finance.payables.invoices.show', $invoice->id) }}" class="btn btn-info btn-sm" title="Ver">
                                                 <i class="fa-solid fa-eye m-r-5 text-white"></i>
                                             </a>
-                                            @if($invoice->status === 'draft' && auth()->user()->can('payables.invoices.create'))
+                                            @if($invoice->status->value === 'draft' && auth()->user()->can('payables.invoices.create'))
                                                 <a href="{{ route('finance.payables.invoices.edit', $invoice->id) }}" class="btn btn-success btn-sm" title="Editar">
                                                     <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                             @endif
-                                            @if($invoice->status === 'registered' && auth()->user()->can('payables.invoices.approve'))
+                                            @if($invoice->status->value === 'registered' && auth()->user()->can('payables.invoices.approve'))
                                                 <button wire:click="approveInvoice({{ $invoice->id }})" class="btn btn-warning btn-sm" title="Aprobar">
                                                     <i class="fa-solid fa-check m-r-5"></i>
                                                 </button>
                                             @endif
-                                            @if(($invoice->status === 'approved' || $invoice->status === 'partial') && auth()->user()->can('payables.payments.process'))
+                                            @if(($invoice->status->value === 'approved' || $invoice->status->value === 'partial') && auth()->user()->can('payables.payments.process'))
                                                 <button wire:click="schedulePayment({{ $invoice->id }})" class="btn btn-warning btn-sm" title="Programar Pago">
                                                     <i class="fa-solid fa-calendar m-r-5"></i>
                                                 </button>

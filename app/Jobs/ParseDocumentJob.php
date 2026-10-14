@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\DocumentType;
 use App\Models\DocumentUpload;
 use App\Services\DocumentParsers\AnthropicDocumentParser;
+use App\Services\DocumentParsers\ContractDocumentParser;
 use App\Services\DocumentParsers\InventoryAiDocumentParser;
 use App\Services\GoogleDocumentAIService;
 use Illuminate\Bus\Queueable;
@@ -327,6 +328,7 @@ class ParseDocumentJob implements ShouldQueue
     {
         return match ($type) {
             DocumentType::INVENTORY => new InventoryAiDocumentParser,
+            DocumentType::CONTRACT => new ContractDocumentParser,
             DocumentType::ENSA => new AnthropicDocumentParser,
             DocumentType::IDAAN => new AnthropicDocumentParser,
             DocumentType::NATURGY => new AnthropicDocumentParser,

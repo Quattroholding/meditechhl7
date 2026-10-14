@@ -68,7 +68,7 @@ class SupplierInvoiceDataTable extends Component
             return;
         }
 
-        $invoice->update(['status' => SupplierInvoiceStatus::APPROVED, 'approved_at' => now(), 'approved_by' => auth()->id()]);
+        $invoice->update(['status' => SupplierInvoiceStatus::APPROVED->value, 'approved_at' => now(), 'approved_by' => auth()->id()]);
         $this->dispatch('invoice-updated');
     }
 
@@ -76,7 +76,7 @@ class SupplierInvoiceDataTable extends Component
     {
         $this->authorize('payables.invoices.create');
 
-        $invoice->update(['status' => SupplierInvoiceStatus::CANCELLED]);
+        $invoice->update(['status' => SupplierInvoiceStatus::CANCELLED->value]);
         $this->dispatch('invoice-updated');
     }
 

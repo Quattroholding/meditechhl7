@@ -34,7 +34,7 @@ class SupplierInvoiceModal extends Component
     public string $due_date = '';
 
     #[Validate]
-    public string $currency = 'PAB';
+    public string $currency = 'USD';
 
     #[Validate]
     public float $subtotal = 0;

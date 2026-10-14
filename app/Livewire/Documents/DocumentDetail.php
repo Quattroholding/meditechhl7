@@ -43,6 +43,9 @@ class DocumentDetail extends Component
 
     public array $editableFields = [];
 
+    // Contract document properties
+    public array $contractData = [];
+
     public ?string $selectedAction = null;
 
     public array $availableActions = [
@@ -102,6 +105,9 @@ class DocumentDetail extends Component
 
                 // Calculate totals
                 $this->calculateTotals($items);
+            } elseif ($this->document->document_type === DocumentType::CONTRACT) {
+                // For contract documents, load contract-specific data
+                $this->contractData = $extractedData;
             } else {
                 // For non-inventory documents (utility bills, AI-processed), store the bill data
                 // This includes: ensa, idaan, naturgy, otro, and any AI-processed documents
@@ -153,6 +159,7 @@ class DocumentDetail extends Component
                 $this->document->document_type->value,
                 [
                     DocumentType::INVENTORY->value,
+                    DocumentType::CONTRACT->value,
                     'ensa',
                     'idaan',
                     'naturgy',
@@ -209,6 +216,56 @@ class DocumentDetail extends Component
             ]);
         } catch (\Exception $e) {
             \Log::error('Failed to persist generic fields', ['error' => $e->getMessage()]);
+        }
+    }
+
+    private function persistContractFields(): void
+    {
+        try {
+            $parseResult = $this->document->parseResult;
+            $extractedData = json_decode($parseResult->extracted_data, true) ?? [];
+
+            // Update contract fields that user can edit
+            $contractFields = [
+                'contract_type',
+                'contract_number',
+                'contract_title',
+                'start_date',
+                'end_date',
+                'party_1_name',
+                'party_1_type',
+                'party_1_id',
+                'party_2_name',
+                'party_2_type',
+                'party_2_id',
+                'property_address',
+                'property_type',
+                'contract_value',
+                'currency',
+                'payment_frequency',
+                'payment_amount',
+                'renewal_terms',
+                'termination_conditions',
+                'early_termination_penalty',
+                'special_conditions',
+                'signatures_present',
+                'signature_dates',
+            ];
+
+            foreach ($contractFields as $field) {
+                if (isset($this->contractData[$field])) {
+                    $extractedData[$field] = $this->contractData[$field];
+                }
+            }
+
+            $parseResult->update([
+                'extracted_data' => json_encode($extractedData),
+                'manually_edited' => true,
+                'edited_by_user_id' => auth()->id(),
+                'edited_at' => now(),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Failed to persist contract fields', ['error' => $e->getMessage()]);
         }
     }
 
@@ -553,8 +610,10 @@ class DocumentDetail extends Component
         // Get selected indices
         $selectedIndices = array_keys(array_filter($this->selectedItems));
 
-        // Persist generic fields if applicable
-        if ($this->isGenericDocument()) {
+        // Persist fields based on document type
+        if ($this->document->document_type === DocumentType::CONTRACT) {
+            $this->persistContractFields();
+        } elseif ($this->isGenericDocument()) {
             $this->persistGenericFields();
         }
 
@@ -715,6 +774,7 @@ class DocumentDetail extends Component
             'items' => $items,
             'billData' => $this->billData,
             'genericData' => $this->genericData,
+            'contractData' => $this->contractData,
             'editableFields' => $this->editableFields,
             'availableActions' => $this->availableActions,
             'validationMessages' => $validationMessages,
