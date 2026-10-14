@@ -79,6 +79,21 @@ class SupplierInvoiceDataTable extends Component
         $this->dispatch('invoice-updated');
     }
 
+    public function delete(SupplierInvoice $invoice): void
+    {
+        $this->authorize('payables.invoices.create');
+
+        // No permitir eliminar facturas pagadas o parcialmente pagadas
+        if ($invoice->status === 'paid' || $invoice->status === 'partial') {
+            $this->dispatch('error', message: 'No se puede eliminar una factura que tiene pagos registrados.');
+
+            return;
+        }
+
+        $invoice->delete();
+        $this->dispatch('success', message: 'Factura eliminada correctamente. El asiento contable ha sido reversado.');
+    }
+
     public function render()
     {
         return view('livewire.finance.accounts-payable.supplier-invoice-data-table', [

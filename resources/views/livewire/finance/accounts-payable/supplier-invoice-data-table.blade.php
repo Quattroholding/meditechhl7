@@ -116,6 +116,11 @@
                                                         <i class="fa-solid fa-ban m-r-5"></i>
                                                     </button>
                                                 @endif
+                                                @if ($invoice->status === 'draft' || $invoice->status === 'approved' || $invoice->status === 'registered')
+                                                    <button wire:click="delete({{ $invoice->id }})" class="btn btn-danger btn-sm" title="Eliminar" onclick="return confirm('¿Está seguro? El asiento contable será reversado.')">
+                                                        <i class="fa-solid fa-trash m-r-5"></i>
+                                                    </button>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
