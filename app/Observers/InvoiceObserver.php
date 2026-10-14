@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Enums\JournalEntryStatus;
+use App\Models\Accounting\JournalEntry;
 use App\Models\Invoice;
 use App\Models\User;
 use App\Services\Accounting\AccountingEngineService;
@@ -11,6 +13,7 @@ use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class InvoiceObserver
 {
@@ -146,13 +149,14 @@ class InvoiceObserver
                         if ($reversingEntry) {
                             // Crear una reversión de la reversión (restaura el original)
                             $unreversingEntry = JournalEntry::create([
+                                'uuid' => Str::uuid(),
                                 'client_id' => $originalEntry->client_id,
                                 'entry_number' => 'UNREVERSE-'.$originalEntry->entry_number.'-'.now()->timestamp,
                                 'entry_date' => now()->toDateString(),
                                 'document_type' => $originalEntry->document_type,
                                 'document_number' => $originalEntry->document_number,
                                 'description' => 'Restoration of reversed entry '.$originalEntry->entry_number,
-                                'status' => 'posted',
+                                'status' => JournalEntryStatus::POSTED,
                                 'accounting_period_id' => $originalEntry->accounting_period_id,
                                 'source_type' => $originalEntry->source_type,
                                 'source_id' => $originalEntry->source_id,

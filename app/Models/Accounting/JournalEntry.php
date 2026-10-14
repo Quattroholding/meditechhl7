@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class JournalEntry extends BaseModel
 {
@@ -148,6 +149,7 @@ class JournalEntry extends BaseModel
 
         // Create reversing entry
         $reversingEntry = JournalEntry::create([
+            'uuid' => Str::uuid(),
             'client_id' => $this->client_id,
             'entry_number' => 'REV-'.$this->entry_number,
             'entry_date' => now()->toDateString(),
