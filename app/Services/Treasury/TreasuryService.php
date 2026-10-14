@@ -92,8 +92,8 @@ class TreasuryService
                 'amount' => $data['amount'],
                 'description' => $data['description'],
                 'reference_number' => $data['reference_number'] ?? null,
-                'created_by' => auth()->id(),
-                'updated_by' => auth()->id(),
+                'created_by' => $data['created_by'] ?? auth()->id(),
+                'updated_by' => $data['updated_by'] ?? auth()->id(),
             ]);
 
             // Actualizar balance

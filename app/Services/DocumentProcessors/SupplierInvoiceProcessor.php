@@ -51,7 +51,9 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
 
             $this->logStep('Extracted data after decoding', [
                 'is_array' => is_array($extractedData),
+                'document_type' => $document->document_type->value,
                 'has_supplier_name' => isset($extractedData['supplier_name']),
+                'has_provider_name' => isset($extractedData['provider_name']),
                 'supplier_name' => $extractedData['supplier_name'] ?? 'NOT SET',
                 'supplier_ruc' => $extractedData['supplier_ruc'] ?? 'NOT SET',
                 'supplier_dv' => $extractedData['supplier_dv'] ?? 'NOT SET',
@@ -59,8 +61,13 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
 
             // Process within a transaction for atomicity
             DB::transaction(function () use ($document, $extractedData) {
+                // Determine supplier name based on document type
+                $supplierName = $this->getSupplierNameForDocument($document, $extractedData);
+
                 // Process supplier invoice if supplier information is available
-                if (! empty($extractedData['supplier_name'])) {
+                if (! empty($supplierName)) {
+                    // Set supplier_name in extracted data for processing
+                    $extractedData['supplier_name'] = $supplierName;
                     $this->processSupplierInvoice($document, $extractedData);
                 } else {
                     throw new \RuntimeException('No supplier name found in extracted data');
@@ -99,12 +106,27 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
             throw new \RuntimeException('Supplier name is required');
         }
 
+        // For known utilities, use their official RUC and DV from enum
+        if ($document->document_type->isKnownUtility()) {
+            $knownSupplierData = $document->document_type->getSupplierData();
+            $supplierRuc = $knownSupplierData['ruc'];
+            $supplierDv = $knownSupplierData['dv'];
+
+            $this->logStep('Using known supplier data from enum', [
+                'document_type' => $document->document_type->value,
+                'supplier_name' => $supplierName,
+                'supplier_ruc' => $supplierRuc,
+                'supplier_dv' => $supplierDv,
+            ]);
+        }
+
         // Find or create supplier
         $supplier = $this->findOrCreateSupplier(
             $document->client_id,
             $supplierName,
             $supplierRuc,
-            $supplierDv
+            $supplierDv,
+            $document->document_type
         );
 
         // Create supplier invoice
@@ -128,10 +150,31 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
     }
 
     /**
+     * Get supplier name based on document type
+     * For known utility companies (IDAAN, ENSA, NATURGY), use the company name from enum
+     * For other documents (OTRO), use extracted data from OCR
+     */
+    private function getSupplierNameForDocument(DocumentUpload $document, array $extractedData): ?string
+    {
+        // For known utilities, get the legal name from the enum
+        if ($document->document_type->isKnownUtility()) {
+            return $document->document_type->getSupplierData()['legal_name'];
+        }
+
+        // For other documents, use OCR extraction
+        return $extractedData['supplier_name'] ?? $extractedData['provider_name'] ?? null;
+    }
+
+    /**
      * Find or create a supplier by RUC or name
      */
-    private function findOrCreateSupplier(int $clientId, string $supplierName, ?string $supplierRuc = null, ?string $supplierDv = null): Supplier
-    {
+    private function findOrCreateSupplier(
+        int $clientId,
+        string $supplierName,
+        ?string $supplierRuc = null,
+        ?string $supplierDv = null,
+        $documentType = null
+    ): Supplier {
         // Try to find by RUC first (more reliable unique identifier)
         if ($supplierRuc) {
             $supplier = Supplier::where('client_id', $clientId)
@@ -191,18 +234,59 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
             }
         }
 
-        return Supplier::create([
-            'uuid' => Str::uuid(),
-            'client_id' => $clientId,
-            'ruc' => $supplierRuc,
-            'dv' => $supplierDv,
-            'legal_name' => $supplierName,
-            'commercial_name' => $supplierName,
-            'accounting_account_id' => $accountingAccountId,
-            'status' => 'active',
-            'created_by' => auth()->id() ?? 1,
-            'updated_by' => auth()->id() ?? 1,
-        ]);
+        try {
+            // Get additional data from enum if available (for known utilities)
+            $supplierData = null;
+            if ($documentType && method_exists($documentType, 'isKnownUtility') && $documentType->isKnownUtility()) {
+                $supplierData = $documentType->getSupplierData();
+            }
+
+            $supplierPayload = [
+                'uuid' => Str::uuid(),
+                'client_id' => $clientId,
+                'ruc' => $supplierRuc,
+                'dv' => $supplierDv,
+                'legal_name' => $supplierName,
+                'commercial_name' => $supplierData['commercial_name'] ?? $supplierName,
+                'accounting_account_id' => $accountingAccountId,
+                'status' => 'active',
+                'created_by' => auth()->id() ?? 1,
+                'updated_by' => auth()->id() ?? 1,
+            ];
+
+            // Add address from enum if available
+            if ($supplierData && isset($supplierData['address']) && $supplierData['address']) {
+                $supplierPayload['address'] = $supplierData['address'];
+            }
+
+            // Add phone from enum if available
+            if ($supplierData && isset($supplierData['phone']) && $supplierData['phone']) {
+                $supplierPayload['phone'] = $supplierData['phone'];
+            }
+
+            // Add email from enum if available
+            if ($supplierData && isset($supplierData['email']) && $supplierData['email']) {
+                $supplierPayload['email'] = $supplierData['email'];
+            }
+
+            $supplier = Supplier::create($supplierPayload);
+
+            $this->logStep('Supplier created successfully', [
+                'supplier_id' => $supplier->id,
+                'supplier_name' => $supplierName,
+                'supplier_ruc' => $supplierRuc,
+            ]);
+
+            return $supplier;
+        } catch (\Exception $e) {
+            $this->logError('Failed to create supplier', [
+                'supplier_name' => $supplierName,
+                'supplier_ruc' => $supplierRuc,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
     }
 
     /**

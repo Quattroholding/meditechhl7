@@ -66,9 +66,15 @@ class ConsultationInvoiceService
 
         // Determinar si es crédito o contado
         if ($invoice->payment_status === 'paid') {
-            $accountingEngine->processEvent('INVOICE_CASH', $invoice, ['payment_method' => $invoice->payment_method]);
+            $journalEntry = $accountingEngine->processEvent('INVOICE_CASH', $invoice, ['payment_method' => $invoice->payment_method]);
+            if ($journalEntry) {
+                $invoice->update(['journal_entry_id' => $journalEntry->id]);
+            }
         } else {
-            $accountingEngine->processEvent('INVOICE_CREDIT', $invoice);
+            $journalEntry = $accountingEngine->processEvent('INVOICE_CREDIT', $invoice);
+            if ($journalEntry) {
+                $invoice->update(['journal_entry_id' => $journalEntry->id]);
+            }
 
             // Crear AccountsReceivable
             $receivablesService->createFromInvoice($invoice);

@@ -11,6 +11,7 @@ use App\Models\Scopes\AccountsReceivableScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class AccountsReceivable extends BaseModel
 {
@@ -55,6 +56,13 @@ class AccountsReceivable extends BaseModel
     protected static function booted(): void
     {
         static::addGlobalScope(new AccountsReceivableScope);
+
+        // Generate UUID on create
+        static::creating(function ($model) {
+            if (! $model->uuid) {
+                $model->uuid = Str::uuid();
+            }
+        });
     }
 
     // Relaciones

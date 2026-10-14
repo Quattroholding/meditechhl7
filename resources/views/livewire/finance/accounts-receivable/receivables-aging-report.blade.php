@@ -1,15 +1,5 @@
-<div class="page-wrapper">
-    <div class="row content">
-        @component('components.page-header')
-            @slot('title')
-                Módulo Financiero
-            @endslot
-            @slot('li_1')
-                Reporte de Antigüedad - Cuentas por Cobrar
-            @endslot
-        @endcomponent
-
-        <div class="col-sm-12">
+<div>
+    <div class="col-sm-12">
             <!-- Filtros -->
             <div class="card mb-4">
                 <div class="card-body">
@@ -237,46 +227,46 @@
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0 responsive-table">
                             <thead>
-                                <tr>
-                                    <th>Paciente</th>
-                                    <th>Factura #</th>
-                                    <th>Fecha Factura</th>
-                                    <th>Vencimiento</th>
-                                    <th class="text-right">Saldo</th>
-                                    <th class="text-center">Días Vencido</th>
-                                    <th class="text-center">Rango</th>
-                                    <th class="text-center">Estado</th>
-                                </tr>
+                            <tr>
+                                <th>Paciente</th>
+                                <th>Factura #</th>
+                                <th>Fecha Factura</th>
+                                <th>Vencimiento</th>
+                                <th class="text-right">Saldo</th>
+                                <th class="text-center">Días Vencido</th>
+                                <th class="text-center">Rango</th>
+                                <th class="text-center">Estado</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                @forelse($ageingData as $item)
-                                    <tr class="table-row">
-                                        <td>
-                                            <strong>{{ $item['patient'] }}</strong>
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-light-primary">{{ $item['invoice_number'] }}</span>
-                                        </td>
-                                        <td>
-                                            <small>{{ $item['invoice_date'] }}</small>
-                                        </td>
-                                        <td>
-                                            <small>{{ $item['due_date'] }}</small>
-                                        </td>
-                                        <td class="text-right">
-                                            <strong>{{ number_format($item['balance'], 2, ',', '.') }}</strong>
-                                        </td>
-                                        <td class="text-center">
+                            @forelse($ageingData as $item)
+                                <tr class="table-row">
+                                    <td>
+                                        <strong>{{ $item['patient'] }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-light-primary">{{ $item['invoice_number'] }}</span>
+                                    </td>
+                                    <td>
+                                        <small>{{ $item['invoice_date'] }}</small>
+                                    </td>
+                                    <td>
+                                        <small>{{ $item['due_date'] }}</small>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>{{ number_format($item['balance'], 2, ',', '.') }}</strong>
+                                    </td>
+                                    <td class="text-center">
                                             <span class="{{ $item['days_overdue'] > 90 ? 'fw-bold text-danger' : '' }}">
                                                 {{ $item['days_overdue'] }}
                                             </span>
-                                        </td>
-                                        <td class="text-center">
+                                    </td>
+                                    <td class="text-center">
                                             <span class="badge {{ $this->getAgeingBadgeClass($item['range']) }}">
                                                 {{ $item['range'] }} días
                                             </span>
-                                        </td>
-                                        <td class="text-center">
+                                    </td>
+                                    <td class="text-center">
                                             <span class="badge
                                                 @switch($item['status'])
                                                     @case('overdue') bg-danger @break
@@ -294,72 +284,72 @@
                                                     default => ucfirst($item['status'])
                                                 } }}
                                             </span>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center text-muted py-5">
-                                            <i class="feather-inbox mb-3" style="font-size: 2rem;"></i>
-                                            <p>No hay cuentas por cobrar para este período</p>
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-5">
+                                        <i class="feather-inbox mb-3" style="font-size: 2rem;"></i>
+                                        <p>No hay cuentas por cobrar para este período</p>
+                                    </td>
+                                </tr>
+                            @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<style>
-    .stat-card {
-        border: none;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        transform: translateY(-2px);
-    }
-
-    .stat-icon {
-        font-size: 2rem;
-        opacity: 0.3;
-    }
-
-    .badge-light-primary {
-        background-color: #e7f1ff;
-        color: #0052cc;
-        padding: 0.35rem 0.65rem;
-        border-radius: 4px;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-
-    .badge-light {
-        background-color: #f5f7fb;
-        color: #3a4e5c;
-        padding: 0.35rem 0.65rem;
-        border-radius: 4px;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-
-    .text-sm {
-        font-size: 0.875rem;
-    }
-
-    @media (max-width: 768px) {
+    <style>
         .stat-card {
-            margin-bottom: 1rem;
+            border: none;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
-        .table-responsive {
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+
+        .badge-light-primary {
+            background-color: #e7f1ff;
+            color: #0052cc;
+            padding: 0.35rem 0.65rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-light {
+            background-color: #f5f7fb;
+            color: #3a4e5c;
+            padding: 0.35rem 0.65rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .text-sm {
             font-size: 0.875rem;
         }
-    }
-</style>
+
+        @media (max-width: 768px) {
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</div>
+
+

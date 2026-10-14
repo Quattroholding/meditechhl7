@@ -201,6 +201,13 @@ class Services extends Component
 
         $key = 'catalog-search';
 
+        // Verificar que el encounter no esté finalizado
+        if ($this->encounter->status === 'finished') {
+            $this->dispatch('error-'.$key, 'No se pueden agregar servicios a una consulta finalizada.');
+
+            return;
+        }
+
         if (! $this->selectedServiceId) {
             $this->dispatch('error-'.$key, 'Debe seleccionar un servicio válido.');
 
@@ -272,6 +279,13 @@ class Services extends Component
 
         $key = 'catalog-search';
 
+        // Verificar que el encounter no esté finalizado
+        if ($this->encounter->status === 'finished') {
+            $this->dispatch('error-'.$key, 'No se pueden agregar servicios a una consulta finalizada.');
+
+            return;
+        }
+
         if (! $this->selectedServiceId) {
             $this->dispatch('error-'.$key, 'Debe seleccionar un servicio válido.');
 
@@ -340,6 +354,16 @@ class Services extends Component
 
     public function removeChargeItem($chargeItemId)
     {
+        // Verificar que el encounter no esté finalizado
+        if ($this->encounter->status === 'finished') {
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message: 'No se pueden modificar servicios en una consulta finalizada.'
+            );
+
+            return;
+        }
+
         $chargeItem = ChargeItem::find($chargeItemId);
 
         if (! $chargeItem || $chargeItem->encounter_id != $this->encounter_id) {

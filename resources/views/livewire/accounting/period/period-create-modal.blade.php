@@ -78,5 +78,18 @@
             </div>
         </div>
     @endif
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrAccountingPeriod', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+
+    </script>
 </div>
 

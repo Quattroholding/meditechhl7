@@ -21,7 +21,7 @@ class BankModal extends Component
 
     public string $account_type = 'checking';
 
-    public string $currency = 'PAB';
+    public string $currency = 'USD';
 
     public int $accounting_account_id = 0;
 

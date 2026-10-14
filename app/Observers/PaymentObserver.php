@@ -86,7 +86,7 @@ class PaymentObserver
     private function handleTreasuryMovement(Payment $payment): void
     {
         // Obtener el destino del método de pago (bank_id o cash_register_id)
-        $destination = $this->getPaymentMethodDestination($payment->payment_method);
+        $destination = $this->getPaymentMethodDestination($payment->payment_method, $payment->client_id);
 
         if (! $destination) {
             Log::warning('No treasury destination found for payment method', [
@@ -106,6 +106,8 @@ class PaymentObserver
             'reference_number' => $payment->reference_number,
             'source_type' => Payment::class,
             'source_id' => $payment->id,
+            'created_by' => $payment->created_by,
+            'updated_by' => $payment->updated_by,
         ];
 
         // Añadir bank_id o cash_register_id según corresponda
@@ -149,22 +151,22 @@ class PaymentObserver
      * Obtiene el destino del pago (bank_id o cash_register_id) según el método
      * Retorna array con 'bank_id' o 'cash_register_id'
      */
-    private function getPaymentMethodDestination(string $paymentMethod): ?array
+    private function getPaymentMethodDestination(string $paymentMethod, int $clientId): ?array
     {
         return match ($paymentMethod) {
             'cash' => [
                 'cash_register_id' => CashRegister::query()
-                    ->where('client_id', auth()->user()?->getCurrentClient()?->id)
+                    ->where('client_id', $clientId)
                     ->first()?->id,
             ],
             'credit_card', 'debit_card', 'bank_transfer', 'online' => [
                 'bank_id' => Bank::query()
-                    ->where('client_id', auth()->user()?->getCurrentClient()?->id)
+                    ->where('client_id', $clientId)
                     ->first()?->id,
             ],
             'check' => [
                 'bank_id' => Bank::query()
-                    ->where('client_id', auth()->user()?->getCurrentClient()?->id)
+                    ->where('client_id', $clientId)
                     ->first()?->id,
             ],
             default => null,

@@ -42,9 +42,9 @@
                 <div class="input-block local-forms">
                     <x-input-label for="currency" :value="__('generic.currency')" required="true"/>
                     <x-select-input wire:model="currency" id="currency" name="currency" :options="[
-                        'PAB' => __('treasury.currency.pab'),
+                        //'PAB' => __('treasury.currency.pab'),
                         'USD' => __('treasury.currency.usd'),
-                        'EUR' => __('treasury.currency.eur'),
+                        //'EUR' => __('treasury.currency.eur'),
                     ]" :selected="$this->currency" class="block w-full"/>
                     <x-input-error :messages="$errors->get('currency')" class="mt-2" />
                 </div>

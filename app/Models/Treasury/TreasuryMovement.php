@@ -4,6 +4,7 @@ namespace App\Models\Treasury;
 
 use App\Models\Accounting\JournalEntry;
 use App\Models\BaseModel;
+use App\Models\Client;
 use App\Models\Scopes\TreasuryMovementScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,6 +47,11 @@ class TreasuryMovement extends BaseModel
     }
 
     // Relaciones
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
 
     public function bank(): BelongsTo
     {

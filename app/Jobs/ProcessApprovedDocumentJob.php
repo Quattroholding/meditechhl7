@@ -139,9 +139,9 @@ class ProcessApprovedDocumentJob implements ShouldQueue
     {
         return match ($type) {
             DocumentType::INVENTORY => new InventoryDocumentProcessor,
-            DocumentType::ENSA => new SaveReferenceDocumentProcessor,
-            DocumentType::NATURGY => new SaveReferenceDocumentProcessor,
-            DocumentType::IDAAN => new SaveReferenceDocumentProcessor,
+            DocumentType::ENSA => new SupplierInvoiceProcessor,
+            DocumentType::NATURGY => new SupplierInvoiceProcessor,
+            DocumentType::IDAAN => new SupplierInvoiceProcessor,
             DocumentType::OTRO => $this->detectOtroDocumentType(),
         };
     }

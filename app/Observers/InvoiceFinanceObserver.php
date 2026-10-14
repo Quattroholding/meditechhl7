@@ -18,23 +18,15 @@ class InvoiceFinanceObserver
 
     /**
      * Cuando se crea una factura
-     * Genera CxC automáticamente si es a crédito
+     * NOTE: CxC creation is now handled by ConsultationInvoiceService::triggerAccountingEvents()
+     * This method is kept empty to avoid duplicate CxC records
+     *
+     * @deprecated Use ConsultationInvoiceService instead
      */
     public function created(Invoice $invoice): void
     {
-        // Validar si contabilidad está habilitada
-        if (! $this->shouldProcess($invoice)) {
-            return;
-        }
-
-        // Si la factura es a crédito (no pagada), crear CxC
-        if ($invoice->payment_status !== InvoivePatientStatus::PAID) {
-            try {
-                $this->receivablesService->createFromInvoice($invoice);
-            } catch (\Exception $e) {
-                \Log::error('Error creating AccountsReceivable for invoice: '.$e->getMessage());
-            }
-        }
+        // CxC is created by ConsultationInvoiceService to ensure correct timing and avoid duplicates
+        // This observer only handles updates to existing CxC
     }
 
     /**

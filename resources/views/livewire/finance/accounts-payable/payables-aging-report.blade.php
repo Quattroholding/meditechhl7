@@ -1,7 +1,7 @@
 <div class="space-y-4">
     {{-- Header --}}
     <div class="flex justify-between items-center">
-        <h2 class="text-2xl font-bold">Reporte de Antigüedad - CxP</h2>
+
         <div class="flex gap-2 items-center">
             <label class="text-sm font-medium">A partir de:</label>
             <input
@@ -37,21 +37,21 @@
     </div>
 
     {{-- Table --}}
-    <div class="overflow-x-auto bg-white rounded-lg shadow">
-        <table class="w-full">
-            <thead class="bg-gray-100 border-b">
+    <div class="table-responsive mt-5">
+            <table class="table border-0 custom-table comman-table mb-0 responsive-table">
+                <thead>
                 <tr>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Proveedor</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Factura #</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Fecha Factura</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Vencimiento</th>
-                    <th class="px-6 py-3 text-right text-sm font-semibold">Balance</th>
-                    <th class="px-6 py-3 text-center text-sm font-semibold">Días Vencido</th>
-                    <th class="px-6 py-3 text-center text-sm font-semibold">Rango</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Estado</th>
+                    <th class="">Proveedor</th>
+                    <th class="">Factura #</th>
+                    <th class="">Fecha Factura</th>
+                    <th class="">Vencimiento</th>
+                    <th class="">Balance</th>
+                    <th class="">Días Vencido</th>
+                    <th class="">Rango</th>
+                    <th class="">Estado</th>
                 </tr>
-            </thead>
-            <tbody class="divide-y">
+                </thead>
+                <tbody class="divide-y">
                 @forelse($ageingData as $item)
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 text-sm font-medium">{{ $item['supplier'] }}</td>
@@ -105,7 +105,7 @@
                         </td>
                     </tr>
                 @endforelse
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
 </div>

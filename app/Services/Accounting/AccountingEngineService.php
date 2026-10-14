@@ -3,13 +3,13 @@
 namespace App\Services\Accounting;
 
 use App\Enums\JournalEntryStatus;
+use App\Models\Accounting\AccountingAccount;
 use App\Models\Accounting\JournalEntry;
 use App\Models\Accounting\JournalEntryLine;
-use App\Models\Accounting\AccountingAccount;
+use App\Models\Finance\PaymentSchedule;
 use App\Models\Finance\SupplierInvoice as FinanceSupplierInvoice;
 use App\Models\Invoice;
 use App\Models\Payment;
-use App\Models\Finance\PaymentSchedule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -585,11 +585,11 @@ class AccountingEngineService
     private function getBankAccountForPaymentMethod(int $clientId, string $paymentMethod): ?AccountingAccount
     {
         $accountCode = match ($paymentMethod) {
-            'cash' => '1101', // Caja
-            'bank_transfer', 'online' => '1102', // Banco
-            'credit_card', 'debit_card' => '1102', // Banco
-            'check' => '1102', // Banco
-            default => '1102', // Default a Banco
+            'cash' => '1101', // Caja y Bancos
+            'bank_transfer', 'online' => '1101', // Caja y Bancos
+            'credit_card', 'debit_card' => '1101', // Caja y Bancos
+            'check' => '1101', // Caja y Bancos
+            default => '1101', // Default a Caja y Bancos
         };
 
         return AccountingAccount::where('client_id', $clientId)

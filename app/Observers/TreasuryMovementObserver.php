@@ -6,6 +6,7 @@ use App\Models\Accounting\AccountingAccount;
 use App\Models\Accounting\AccountingPeriod;
 use App\Models\Accounting\JournalEntry;
 use App\Models\Accounting\JournalEntryLine;
+use App\Models\Payment;
 use App\Models\Treasury\TreasuryMovement;
 use Illuminate\Support\Str;
 
@@ -14,12 +15,20 @@ class TreasuryMovementObserver
     /**
      * Handle the TreasuryMovement "created" event.
      * Generates a journal entry automatically when a treasury movement is created.
+     *
+     * NOTE: Deposits linked to Payments are handled by PaymentObserver, not here
      */
     public function created(TreasuryMovement $treasuryMovement): void
     {
         try {
             // Validar si contabilidad está habilitada para este cliente
             if (! $this->shouldProcess($treasuryMovement)) {
+                return;
+            }
+
+            // Skip creating journal entries for deposits linked to Payments
+            // These are handled by PaymentObserver instead
+            if ($treasuryMovement->isDeposit() && $treasuryMovement->source_type === Payment::class) {
                 return;
             }
 
@@ -74,7 +83,7 @@ class TreasuryMovementObserver
     private function createJournalLines(JournalEntry $entry, TreasuryMovement $treasuryMovement): void
     {
         if ($treasuryMovement->isDeposit()) {
-            // DEPOSIT: DEBIT Bank, CREDIT Income/Adjustment
+            // DEPOSIT: DEBIT Bank, CREDIT CxC/Income/Adjustment
             if ($treasuryMovement->bank && $treasuryMovement->bank->accounting_account_id) {
                 JournalEntryLine::create([
                     'uuid' => Str::uuid(),
@@ -86,13 +95,15 @@ class TreasuryMovementObserver
                 ]);
             }
 
-            // Find a deposit income account (temporary - should be configurable)
-            $depositAccount = $this->findOrCreateTemporaryAccount($treasuryMovement->client_id, 'Ingreso de Depósito');
-            if ($depositAccount) {
+            // Check if this deposit is linked to an invoice payment
+            // If yes, credit CxC Pacientes instead of Income
+            $creditAccount = $this->getCreditAccountForDeposit($treasuryMovement);
+
+            if ($creditAccount) {
                 JournalEntryLine::create([
                     'uuid' => Str::uuid(),
                     'journal_entry_id' => $entry->id,
-                    'accounting_account_id' => $depositAccount->id,
+                    'accounting_account_id' => $creditAccount->id,
                     'debit' => 0,
                     'credit' => $treasuryMovement->amount,
                     'description' => "Origen: {$treasuryMovement->description}",
@@ -225,6 +236,30 @@ class TreasuryMovementObserver
         $sequence = $lastEntry ? (int) substr($lastEntry->entry_number, -6) + 1 : 1;
 
         return sprintf('JE-%d-%06d', $year, $sequence);
+    }
+
+    /**
+     * Determine the credit account for a deposit
+     * If deposit is linked to an invoice payment, use CxC Pacientes (FIXED)
+     * Otherwise, use the configured income account (FLEXIBLE - per service config)
+     */
+    private function getCreditAccountForDeposit(TreasuryMovement $treasuryMovement): ?AccountingAccount
+    {
+        // Check if this treasury movement is linked to an invoice payment
+        // by looking for a payment record with this movement
+        $payment = Payment::where('client_id', $treasuryMovement->client_id)
+            ->where('treasury_movement_id', $treasuryMovement->id)
+            ->first();
+
+        if ($payment && $payment->invoice) {
+            // This is a payment for an invoice - ALWAYS use CxC Pacientes (HARDCODED)
+            return AccountingAccount::where('client_id', $treasuryMovement->client_id)
+                ->where('code', '1102') // Cuentas por Cobrar Pacientes
+                ->first();
+        }
+
+        // For other deposits (initial balance, transfers, etc), use configured income account
+        return $this->findOrCreateTemporaryAccount($treasuryMovement->client_id, 'Ingreso de Depósito');
     }
 
     /**

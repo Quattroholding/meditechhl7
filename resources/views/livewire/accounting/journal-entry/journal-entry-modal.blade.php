@@ -75,7 +75,7 @@
                     @forelse ($lines as $index => $line)
                         <tr>
                             <td>
-                                <x-select-input wire:model.live="lines.{{ $index }}.accounting_account_id" name="accounting_account_id" :options="\App\Models\AccountingAccount::pluck('name','code')->toArray()" :selected="[]" class="block mt-1 w-full"/>
+                                <x-select-input wire:model.live="lines.{{ $index }}.accounting_account_id" name="accounting_account_id" :options="\App\Models\Accounting\AccountingAccount::pluck('name','code')->toArray()" :selected="[]" class="block mt-1 w-full"/>
 
                                 @error("lines.{$index}.accounting_account_id")
                                     <div class="text-danger small">{{ $message }}</div>
@@ -83,7 +83,7 @@
                             </td>
                             <td>
 
-                                <x-select-input wire:model.live="lines.{{ $index }}.cost_center_id" name="id_type" :options="\App\Models\CostCenter::pluck('name','code')->toArray()" :selected="[]" class="block mt-1 w-full"/>
+                                <x-select-input wire:model.live="lines.{{ $index }}.cost_center_id" name="id_type" :options="\App\Models\Finance\CostCenter::pluck('name','code')->toArray()" :selected="[]" class="block mt-1 w-full"/>
                             </td>
                             <td class="text-end">
                                 <input
