@@ -2,6 +2,7 @@
 
 namespace App\Services\DocumentProcessors;
 
+use App\Enums\SupplierInvoiceStatus;
 use App\Models\DocumentUpload;
 use App\Models\Finance\Supplier;
 use App\Models\Finance\SupplierInvoice;
@@ -318,7 +319,7 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
             'total_amount' => $totalAmount,
             'paid_amount' => 0,
             'balance' => $totalAmount,
-            'status' => 'registered',
+            'status' => SupplierInvoiceStatus::REGISTERED,
             'document_path' => $document->file_path,
             'document_filename' => $document->original_filename,
             'created_by' => auth()->id() ?? 1,
@@ -330,7 +331,7 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
 
         // Approve the invoice to trigger Observer and generate journal entry
         $invoice->update([
-            'status' => 'approved',
+            'status' => SupplierInvoiceStatus::APPROVED,
             'approved_at' => now(),
             'approved_by' => auth()->id() ?? 1,
         ]);

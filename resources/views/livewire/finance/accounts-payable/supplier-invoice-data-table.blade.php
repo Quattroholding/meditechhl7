@@ -21,7 +21,12 @@
                                 </div>
                                 <div class="input-block local-forms mb-0">
                                     <label>{{ __('Estatus') }}</label>
-                                    <x-select-input wire:model.live="status" id="statusFilter" name="status" :options="['draft' => 'Borrador', 'approved' => 'Aprobada', 'partial' => 'Parcial', 'paid' => 'Pagada', 'overdue' => 'Vencida']" :selected="[]" class="form-select" />
+                                    @php
+                                        $statusOptions = collect(\App\Enums\SupplierInvoiceStatus::cases())
+                                            ->mapWithKeys(fn($case) => [$case->value => $case->label()])
+                                            ->toArray();
+                                    @endphp
+                                    <x-select-input wire:model.live="status" id="statusFilter" name="status" :options="$statusOptions" :selected="[]" class="form-select" />
                                 </div>
                                 <div class="input-block local-forms mb-0">
                                     <label>{{ __('Proveedor') }}</label>
@@ -84,39 +89,30 @@
                                             <span class="cell-content">B/. {{ number_format($invoice->paid_amount, 2) }}</span>
                                         </td>
                                         <td data-column="status" data-priority="7" data-label="Estado">
-                                            <span class="cell-content badge me-1
-                                                @switch($invoice->status)
-                                                    @case('draft') bg-secondary @break
-                                                    @case('approved') bg-info @break
-                                                    @case('partial') bg-warning @break
-                                                    @case('paid') bg-success @break
-                                                    @case('overdue') bg-danger @break
-                                                    @default bg-secondary
-                                                @endswitch
-                                            ">
-                                                {{ ucfirst($invoice->status) }}
+                                            <span class="cell-content badge me-1 {{ $invoice->status->badgeClass() }}">
+                                                {{ $invoice->status->label() }}
                                             </span>
                                         </td>
                                         <td data-column="acciones" data-priority="1" data-label="{{ __('Acciones') }}" class="text-end">
                                             <div class="btn-group btn-group-sm">
-                                                @if ($invoice->status === 'draft')
+                                                @if ($invoice->status->value === 'draft')
                                                     <button wire:click="openModal({{ $invoice->id }})" class="btn btn-success btn-sm" title="Editar">
                                                         <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                                     </button>
                                                     <button wire:click="approve({{ $invoice->id }})" class="btn btn-info btn-sm" title="Aprobar">
                                                         <i class="fa-solid fa-check m-r-5"></i>
                                                     </button>
-                                                @elseif($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
+                                                @elseif($invoice->status->value !== 'paid' && $invoice->status->value !== 'cancelled')
                                                     <button wire:click="$dispatch('openPaymentSchedule', { invoiceId: {{ $invoice->id }} })" class="btn btn-success btn-sm" title="Pagar">
                                                         <i class="fa-solid fa-money-bill m-r-5"></i>
                                                     </button>
                                                 @endif
-                                                @if ($invoice->status === 'draft')
+                                                @if ($invoice->status->value === 'draft')
                                                     <button wire:click="cancel({{ $invoice->id }})" class="btn btn-danger btn-sm" title="Cancelar">
                                                         <i class="fa-solid fa-ban m-r-5"></i>
                                                     </button>
                                                 @endif
-                                                @if ($invoice->status === 'draft' || $invoice->status === 'approved' || $invoice->status === 'registered')
+                                                @if ($invoice->status->value === 'draft' || $invoice->status->value === 'approved' || $invoice->status->value === 'registered')
                                                     <button wire:click="delete({{ $invoice->id }})" class="btn btn-danger btn-sm" title="Eliminar" onclick="return confirm('¿Está seguro? El asiento contable será reversado.')">
                                                         <i class="fa-solid fa-trash m-r-5"></i>
                                                     </button>

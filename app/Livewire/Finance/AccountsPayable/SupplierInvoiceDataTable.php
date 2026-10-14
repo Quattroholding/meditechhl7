@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Finance\AccountsPayable;
 
+use App\Enums\SupplierInvoiceStatus;
 use App\Models\Finance\SupplierInvoice;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
@@ -61,13 +62,13 @@ class SupplierInvoiceDataTable extends Component
     {
         $this->authorize('payables.invoices.approve');
 
-        if ($invoice->status !== 'draft') {
+        if ($invoice->status !== SupplierInvoiceStatus::DRAFT) {
             $this->dispatch('error', message: 'Solo se pueden aprobar facturas en borrador');
 
             return;
         }
 
-        $invoice->update(['status' => 'approved', 'approved_at' => now(), 'approved_by' => auth()->id()]);
+        $invoice->update(['status' => SupplierInvoiceStatus::APPROVED, 'approved_at' => now(), 'approved_by' => auth()->id()]);
         $this->dispatch('invoice-updated');
     }
 
@@ -75,7 +76,7 @@ class SupplierInvoiceDataTable extends Component
     {
         $this->authorize('payables.invoices.create');
 
-        $invoice->update(['status' => 'cancelled']);
+        $invoice->update(['status' => SupplierInvoiceStatus::CANCELLED]);
         $this->dispatch('invoice-updated');
     }
 
@@ -84,7 +85,7 @@ class SupplierInvoiceDataTable extends Component
         $this->authorize('payables.invoices.create');
 
         // No permitir eliminar facturas pagadas o parcialmente pagadas
-        if ($invoice->status === 'paid' || $invoice->status === 'partial') {
+        if ($invoice->status === SupplierInvoiceStatus::PAID || $invoice->status === SupplierInvoiceStatus::PARTIAL) {
             $this->dispatch('error', message: 'No se puede eliminar una factura que tiene pagos registrados.');
 
             return;

@@ -2,6 +2,7 @@
 
 namespace App\Models\Finance;
 
+use App\Enums\SupplierInvoiceStatus;
 use App\Models\Accounting\JournalEntry;
 use App\Models\BaseModel;
 use App\Models\Client;
@@ -52,7 +53,7 @@ class SupplierInvoice extends BaseModel
         'paid_amount' => 'decimal:2',
         'balance' => 'decimal:2',
         'approved_at' => 'datetime',
-        'status' => 'string',
+        'status' => SupplierInvoiceStatus::class,
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',

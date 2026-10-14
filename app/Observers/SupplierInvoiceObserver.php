@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Enums\SupplierInvoiceStatus;
 use App\Models\Accounting\JournalEntry;
 use App\Models\Accounting\JournalEntryLine;
 use App\Models\Finance\SupplierInvoice;
@@ -49,7 +50,7 @@ class SupplierInvoiceObserver
             // Si la factura cambió a status 'approved' y no tiene asiento contable
             if (
                 $invoice->isDirty('status')
-                && $invoice->status === 'approved'
+                && $invoice->status === SupplierInvoiceStatus::APPROVED
                 && ! $invoice->journal_entry_id
             ) {
                 if (! $this->shouldProcess($invoice)) {
@@ -75,7 +76,7 @@ class SupplierInvoiceObserver
             // Si la factura fue revertida y tiene asiento, revertir asiento contable
             if (
                 $invoice->isDirty('status')
-                && $invoice->status === 'cancelled'
+                && $invoice->status === SupplierInvoiceStatus::CANCELLED
                 && $invoice->journal_entry_id
             ) {
                 DB::transaction(function () use ($invoice) {

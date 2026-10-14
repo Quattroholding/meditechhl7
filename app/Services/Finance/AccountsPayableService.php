@@ -2,6 +2,7 @@
 
 namespace App\Services\Finance;
 
+use App\Enums\SupplierInvoiceStatus;
 use App\Models\Finance\PaymentSchedule;
 use App\Models\Finance\Supplier;
 use App\Models\Finance\SupplierInvoice;
@@ -46,7 +47,7 @@ class AccountsPayableService
                 'total_amount' => $data['total_amount'],
                 'cost_center_id' => $data['cost_center_id'] ?? null,
                 'notes' => $data['notes'] ?? null,
-                'status' => 'draft',
+                'status' => SupplierInvoiceStatus::DRAFT,
                 'created_by' => auth()->id(),
             ]);
 
@@ -62,7 +63,7 @@ class AccountsPayableService
     {
         return DB::transaction(function () use ($invoice) {
             $invoice->update([
-                'status' => 'approved',
+                'status' => SupplierInvoiceStatus::APPROVED,
                 'approved_at' => now(),
                 'approved_by' => auth()->id(),
             ]);
