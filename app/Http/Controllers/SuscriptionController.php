@@ -128,6 +128,15 @@ class SuscriptionController extends Controller
                 ->with('message.error', 'No tiene una suscripción');
         }
 
+        // Validate that there are no unpaid invoices with expired periods
+        if ($subscription->hasOverdueUnpaidInvoices()) {
+            $overdueInvoices = $subscription->getOverdueUnpaidInvoices();
+            $invoiceCount = $overdueInvoices->count();
+
+            return redirect()->route('suscriptions.invoices.index')
+                ->with('message.error', "No puede reactivar su suscripción mientras tenga factura(s) vencida(s) sin pagar. {$invoiceCount} factura(s) vencida(s) pendiente(s) de pago.");
+        }
+
         try {
             $newInvoice = $this->subscriptionService->reactivate($subscription);
 

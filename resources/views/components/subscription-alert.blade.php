@@ -84,12 +84,20 @@
                         <div class="col-md-3 text-end">
                             @can('suscriptions.show')
                                 @if($subscription && $subscription->status->value === 'suspended')
-                                    <form action="{{ route('suscriptions.reactivate') }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success btn-sm me-2">
-                                            <i class="fas fa-redo me-1"></i>Reactivar
-                                        </button>
-                                    </form>
+                                    @if($subscription->canBeReactivated())
+                                        <form action="{{ route('suscriptions.reactivate') }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success btn-sm me-2">
+                                                <i class="fas fa-redo me-1"></i>Reactivar
+                                            </button>
+                                        </form>
+                                    @else
+                                        @can('suscriptions.invoices.index')
+                                            <a href="{{ route('suscriptions.invoices.index') }}" class="btn btn-light btn-sm me-2">
+                                                <i class="fas fa-file-invoice me-1"></i>Ver Facturas
+                                            </a>
+                                        @endcan
+                                    @endif
                                 @elseif($subscription && in_array($subscription->status->value, ['past_due', 'pending_activation']))
                                     @can('suscriptions.invoices.index')
                                         <a href="{{ route('suscriptions.invoices.index') }}" class="btn btn-light btn-sm me-2">

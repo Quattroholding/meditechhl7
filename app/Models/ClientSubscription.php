@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InvoiceStatus;
 use App\Enums\SubscriptionStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -343,5 +344,34 @@ class ClientSubscription extends BaseModel
         $this->current_period_ends_at = $this->calculatePeriodEnd();
         $this->next_billing_date = $this->current_period_ends_at;
         $this->save();
+    }
+
+    public function hasOverdueUnpaidInvoices(): bool
+    {
+        return $this->invoices()
+            ->where('period_end', '>', today())
+            ->whereIn('status', [
+                InvoiceStatus::PENDING->value,
+                InvoiceStatus::PARTIALLY_PAID->value,
+                InvoiceStatus::OVERDUE->value,
+            ])
+            ->exists();
+    }
+
+    public function getOverdueUnpaidInvoices()
+    {
+        return $this->invoices()
+            ->where('period_end', '<', today())
+            ->whereIn('status', [
+                InvoiceStatus::PENDING->value,
+                InvoiceStatus::PARTIALLY_PAID->value,
+                InvoiceStatus::OVERDUE->value,
+            ])
+            ->get();
+    }
+
+    public function canBeReactivated(): bool
+    {
+        return ! $this->hasOverdueUnpaidInvoices();
     }
 }
