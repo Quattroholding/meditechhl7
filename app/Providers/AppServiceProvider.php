@@ -6,6 +6,7 @@ use App\Listeners\RecordUserLogin;
 use App\Listeners\RecordUserLogout;
 use App\Listeners\SaveEmailToSentItems;
 use App\Models\Appointment;
+use App\Models\Client;
 use App\Models\ClientInvoice;
 use App\Models\ClientInvoicePayment;
 use App\Models\ClientSubscription;
@@ -21,6 +22,7 @@ use App\Models\User;
 use App\Observers\AppointmentObserver;
 use App\Observers\ClientInvoiceObserver;
 use App\Observers\ClientInvoicePaymentObserver;
+use App\Observers\ClientObserver;
 use App\Observers\ClientSubscriptionObserver;
 use App\Observers\EncounterObserver;
 use App\Observers\InvoiceObserver;
@@ -75,6 +77,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Paginator::useTailwind();
         Appointment::observe(AppointmentObserver::class);
+        Client::observe(ClientObserver::class);
         ClientInvoice::observe(ClientInvoiceObserver::class);
         ClientInvoicePayment::observe(ClientInvoicePaymentObserver::class);
         ClientSubscription::observe(ClientSubscriptionObserver::class);

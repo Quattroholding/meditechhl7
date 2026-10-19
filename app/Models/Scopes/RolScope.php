@@ -119,6 +119,7 @@ class RolScope implements Scope
                 'doctor' => 2,
                 'recepcionista' => 3,
                 'asistente medico' => 6,
+                'contabilidad_client' => 13,
             ];
 
             // Si contabilidad está deshabilitada, excluir roles de contabilidad
@@ -163,6 +164,7 @@ class RolScope implements Scope
                 if ($totalUsers < $client->max_users) {
                     $availableRoles[] = 3; // recepcionista
                     $availableRoles[] = 6; // asistente medico
+                    $availableRoles[] = 13; // contabilidad_client
                 }
 
                 // Excluir roles de contabilidad si no está habilitado

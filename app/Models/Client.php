@@ -32,6 +32,7 @@ class Client extends Model
         'referral_code_used',
         'hemoscreen_only',
         'neopayments_customer_id',
+        'accounting_enabled',
     ];
 
     protected $casts = [
@@ -41,6 +42,7 @@ class Client extends Model
         'zoom_enabled' => 'boolean',
         'voice_dictation_enabled' => 'boolean',
         'hemoscreen_only' => 'boolean',
+        'accounting_enabled' => 'boolean',
     ];
 
     protected static function booted(): void

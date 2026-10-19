@@ -178,6 +178,16 @@
                                 <small class="text-muted d-block">Permitir el uso de dictado por voz en las consultas</small>
                             </div>
                         </div>
+                        <div class="col-12 col-md-6 col-xl-6">
+                            <div class="form-check local-forms">
+                                <input type="hidden" name="accounting_enabled" value="0">
+                                <input class="form-check-input" type="checkbox" id="accounting_enabled" name="accounting_enabled" value="1" {{ $data->accounting_enabled ? 'checked' : '' }}>
+                                <label class="form-check-label" for="accounting_enabled">
+                                    Módulo de Contabilidad Habilitado
+                                </label>
+                                <small class="text-muted d-block">Habilitar el módulo de contabilidad para este cliente</small>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="flex items-center justify-end mt-4">
