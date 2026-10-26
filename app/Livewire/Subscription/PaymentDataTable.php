@@ -117,7 +117,7 @@ class PaymentDataTable extends Component
         ]);
 
         try {
-            $payment = ClientInvoicePayment::with(['invoice.client', 'invoice.subscription.package'])
+            $payment = ClientInvoicePayment::with(['invoice.client', 'invoice.subscription.package', 'invoice.subscription'])
                 ->findOrFail($this->rejectPaymentId);
 
             // Only allow rejection of pending payments
@@ -197,7 +197,7 @@ class PaymentDataTable extends Component
     public function verifyPayment($paymentId)
     {
         try {
-            $payment = ClientInvoicePayment::findOrFail($paymentId);
+            $payment = ClientInvoicePayment::with(['invoice.subscription'])->findOrFail($paymentId);
 
             // Only allow verification of pending payments
             if ($payment->status->value !== 'pending') {
