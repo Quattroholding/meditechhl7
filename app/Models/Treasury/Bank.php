@@ -4,6 +4,7 @@ namespace App\Models\Treasury;
 
 use App\Models\Accounting\AccountingAccount;
 use App\Models\BaseModel;
+use App\Models\Scopes\BankScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Bank extends BaseModel
 {
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new BankScope);
+    }
 
     protected $fillable = [
         'client_id',

@@ -5,6 +5,7 @@ namespace App\Models\Treasury;
 use App\Models\Accounting\AccountingAccount;
 use App\Models\BaseModel;
 use App\Models\Branch;
+use App\Models\Scopes\CashRegisterScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class CashRegister extends BaseModel
 {
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new CashRegisterScope);
+    }
 
     protected $fillable = [
         'client_id',

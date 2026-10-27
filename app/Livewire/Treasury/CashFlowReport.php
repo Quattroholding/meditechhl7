@@ -54,14 +54,10 @@ class CashFlowReport extends Component
             $this->endDate = now()->endOfMonth()->toDateString();
         }
 
-        $currentClient = auth()->user()->getCurrentClient();
-        if ($currentClient) {
-            $this->banks = Bank::where('client_id', $currentClient->id)
-                ->where('status', 'active')
-                ->orderBy('bank_name')
-                ->get()
-                ->toArray();
-        }
+        $this->banks = Bank::where('status', 'active')
+            ->orderBy('bank_name')
+            ->get()
+            ->toArray();
 
         $this->generateReport();
     }
