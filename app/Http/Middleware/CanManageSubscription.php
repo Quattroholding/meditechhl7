@@ -23,8 +23,28 @@ class CanManageSubscription
             abort(401, 'No autenticado.');
         }
 
-        // Verificar que el usuario pueda gestionar suscripciones
-        if (! auth()->user()->canPaySubscription()) {
+        $user = auth()->user();
+
+        // Permitir acceso si: puede pagar suscripción O tiene algún permiso de suscripción
+        $hasSubscriptionPermission = $user->canAny([
+            'suscriptions.show',
+            'suscriptions.manage',
+            'suscriptions.invoices.index',
+            'suscriptions.invoices.pending',
+            'suscriptions.invoices.show',
+            'suscriptions.invoices.download',
+            'suscriptions.invoices.edit',
+            'suscriptions.invoices.destroy',
+            'suscriptions.payments.index',
+            'suscriptions.payments.settings',
+            'suscriptions.payments.verify',
+            'suscriptions.payments.show',
+            'suscriptions.payments.download',
+            'suscriptions.payments.edit',
+            'suscriptions.payments.destroy',
+        ]);
+
+        if (! $user->canPaySubscription() && ! $hasSubscriptionPermission) {
             abort(403, 'No tienes permiso para acceder a esta sección.');
         }
 
