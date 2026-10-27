@@ -3,6 +3,7 @@
 namespace App\Livewire\Treasury;
 
 use App\Models\Treasury\Bank;
+use App\Models\Treasury\CashRegister;
 use App\Services\Treasury\TreasuryService;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
@@ -20,6 +21,8 @@ class CashFlowReport extends Component
 
     public ?int $bankId = null;
 
+    public ?int $cashRegisterId = null;
+
     public array $reportData = [
         'initial_balance' => 0,
         'income' => 0,
@@ -36,10 +39,13 @@ class CashFlowReport extends Component
 
     public array $banks = [];
 
+    public array $cashRegisters = [];
+
     protected $queryString = [
         'startDate' => ['except' => ''],
         'endDate' => ['except' => ''],
         'bankId' => ['except' => null],
+        'cashRegisterId' => ['except' => null],
     ];
 
     public function mount(): void
@@ -56,6 +62,11 @@ class CashFlowReport extends Component
 
         $this->banks = Bank::where('status', 'active')
             ->orderBy('bank_name')
+            ->get()
+            ->toArray();
+
+        $this->cashRegisters = CashRegister::where('status', 'active')
+            ->orderBy('name')
             ->get()
             ->toArray();
 
@@ -80,7 +91,8 @@ class CashFlowReport extends Component
             $clientId,
             $startDate,
             $endDate,
-            $this->bankId
+            $this->bankId,
+            $this->cashRegisterId
         );
 
         // Obtener resumen de movimientos
@@ -291,6 +303,14 @@ class CashFlowReport extends Component
     }
 
     /**
+     * Actualiza el reporte cuando cambia la caja
+     */
+    public function updatedCashRegisterId(): void
+    {
+        $this->generateReport();
+    }
+
+    /**
      * Actualiza el reporte cuando cambia la fecha final
      */
     public function updatedEndDate(): void
@@ -304,9 +324,11 @@ class CashFlowReport extends Component
             'reportData' => $this->reportData,
             'summary' => $this->summary,
             'banks' => $this->banks,
+            'cashRegisters' => $this->cashRegisters,
             'startDate' => $this->startDate,
             'endDate' => $this->endDate,
             'bankId' => $this->bankId,
+            'cashRegisterId' => $this->cashRegisterId,
         ]);
     }
 }

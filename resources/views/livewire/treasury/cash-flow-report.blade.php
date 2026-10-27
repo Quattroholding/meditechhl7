@@ -53,10 +53,22 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button wire:click="generateReport" class="btn btn-primary w-100">
-                                <i class="feather-refresh-cw"></i> Generar Reporte
-                            </button>
+                        <div class="col-md-3">
+                            <div class="input-block local-forms">
+                                <label for="cashRegisterId">Caja (Opcional)</label>
+                                <select
+                                    id="cashRegisterId"
+                                    wire:model.live="cashRegisterId"
+                                    class="form-control form-select"
+                                >
+                                    <option value="">Todas las Cajas</option>
+                                    @forelse($cashRegisters as $cashRegister)
+                                        <option value="{{ $cashRegister['id'] }}">{{ $cashRegister['name'] }}</option>
+                                    @empty
+                                        <option disabled>No hay cajas disponibles</option>
+                                    @endforelse
+                                </select>
+                            </div>
                         </div>
                     </div>
 
