@@ -529,8 +529,7 @@
                         </ul>
                     </li>
                 @endcanany
-                @if(auth()->user()->canPaySubscription())
-                @canany(['suscriptions.show', 'suscriptions.manage', 'suscriptions.invoices.index','suscriptions.payments.index', 'suscriptions.payments.settings'])
+                @if(auth()->user()->canPaySubscription() || auth()->user()->canany(['suscriptions.show', 'suscriptions.manage', 'suscriptions.invoices.index','suscriptions.payments.index', 'suscriptions.payments.settings']))
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                         <i class="fa fa-dollar-sign"></i></span>
@@ -556,7 +555,6 @@
                         @endcan
                     </ul>
                 </li>
-                @endcan
                 @endif
                 @canany(['quotations.view', 'service_types.view'])
                 <li class="submenu">
