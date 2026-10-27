@@ -5,7 +5,7 @@
                 <div>
                     <h2 class="mb-1">{{ $journalEntry->entry_number }}</h2>
                     <p class="text-muted mb-0">
-                        <span class="badge badge-{{ $journalEntry->status === App\Enums\JournalEntryStatus::POSTED ? 'success' : ($journalEntry->status === App\Enums\JournalEntryStatus::DRAFT ? 'warning' : 'secondary') }}">
+                        <span class="badge bg-{{ $journalEntry->status === App\Enums\JournalEntryStatus::POSTED ? 'success' : ($journalEntry->status === App\Enums\JournalEntryStatus::DRAFT ? 'warning' : 'secondary') }}">
                             {{ $journalEntry->status->label() }}
                         </span>
                     </p>
@@ -81,7 +81,7 @@
                 <div class="row mt-3">
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-muted small">Documento de Origen</label>
-                        <p class="fw-bold">{{ $journalEntry->document_type }}</p>
+                        <p class="fw-bold">{{ $journalEntry->document_type?->label() ?? 'N/A' }}</p>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-muted small">Número de Documento</label>
@@ -107,6 +107,9 @@
                         <th style="width: 12%; text-align: right">Débito</th>
                         <th style="width: 12%; text-align: right">Crédito</th>
                         <th>Descripción</th>
+                        @if($journalEntry->accountingPeriod->canModify() && auth()->user()->can('accounting.entries.edit'))
+                            <th style="width: 10%; text-align: center">Acciones</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -142,10 +145,22 @@
                             <td>
                                 <small class="text-muted">{{ $line->description ?? '-' }}</small>
                             </td>
+                            @if($journalEntry->accountingPeriod->canModify() && auth()->user()->can('accounting.entries.edit'))
+                                <td style="text-align: center">
+                                    <button
+                                        type="button"
+                                        wire:click="editLine({{ $line->id }})"
+                                        class="btn btn-sm btn-primary"
+                                        title="Editar línea"
+                                    >
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
+                            <td colspan="{{ $journalEntry->accountingPeriod->canModify() ? '7' : '6' }}" class="text-center py-4 text-muted">
                                 No hay líneas registradas
                             </td>
                         </tr>
@@ -195,4 +210,13 @@
             </div>
         </div>
     </div>
+
+    <!-- Formulario de Edición de Línea -->
+    @if($editingLine)
+        <livewire:accounting.journal-entry.line-form
+            :journal-entry="$journalEntry"
+            :line="$editingLine"
+            :key="$editingLine->id"
+        />
+    @endif
 </div>

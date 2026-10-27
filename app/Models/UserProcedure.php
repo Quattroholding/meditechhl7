@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Accounting\AccountingAccount;
+use App\Models\Finance\CostCenter;
+
 class UserProcedure extends BaseModel
 {
     protected $table = 'user_procedures';
 
-    protected $fillable = ['user_id', 'client_id', 'code', 'description', 'cpt_code', 'current_price', 'type', 'active'];
+    protected $fillable = ['user_id', 'client_id', 'code', 'description', 'cpt_code', 'current_price', 'type', 'active', 'accounting_account_id', 'cost_center_id'];
 
     public function user()
     {
@@ -21,6 +24,16 @@ class UserProcedure extends BaseModel
     public function cpt()
     {
         return $this->belongsTo(CptCode::class, 'cpt_code');
+    }
+
+    public function accountingAccount()
+    {
+        return $this->belongsTo(AccountingAccount::class);
+    }
+
+    public function costCenter()
+    {
+        return $this->belongsTo(CostCenter::class);
     }
 
     public function getFullNameAttribute()

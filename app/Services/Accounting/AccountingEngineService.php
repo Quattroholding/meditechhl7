@@ -598,18 +598,20 @@ class AccountingEngineService
     }
 
     /**
-     * Obtiene el centro de costo para una factura
-     * Primero intenta usar el cost_center_id de la factura
-     * Si no existe, intenta obtenerlo del encounter según su especialidad
+     * Resuelve el centro de costo para una factura:
+     * 1. Si la factura tiene cost_center_id asignado, usarlo
+     * 2. Si el encounter tiene cost_center_id asignado, usarlo
+     * 3. Si los servicios tienen cost_center_id asignado, usar el primero
+     * 4. De lo contrario, retorna null
      */
     private function getCostCenterIdForInvoice(Invoice $invoice): ?int
     {
-        // Si la factura ya tiene cost_center_id asignado, usarlo
+        // 1. Si la factura ya tiene cost_center_id asignado, usarlo
         if ($invoice->cost_center_id) {
             return $invoice->cost_center_id;
         }
 
-        // Intentar obtenerlo del encounter
+        // 2. Intentar obtenerlo del encounter
         if ($invoice->encounter) {
             $encounter = $invoice->encounter;
 
@@ -617,10 +619,18 @@ class AccountingEngineService
             if (isset($encounter->cost_center_id) && $encounter->cost_center_id) {
                 return $encounter->cost_center_id;
             }
+        }
 
-            // Intentar mapear desde la especialidad médica
-            // Por ahora retorna null si no hay cost_center en la factura
-            // En el futuro se puede implementar un mapeo especialidad -> centro de costo
+        // 3. Intentar obtenerlo de los servicios (charge items)
+        // Asegurar que se carguen las relaciones si no están disponibles
+        $lineItems = $invoice->relationLoaded('lineItems')
+            ? $invoice->lineItems
+            : $invoice->load('lineItems.chargeItem')->lineItems;
+
+        foreach ($lineItems as $lineItem) {
+            if ($lineItem->chargeItem && $lineItem->chargeItem->cost_center_id) {
+                return $lineItem->chargeItem->cost_center_id;
+            }
         }
 
         return null;

@@ -96,6 +96,7 @@
                         <th>{{__('Código')}}</th>
                         <th>{{__('Descripción')}}</th>
                         <th>{{__('Precio')}}</th>
+                        <th>{{__('Cuenta Contable')}}</th>
                         <th>{{__('Acción')}}</th>
                         </thead>
                         <tbody>
@@ -111,7 +112,19 @@
                                 </td>
                                 <td>{{$c->current_price}}</td>
                                 <td>
-                                    <div wire:click="delete({{$c->id}})" title="{{__('Borrar')}}"><i class="fa fa-trash"></i> </div>
+                                    @if($c->accountingAccount)
+                                        <small>{{ $c->accountingAccount->code }} - {{ $c->accountingAccount->name }}</small>
+                                    @else
+                                        <small class="text-muted">No asignada</small>
+                                    @endif
+                                </td>
+                                <td>
+                                    <button wire:click="openAccountingModal({{$c->id}})" class="btn btn-sm btn-info me-2" title="Asignar Cuenta Contable">
+                                        <i class="fa fa-edit"></i> Asignar
+                                    </button>
+                                    <div wire:click="delete({{$c->id}})" title="{{__('Borrar')}}" style="display: inline-block; cursor: pointer;">
+                                        <i class="fa fa-trash"></i>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -123,6 +136,75 @@
             </div>
         </div>
     </div>
+    <!-- Modal para Asignar Cuenta Contable -->
+    @if($editingProcedureId)
+        <div class="modal fade show" id="accountingModal" tabindex="-1" role="dialog" style="display: block; background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Asignar Cuenta Contable</h5>
+                        <button type="button" class="close" wire:click="closeAccountingModal()">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+
+                    <form wire:submit="saveAccounting">
+                        <div class="modal-body">
+                            <!-- Cuenta Contable -->
+                            <div class="form-group mb-3">
+                                <label for="accountingAccountId" class="form-label">Cuenta Contable *</label>
+                                <select
+                                    id="accountingAccountId"
+                                    wire:model="accountingAccountId"
+                                    class="form-select @error('accountingAccountId') is-invalid @enderror"
+                                >
+                                    <option value="">Seleccionar cuenta</option>
+                                    @foreach($this->getAccountingAccountsProperty() as $account)
+                                        <option value="{{ $account->id }}">
+                                            {{ $account->code }} - {{ $account->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('accountingAccountId')
+                                    <span class="invalid-feedback d-block">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <!-- Centro de Costo -->
+                            <div class="form-group mb-3">
+                                <label for="costCenterId" class="form-label">Centro de Costo</label>
+                                <select
+                                    id="costCenterId"
+                                    wire:model="costCenterId"
+                                    class="form-select @error('costCenterId') is-invalid @enderror"
+                                >
+                                    <option value="">Sin asignar</option>
+                                    @foreach($this->getCostCentersProperty() as $center)
+                                        <option value="{{ $center->id }}">
+                                            {{ $center->code }} - {{ $center->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('costCenterId')
+                                    <span class="invalid-feedback d-block">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" wire:click="closeAccountingModal()">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <script>
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('showToastr', (event) => {

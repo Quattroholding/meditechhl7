@@ -422,7 +422,7 @@ class AppointmentController extends Controller
     private function canCancelAppointment($appointment)
     {
         // No se puede cancelar si ya está cancelada, finalizada o cumplida
-        if (in_array($appointment->status, ['cancelled', 'fulfilled', 'noshow','proposed'])) {
+        if (in_array($appointment->status, ['cancelled', 'fulfilled', 'noshow', 'proposed'])) {
             return false;
         }
 
@@ -473,9 +473,9 @@ class AppointmentController extends Controller
 
         // Filter by status
         if ($request->has('status')) {
-            if($request->status =='proposed'){
-                $query->whereIn('status', ['proposed','booked']);
-            }else{
+            if ($request->status == 'proposed') {
+                $query->whereIn('status', ['proposed', 'booked']);
+            } else {
                 $query->where('status', $request->status);
             }
 

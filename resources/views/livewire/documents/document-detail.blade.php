@@ -147,50 +147,68 @@
         </div>
     </div>
     @endif
-
-    <!-- Actions -->
-    <div class="d-flex gap-2 justify-content-end align-items-center">
-        <a href="{{ route('documents.index') }}" class="btn btn-secondary" @if($isApproving) onclick="return false;" @endif>
-            <i class="feather icon-x"></i> Cancelar
-        </a>
-
-        @if (in_array($document->status->value, ['processed', 'rejected', 'approved', 'processing']))
-            <div class="alert alert-info mb-0">
-                <i class="feather icon-info"></i>
-                @if ($document->status->value === 'processed')
-                    Documento ya procesado
-                @elseif ($document->status->value === 'approved')
-                    Documento aprobado - en procesamiento
-                @elseif ($document->status->value === 'processing')
-                    Documento en procesamiento
-                @elseif ($document->status->value === 'rejected')
-                    Documento rechazado
+    <div class="card border-l-4 border-danger mb-6">
+        <!-- Actions -->
+        <div class="d-flex gap-2 justify-content-between align-items-center flex-wrap">
+            <div class="card-body">
+                @if(auth()->user()->hasAnyRole(['contabilidad_client', 'contabilidad_asistente_client']))
+                    <div class="form-group" style="min-width: 250px;">
+                        <label for="costCenterId" class="form-label"><strong>Centro de Costo</strong></label>
+                        <select wire:model="costCenterId" class="form-select" id="costCenterId">
+                            <option value="">-- Seleccionar centro de costo --</option>
+                            @foreach($costCenters as $center)
+                                <option value="{{ $center->id }}">
+                                    {{ $center->code }} - {{ $center->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 @endif
-            </div>
-        @elseif ($isRejecting)
-            <button wire:click="cancelRejection" class="btn btn-warning" @disabled($isApproving)>
-                <i class="feather icon-arrow-left"></i> Volver
-            </button>
-            <button wire:click="confirmReject" class="btn btn-danger" @disabled($isApproving)>
-                <i class="feather icon-trash-2"></i> Confirmar Rechazo
-            </button>
-        @else
-            <button wire:click="startRejecting" class="btn btn-danger">
-                <i class="feather icon-x-circle"></i> Rechazar
-            </button>
-            <button wire:click="approve" class="btn btn-primary" @disabled($isApproving) wire:loading.attr="disabled">
-                @if ($isApproving)
-                    <span wire:loading.remove>
-                        <i class="feather icon-check-circle"></i> Aprobar
-                    </span>
-                    <span wire:loading>
-                        <i class="spinner-border spinner-border-sm me-2" role="status"></i> Procesando...
-                    </span>
+                <div class="d-flex gap-2 justify-content-end">
+                    <a href="{{ route('documents.index') }}" class="btn btn-secondary" @if($isApproving) onclick="return false;" @endif>
+                        <i class="feather icon-x"></i> Cancelar
+                    </a>
+
+                @if (in_array($document->status->value, ['processed', 'rejected', 'approved', 'processing']))
+                    <div class="alert alert-info mb-0">
+                        <i class="feather icon-info"></i>
+                        @if ($document->status->value === 'processed')
+                            Documento ya procesado
+                        @elseif ($document->status->value === 'approved')
+                            Documento aprobado - en procesamiento
+                        @elseif ($document->status->value === 'processing')
+                            Documento en procesamiento
+                        @elseif ($document->status->value === 'rejected')
+                            Documento rechazado
+                        @endif
+                    </div>
+                @elseif ($isRejecting)
+                    <button wire:click="cancelRejection" class="btn btn-warning" @disabled($isApproving)>
+                        <i class="feather icon-arrow-left"></i> Volver
+                    </button>
+                    <button wire:click="confirmReject" class="btn btn-danger" @disabled($isApproving)>
+                        <i class="feather icon-trash-2"></i> Confirmar Rechazo
+                    </button>
                 @else
-                    <i class="feather icon-check-circle"></i> Aprobar
+                    <button wire:click="startRejecting" class="btn btn-danger">
+                        <i class="feather icon-x-circle"></i> Rechazar
+                    </button>
+                    <button wire:click="approve" class="btn btn-primary" @disabled($isApproving) wire:loading.attr="disabled">
+                        @if ($isApproving)
+                            <span wire:loading.remove>
+                                <i class="feather icon-check-circle"></i> Aprobar
+                            </span>
+                            <span wire:loading>
+                                <i class="spinner-border spinner-border-sm me-2" role="status"></i> Procesando...
+                            </span>
+                        @else
+                            <i class="feather icon-check-circle"></i> Aprobar
+                        @endif
+                    </button>
                 @endif
-            </button>
-        @endif
+                </div>
+            </div>
+        </div>
     </div>
     <p>&nbsp;</p>
     <script>

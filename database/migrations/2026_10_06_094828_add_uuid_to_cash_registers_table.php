@@ -36,7 +36,7 @@ return new class extends Migration
                     // For SQLite and other databases, check if constraint exists
                     try {
                         DB::table('cash_registers')->whereNull('uuid')->limit(1)->first();
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         // Constraint exists
                         $indexExists = true;
                     }

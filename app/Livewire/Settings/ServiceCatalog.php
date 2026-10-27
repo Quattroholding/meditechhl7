@@ -4,6 +4,7 @@ namespace App\Livewire\Settings;
 
 use App\Models\Accounting\AccountingAccount;
 use App\Models\CptCode;
+use App\Models\Finance\CostCenter;
 use App\Models\ServiceCatalog as ServiceCatalogModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -81,9 +82,13 @@ class ServiceCatalog extends Component
     // Edit mode
     public $editingId = null;
 
+    public $editMode = null; // 'inline' for service editing, 'accounting' for account/cost center
+
     public $editingService = [];
 
     public $editing_accounting_account_id = null;
+
+    public $editing_cost_center_id = null;
 
     protected $rules = [
         'cpt_id' => 'required',
@@ -415,11 +420,36 @@ class ServiceCatalog extends Component
             'cpt_code' => $service->cpt_code, // Track if this is a CPT service
             'is_cpt_service' => ! empty($service->cpt_code), // Flag for CPT services
         ];
+        $this->editMode = 'inline';
+    }
+
+    public function editServiceAccounting($id)
+    {
+        $service = ServiceCatalogModel::find($id);
+
+        // Permitir edición solo si es del mismo cliente del usuario
+        if (! $service || $service->client_id !== $this->clientId) {
+            return;
+        }
+
+        $this->editingId = $id;
+        $this->editingService = [
+            'name' => $service->name,
+            'cpt_code' => $service->cpt_code,
+            'is_cpt_service' => ! empty($service->cpt_code),
+        ];
         $this->editing_accounting_account_id = $service->accounting_account_id;
+        $this->editing_cost_center_id = $service->cost_center_id;
+        $this->editMode = 'accounting';
     }
 
     public function updateService()
     {
+        // Si estamos en modo accounting, delegar a método específico
+        if ($this->editMode === 'accounting') {
+            return $this->saveServiceAccounting();
+        }
+
         // For CPT services, only validate price and complexity
         $isCptService = $this->editingService['is_cpt_service'] ?? false;
 
@@ -451,6 +481,7 @@ class ServiceCatalog extends Component
                 'base_price' => $this->editingService['base_price'],
                 'complexity' => $this->editingService['complexity'],
                 'accounting_account_id' => $this->editing_accounting_account_id,
+                'cost_center_id' => $this->editing_cost_center_id,
                 'accounting_config_updated_at' => now(),
                 'accounting_config_updated_by' => auth()->id(),
                 'updated_by' => auth()->id(),
@@ -469,6 +500,7 @@ class ServiceCatalog extends Component
                 'patient_copay' => $this->editingService['patient_copay'] ?? 0,
                 'revenue_code' => $this->editingService['revenue_code'],
                 'accounting_account_id' => $this->editing_accounting_account_id,
+                'cost_center_id' => $this->editing_cost_center_id,
                 'accounting_config_updated_at' => now(),
                 'accounting_config_updated_by' => auth()->id(),
                 'updated_by' => auth()->id(),
@@ -484,11 +516,44 @@ class ServiceCatalog extends Component
         $this->cancelEdit();
     }
 
+    public function saveServiceAccounting()
+    {
+        $this->validate([
+            'editing_accounting_account_id' => 'required|exists:accounting_accounts,id',
+            'editing_cost_center_id' => 'nullable|exists:cost_centers,id',
+        ]);
+
+        $service = ServiceCatalogModel::find($this->editingId);
+
+        // Permitir actualización solo si es del mismo cliente del usuario
+        if (! $service || $service->client_id !== $this->clientId) {
+            return;
+        }
+
+        $service->update([
+            'accounting_account_id' => $this->editing_accounting_account_id,
+            'cost_center_id' => $this->editing_cost_center_id,
+            'accounting_config_updated_at' => now(),
+            'accounting_config_updated_by' => auth()->id(),
+            'updated_by' => auth()->id(),
+        ]);
+
+        $this->dispatch('showToastrServiceCatalog',
+            type: 'success',
+            message: '¡Contabilidad asignada exitosamente!',
+        );
+
+        $this->loadServices();
+        $this->cancelEdit();
+    }
+
     public function cancelEdit()
     {
         $this->editingId = null;
         $this->editingService = [];
+        $this->editMode = null;
         $this->editing_accounting_account_id = null;
+        $this->editing_cost_center_id = null;
     }
 
     public function toggleActive($id)
@@ -585,6 +650,13 @@ class ServiceCatalog extends Component
             ->where('status', 'active')
             ->where('allows_transaction', true)
             ->orderBy('code')
+            ->get();
+    }
+
+    public function getCostCentersProperty(): Collection
+    {
+        return CostCenter::where('client_id', $this->clientId)
+            ->orderBy('name')
             ->get();
     }
 }

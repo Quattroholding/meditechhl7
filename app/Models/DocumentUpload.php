@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\DocumentStatus;
 use App\Enums\DocumentType;
+use App\Models\Finance\CostCenter;
 use App\Models\Scopes\DocumentUploadScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -77,6 +78,11 @@ class DocumentUpload extends BaseModel
     public function approval(): HasOne
     {
         return $this->hasOne(DocumentApproval::class);
+    }
+
+    public function costCenter(): BelongsTo
+    {
+        return $this->belongsTo(CostCenter::class);
     }
 
     // ===== Methods =====

@@ -345,7 +345,7 @@
                                     @foreach($this->services as $service)
                                         <tr>
                                             <td>
-                                                @if($editingId === $service->id)
+                                                @if($editingId === $service->id && $editMode === 'inline')
                                                     @if(!empty($editingService['is_cpt_service']))
                                                         <div class="font-weight-bold text-muted" title="{{ $editingService['name'] }}">
                                                             {{ Str::limit($editingService['name'], 30, '...') }}
@@ -379,7 +379,7 @@
                                                 {{--}}
                                             </td>
                                             <td>
-                                                @if($editingId === $service->id)
+                                                @if($editingId === $service->id && $editMode === 'inline')
                                                     <input type="number" step="0.01" wire:model="editingService.base_price" class="form-control form-control-sm">
                                                     @if(!empty($editingService['is_cpt_service']))
                                                         <small class="text-info d-block mt-1">
@@ -413,7 +413,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                @if($editingId === $service->id)
+                                                @if($editingId === $service->id && $editMode === 'inline')
                                                     <div class="btn-group btn-group-sm" role="group">
                                                         <button wire:click="updateService" class="btn btn-success btn-sm" title="Guardar">
                                                             <i class="fa fa-check"></i>
@@ -424,9 +424,15 @@
                                                     </div>
                                                 @else
                                                     <div class="btn-group btn-group-sm" role="group">
-                                                        <button wire:click="editService({{ $service->id }})" class="btn btn-info btn-sm" title="Editar">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
+                                                        @if(auth()->user()->hasAnyRole(['contabilidad_client', 'contabilidad_asistente_client']))
+                                                            <button wire:click="editServiceAccounting({{ $service->id }})" class="btn btn-primary btn-sm" title="Asignar Contabilidad">
+                                                                <i class="fa fa-money-bill"></i>
+                                                            </button>
+                                                        @else
+                                                            <button wire:click="editService({{ $service->id }})" class="btn btn-info btn-sm" title="Editar">
+                                                                <i class="fa fa-edit"></i>
+                                                            </button>
+                                                        @endif
                                                         <button wire:click="toggleActive({{ $service->id }})"
                                                                 class="btn {{ $service->is_active ? 'btn-warning' : 'btn-success' }} btn-sm"
                                                                 title="{{ $service->is_active ? 'Desactivar' : 'Activar' }}">
@@ -460,7 +466,7 @@
     </div>
 
     <!-- Modal para asignar cuenta contable -->
-    @if($editingId)
+    @if($editingId && $editMode === 'accounting')
         <div class="modal d-block" style="background: rgba(0, 0, 0, 0.5);">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -476,9 +482,9 @@
                             <p class="text-muted">{{ $editingService['name'] ?? 'N/A' }}</p>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="editing_accounting_account_id" class="form-label">
-                                <strong>Cuenta Contable (Ingreso)</strong>
+                                <strong>Cuenta Contable (Ingreso) *</strong>
                             </label>
                             <select wire:model="editing_accounting_account_id" class="form-control" id="editing_accounting_account_id">
                                 <option value="">-- Seleccionar cuenta --</option>
@@ -490,6 +496,23 @@
                             </select>
                             <small class="form-text text-muted d-block mt-2">
                                 Selecciona la cuenta contable a la que irán los ingresos de este servicio cuando se cobre
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editing_cost_center_id" class="form-label">
+                                <strong>Centro de Costo</strong>
+                            </label>
+                            <select wire:model="editing_cost_center_id" class="form-control" id="editing_cost_center_id">
+                                <option value="">-- Sin asignar --</option>
+                                @foreach($this->costCenters as $center)
+                                    <option value="{{ $center->id }}">
+                                        {{ $center->code }} - {{ $center->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small class="form-text text-muted d-block mt-2">
+                                Selecciona el centro de costo para este servicio (opcional)
                             </small>
                         </div>
                     </div>

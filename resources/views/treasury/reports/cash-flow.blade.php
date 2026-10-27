@@ -35,7 +35,7 @@
                                             <label for="bank_id">Banco</label>
                                             <select name="bank_id" id="bank_id" class="form-control">
                                                 <option value="">Todos los bancos</option>
-                                                @forelse(\App\Models\Treasury\Bank::where('client_id', auth()->user()->client_id)->get() as $bank)
+                                                @forelse(\App\Models\Treasury\Bank::where('client_id', auth()->user()->default_client_id)->get() as $bank)
                                                     <option value="{{ $bank->id }}" {{ request('bank_id') == $bank->id ? 'selected' : '' }}>
                                                         {{ $bank->bank_name }}
                                                     </option>
@@ -49,7 +49,7 @@
                                             <label for="cash_register_id">Caja</label>
                                             <select name="cash_register_id" id="cash_register_id" class="form-control">
                                                 <option value="">Todas las cajas</option>
-                                                @forelse(\App\Models\Treasury\CashRegister::where('client_id', auth()->user()->client_id)->get() as $cash)
+                                                @forelse(\App\Models\Treasury\CashRegister::where('client_id', auth()->user()->default_client_id)->get() as $cash)
                                                     <option value="{{ $cash->id }}" {{ request('cash_register_id') == $cash->id ? 'selected' : '' }}>
                                                         {{ $cash->name }}
                                                     </option>

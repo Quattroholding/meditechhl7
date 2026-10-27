@@ -322,6 +322,7 @@ class SupplierInvoiceProcessor extends BaseDocumentProcessor
             'status' => SupplierInvoiceStatus::REGISTERED->value,
             'document_path' => $document->file_path,
             'document_filename' => $document->original_filename,
+            'cost_center_id' => $document->cost_center_id,
             'created_by' => auth()->id() ?? 1,
             'updated_by' => auth()->id() ?? 1,
         ]);

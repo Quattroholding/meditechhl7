@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ChargeItemStatus;
+use App\Models\Finance\CostCenter;
 use App\Models\Scopes\ServiceCatalogScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -57,6 +58,7 @@ class ServiceCatalog extends BaseModel
         'created_by',
         'updated_by',
         'accounting_account_id',
+        'cost_center_id',
         'income_classification',
         'accounting_config_updated_at',
         'accounting_config_updated_by',
@@ -133,6 +135,11 @@ class ServiceCatalog extends BaseModel
     public function cptCodeInfo(): BelongsTo
     {
         return $this->belongsTo(CptCode::class, 'cpt_code', 'code');
+    }
+
+    public function costCenter(): BelongsTo
+    {
+        return $this->belongsTo(CostCenter::class);
     }
 
     // Scopes
@@ -386,6 +393,7 @@ class ServiceCatalog extends BaseModel
             'unit_price_value' => $unitPrice,
             'cpt_code' => $this->cpt_code,
             'revenue_code' => $this->revenue_code,
+            'cost_center_id' => $this->cost_center_id,
             'client_id' => $this->client_id,
         ]);
     }

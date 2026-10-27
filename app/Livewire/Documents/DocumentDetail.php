@@ -4,7 +4,9 @@ namespace App\Livewire\Documents;
 
 use App\Enums\DocumentType;
 use App\Models\DocumentUpload;
+use App\Models\Finance\CostCenter;
 use App\Services\DocumentApprovalService;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
 class DocumentDetail extends Component
@@ -47,6 +49,8 @@ class DocumentDetail extends Component
     public array $contractData = [];
 
     public ?string $selectedAction = null;
+
+    public ?int $costCenterId = null;
 
     public array $availableActions = [
         'register_electricity_bill' => 'Registrar factura de electricidad',
@@ -621,12 +625,18 @@ class DocumentDetail extends Component
         $this->document->refresh();
         $this->document->load('parseResult');
 
+        // Save cost center if user is accountant
+        if (auth()->user()->hasAnyRole(['contabilidad_client', 'contabilidad_asistente_client'])) {
+            $this->document->update(['cost_center_id' => $this->costCenterId]);
+        }
+
         // Log the data being sent to approval service
         \Log::info('DocumentDetail::approve() - Data being sent', [
             'document_id' => $this->document->id,
             'selected_indices' => $selectedIndices,
             'edited_items' => $this->editedItems,
             'selected_action' => $this->selectedAction,
+            'cost_center_id' => $this->costCenterId,
             'parse_result_extracted_data' => $this->document->parseResult?->extracted_data,
         ]);
 
@@ -748,6 +758,17 @@ class DocumentDetail extends Component
         }
     }
 
+    public function getCostCentersProperty(): Collection
+    {
+        if (! $this->document) {
+            return collect();
+        }
+
+        return CostCenter::where('client_id', $this->document->client_id)
+            ->orderBy('name')
+            ->get();
+    }
+
     public function render()
     {
         $parseResult = $this->document?->parseResult;
@@ -784,6 +805,7 @@ class DocumentDetail extends Component
             'subtotal' => $this->subtotal,
             'totalTax' => $this->totalTax,
             'totalInvoice' => $this->totalInvoice,
+            'costCenters' => $this->costCenters,
         ]);
     }
 }

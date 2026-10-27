@@ -45,6 +45,7 @@ class ChargeItem extends BaseModel
         'icd10_code',
         'revenue_code',
         'modifier_codes',
+        'cost_center_id',
         'client_id',
         'service_catalog_id',
         'created_by',

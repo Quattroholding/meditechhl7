@@ -55,17 +55,16 @@
                                     <span class="cell-content">{{ \Illuminate\Support\Str::limit($entry->description, 50) }}</span>
                                 </td>
                                 <td data-column="document_type" data-priority="4" data-label="Tipo Documento">
-                                    <span class="cell-content badge bg-info">{{ $entry->document_type }}</span>
+                                    <span class="cell-content badge bg-info">{{ $entry->document_type?->label() ?? 'N/A' }}</span>
                                 </td>
                                 <td data-column="total" data-priority="5" data-label="Total">
                                     <span class="cell-content">
-                                        B/. {{ number_format($entry->journalEntryLines->sum('debit'), 2) }}
+                                        $/. {{ number_format($entry->journalEntryLines->sum('debit'), 2) }}
                                     </span>
                                 </td>
                                 <td data-column="status" data-priority="6" data-label="Estatus">
-                                    <span class="cell-content badge me-1
-                                        {{ $entry->status->value === 'draft' ? 'bg-warning' : ($entry->status->value === 'posted' ? 'bg-success' : 'bg-danger') }}">
-                                        {{ ucfirst($entry->status->value) }}
+                                    <span class="badge bg-{{ $entry->status === App\Enums\JournalEntryStatus::POSTED ? 'success' : ($entry->status === App\Enums\JournalEntryStatus::DRAFT ? 'warning' : 'secondary') }}">
+                                        {{ $entry->status->label() }}
                                     </span>
                                 </td>
                                 @canany(['accounting.entries.create', 'accounting.entries.post', 'accounting.entries.reverse'])

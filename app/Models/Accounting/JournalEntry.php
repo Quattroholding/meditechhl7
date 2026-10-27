@@ -2,6 +2,7 @@
 
 namespace App\Models\Accounting;
 
+use App\Enums\Accounting\JournalEntryDocumentType;
 use App\Enums\JournalEntryStatus;
 use App\Models\BaseModel;
 use App\Models\Scopes\JournalEntryScope;
@@ -36,6 +37,7 @@ class JournalEntry extends BaseModel
 
     protected $casts = [
         'entry_date' => 'date',
+        'document_type' => JournalEntryDocumentType::class,
         'status' => JournalEntryStatus::class,
         'posted_at' => 'datetime',
         'created_at' => 'datetime',

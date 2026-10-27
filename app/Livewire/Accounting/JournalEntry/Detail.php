@@ -3,15 +3,51 @@
 namespace App\Livewire\Accounting\JournalEntry;
 
 use App\Models\Accounting\JournalEntry;
+use App\Models\Accounting\JournalEntryLine;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Detail extends Component
 {
     public JournalEntry $journalEntry;
 
+    public ?JournalEntryLine $editingLine = null;
+
+    #[On('lineUpdated')]
+    #[On('lineDeleted')]
+    public function refreshEntry()
+    {
+        $this->journalEntry->refresh();
+        $this->journalEntry->load(['journalEntryLines.accountingAccount', 'journalEntryLines.costCenter']);
+    }
+
+    #[On('closeLineForm')]
+    public function closeLineFormListener()
+    {
+        $this->closeLineForm();
+    }
+
     public function mount(JournalEntry $journalEntry)
     {
-        $this->journalEntry = $journalEntry->load(['journalEntryLines.accountingAccount', 'accountingPeriod', 'createdBy', 'postedBy']);
+        $this->journalEntry = $journalEntry->load(['journalEntryLines.accountingAccount', 'journalEntryLines.costCenter', 'accountingPeriod', 'createdBy', 'postedBy']);
+    }
+
+    public function editLine(JournalEntryLine $line)
+    {
+        $this->authorize('accounting.entries.edit');
+
+        if (! $this->journalEntry->accountingPeriod->canModify()) {
+            $this->dispatch('showToastr', type: 'error', message: 'El período no está abierto para modificaciones');
+
+            return;
+        }
+
+        $this->editingLine = $line;
+    }
+
+    public function closeLineForm()
+    {
+        $this->editingLine = null;
     }
 
     public function reverse()

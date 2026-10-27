@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Settings;
 
+use App\Models\Accounting\AccountingAccount;
 use App\Models\CptCode;
+use App\Models\Finance\CostCenter;
 use App\Models\UserProcedure;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -27,6 +29,12 @@ class UserProcedureCreate extends Component
     public $current_price;
 
     public $type;
+
+    public $editingProcedureId = null;
+
+    public $accountingAccountId = null;
+
+    public $costCenterId = null;
 
     public function render()
     {
@@ -142,5 +150,60 @@ class UserProcedureCreate extends Component
             type: 'error',
             message: '¡Eliminado exitosamente!'
         );
+    }
+
+    public function openAccountingModal($procedureId)
+    {
+        $procedure = UserProcedure::find($procedureId);
+        if ($procedure) {
+            $this->editingProcedureId = $procedureId;
+            $this->accountingAccountId = $procedure->accounting_account_id;
+            $this->costCenterId = $procedure->cost_center_id;
+        }
+    }
+
+    public function closeAccountingModal()
+    {
+        $this->editingProcedureId = null;
+        $this->accountingAccountId = null;
+        $this->costCenterId = null;
+    }
+
+    public function saveAccounting()
+    {
+        $this->validate([
+            'accountingAccountId' => 'required|exists:accounting_accounts,id',
+            'costCenterId' => 'nullable|exists:cost_centers,id',
+        ]);
+
+        $procedure = UserProcedure::find($this->editingProcedureId);
+        if ($procedure) {
+            $procedure->update([
+                'accounting_account_id' => $this->accountingAccountId,
+                'cost_center_id' => $this->costCenterId,
+            ]);
+
+            $this->dispatch('showToastr',
+                type: 'success',
+                message: '¡Cuenta contable asignada exitosamente!'
+            );
+
+            $this->closeAccountingModal();
+            $this->created = UserProcedure::whereUserId(auth()->user()->id)->get();
+        }
+    }
+
+    public function getAccountingAccountsProperty()
+    {
+        return AccountingAccount::where('client_id', $this->clientId)
+            ->orderBy('code')
+            ->get();
+    }
+
+    public function getCostCentersProperty()
+    {
+        return CostCenter::where('client_id', $this->clientId)
+            ->orderBy('name')
+            ->get();
     }
 }

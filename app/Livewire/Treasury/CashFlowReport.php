@@ -54,12 +54,14 @@ class CashFlowReport extends Component
             $this->endDate = now()->endOfMonth()->toDateString();
         }
 
-        $clientId = auth()->user()->getCurrentClient()->id;
-        $this->banks = Bank::where('client_id', $clientId)
-            ->where('status', 'active')
-            ->orderBy('bank_name')
-            ->get()
-            ->toArray();
+        $currentClient = auth()->user()->getCurrentClient();
+        if ($currentClient) {
+            $this->banks = Bank::where('client_id', $currentClient->id)
+                ->where('status', 'active')
+                ->orderBy('bank_name')
+                ->get()
+                ->toArray();
+        }
 
         $this->generateReport();
     }
@@ -166,8 +168,8 @@ class CashFlowReport extends Component
                 $this->bankId
             );
 
-            $income = $previousMovements->where('movement_type', 'income')->sum('amount');
-            $expense = $previousMovements->where('movement_type', 'expense')->sum('amount');
+            $income = $previousMovements->where('movement_type', 'deposit')->sum('amount');
+            $expense = $previousMovements->where('movement_type', 'withdrawal')->sum('amount');
 
             return $income - $expense;
         }
@@ -193,8 +195,8 @@ class CashFlowReport extends Component
                 'description' => $movement->description,
                 'reference' => $movement->reference_number,
                 'type' => $movement->movement_type,
-                'income' => $movement->movement_type === 'income' ? $movement->amount : 0,
-                'expense' => $movement->movement_type === 'expense' ? $movement->amount : 0,
+                'income' => $movement->movement_type === 'deposit' ? $movement->amount : 0,
+                'expense' => $movement->movement_type === 'withdrawal' ? $movement->amount : 0,
             ];
         }
 
@@ -214,7 +216,7 @@ class CashFlowReport extends Component
     protected function groupByType($movements, string $type): array
     {
         $grouped = [];
-        $movementType = $type === 'income' ? 'income' : 'expense';
+        $movementType = $type === 'income' ? 'deposit' : 'withdrawal';
 
         $filtered = $movements->where('movement_type', $movementType);
 
