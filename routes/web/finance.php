@@ -145,6 +145,13 @@ Route::middleware(['auth', 'verified', 'first.login', 'check.accounting.enabled'
             return view('accounting.reports.cost-centers');
         })->name('cost-centers');
     });
+
+    // Configuración de Reglas Contables
+    Route::middleware('permission:accounting.config.manage')->prefix('config')->name('config.')->group(function () {
+        Route::get('/rules', function () {
+            return view('accounting.config.rules');
+        })->name('rules');
+    });
 });
 
 // ============================================================================

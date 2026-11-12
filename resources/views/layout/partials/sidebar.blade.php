@@ -107,6 +107,9 @@
                         @can('accounting.periods.manage')
                         <li><a class="{{ Request::is('accounting/periods') ? 'active' : '' }}" href="{{route('accounting.periods.index')}}">Períodos Contables</a></li>
                         @endcan
+                        @can('accounting.config.manage')
+                        <li><a class="{{ Request::is('accounting/config/rules') ? 'active' : '' }}" href="{{route('accounting.config.rules')}}">Configurar Reglas</a></li>
+                        @endcan
                     </ul>
                 </li>
                 @endcanany
