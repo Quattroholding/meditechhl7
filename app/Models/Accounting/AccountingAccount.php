@@ -21,9 +21,14 @@ class AccountingAccount extends BaseModel
         'name',
         'description',
         'account_type',
+        'nature',
         'parent_id',
         'level',
         'allows_transaction',
+        'requires_cost_center',
+        'is_system_account',
+        'is_control_account',
+        'closes_period',
         'status',
         'balance',
         'created_by',
@@ -32,8 +37,13 @@ class AccountingAccount extends BaseModel
 
     protected $casts = [
         'account_type' => AccountType::class,
+        'nature' => 'string',
         'level' => 'integer',
         'allows_transaction' => 'boolean',
+        'requires_cost_center' => 'boolean',
+        'is_system_account' => 'boolean',
+        'is_control_account' => 'boolean',
+        'closes_period' => 'boolean',
         'status' => 'string',
         'balance' => 'decimal:2',
         'created_at' => 'datetime',
@@ -108,6 +118,16 @@ class AccountingAccount extends BaseModel
     public function isCost(): bool
     {
         return $this->account_type === 'cost';
+    }
+
+    public function isDebit(): bool
+    {
+        return $this->nature === 'debit';
+    }
+
+    public function isCredit(): bool
+    {
+        return $this->nature === 'credit';
     }
 
     public function updateBalance(float $amount, string $type = 'debit'): void

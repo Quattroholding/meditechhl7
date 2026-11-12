@@ -4,6 +4,7 @@ namespace App\Services\Accounting;
 
 use App\Enums\JournalEntryStatus;
 use App\Models\Accounting\AccountingAccount;
+use App\Models\Accounting\ClientAccountingRuleMapping;
 use App\Models\Accounting\JournalEntry;
 use App\Models\Accounting\JournalEntryLine;
 use App\Models\Finance\PaymentSchedule;
@@ -157,16 +158,18 @@ class AccountingEngineService
     }
 
     /**
-     * Obtiene la cuenta de gasto apropiada para un centro de costo
+     * Obtiene la cuenta de gasto según reglas del cliente
+     * Todos los gastos se registran en la cuenta configurada en el mapping
      */
     private function getExpenseAccountForCostCenter(int $clientId, ?int $costCenterId): AccountingAccount
     {
-        // Lógica: buscar cuenta de gasto asociada al centro de costos
-        // Por ahora retorna cuenta default de gastos
+        $mapping = ClientAccountingRuleMapping::where([
+            ['client_id', $clientId],
+            ['rule_type', 'expense'],
+            ['status', 'active'],
+        ])->firstOrFail();
 
-        return AccountingAccount::where('client_id', $clientId)
-            ->where('code', '6101') // Gastos Administrativos (default)
-            ->firstOrFail();
+        return $mapping->accountingAccount;
     }
 
     /**
@@ -558,43 +561,46 @@ class AccountingEngineService
     }
 
     /**
-     * Obtiene la cuenta contable de ingresos por servicios
+     * Obtiene la cuenta contable de ingresos por servicios según reglas del cliente
      */
     private function getIncomeAccount(int $clientId): AccountingAccount
     {
-        // Buscar cuenta de ingresos por servicios (ej: 4101)
-        return AccountingAccount::where('client_id', $clientId)
-            ->where('code', '4101') // Ingresos por Servicios
-            ->firstOrFail();
+        $mapping = ClientAccountingRuleMapping::where([
+            ['client_id', $clientId],
+            ['rule_type', 'income'],
+            ['status', 'active'],
+        ])->firstOrFail();
+
+        return $mapping->accountingAccount;
     }
 
     /**
-     * Obtiene la cuenta contable de cuentas por cobrar
+     * Obtiene la cuenta contable de cuentas por cobrar según reglas del cliente
      */
     private function getReceivableAccount(int $clientId): AccountingAccount
     {
-        // Buscar cuenta de CxC (ej: 1102 - Cuentas por Cobrar Pacientes)
-        return AccountingAccount::where('client_id', $clientId)
-            ->where('code', '1102') // Cuentas por Cobrar Pacientes
-            ->firstOrFail();
+        $mapping = ClientAccountingRuleMapping::where([
+            ['client_id', $clientId],
+            ['rule_type', 'receivable'],
+            ['status', 'active'],
+        ])->firstOrFail();
+
+        return $mapping->accountingAccount;
     }
 
     /**
-     * Obtiene la cuenta de banco según el método de pago
+     * Obtiene la cuenta de banco según reglas del cliente
+     * Todos los métodos de pago usan la misma cuenta de banco configurada
      */
     private function getBankAccountForPaymentMethod(int $clientId, string $paymentMethod): ?AccountingAccount
     {
-        $accountCode = match ($paymentMethod) {
-            'cash' => '1101', // Caja y Bancos
-            'bank_transfer', 'online' => '1101', // Caja y Bancos
-            'credit_card', 'debit_card' => '1101', // Caja y Bancos
-            'check' => '1101', // Caja y Bancos
-            default => '1101', // Default a Caja y Bancos
-        };
+        $mapping = ClientAccountingRuleMapping::where([
+            ['client_id', $clientId],
+            ['rule_type', 'bank'],
+            ['status', 'active'],
+        ])->first();
 
-        return AccountingAccount::where('client_id', $clientId)
-            ->where('code', $accountCode)
-            ->first();
+        return $mapping?->accountingAccount;
     }
 
     /**
