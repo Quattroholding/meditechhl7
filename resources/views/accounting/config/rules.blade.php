@@ -1,11 +1,22 @@
-@extends('layout.app')
+<x-app-layout>
+    <div class="page-wrapper">
+        <div class="content">
+            <!-- Page Header -->
+            @component('components.page-header')
+                @slot('title')
+                    Configuración de Reglas Contables
+                @endslot
+                @slot('li_1')
+                    Finanzas & Contabilidad
+                @endslot
+                @slot('li_2')
+                    Configuración
+                @endslot
+            @endcomponent
 
-@section('title', 'Configuración de Reglas Contables')
-
-@section('content')
-    <div class="min-h-screen bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <livewire:accounting.config.accounting-rule-config-panel />
+            <div class="card">
+                <livewire:accounting.config.accounting-rule-config-panel />
+            </div>
         </div>
     </div>
-@endsection
+</x-app-layout>

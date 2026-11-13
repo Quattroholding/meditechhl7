@@ -287,7 +287,7 @@ Eres un asistente médico experto en codificación ICD-10. Tu tarea es sugerir l
 
 INSTRUCCIONES IMPORTANTES:
 1. Analiza la información clínica cuidadosamente
-2. Sugiere entre 3 y 8 diagnósticos diferenciales más probables
+2. Sugiere entre 3 y 5 diagnósticos diferenciales más probables
 3. DEBES responder ÚNICAMENTE con un JSON válido sin texto adicional
 4. Los códigos DEBEN existir en la lista de códigos ICD-10 disponibles
 5. Ordena los diagnósticos por probabilidad (más probable primero)

@@ -311,7 +311,9 @@ class AccountingEngineService
                 ]);
 
                 // Obtener cuenta contable de ingresos por servicios
-                $revenueAccount = $this->getIncomeAccount($invoice->client_id);
+                // Si existe un encounter con especialidad, usarla para resolver la regla específica
+                $medicalSpecialityId = $invoice->encounter?->medical_speciality_id;
+                $revenueAccount = $this->getIncomeAccount($invoice->client_id, $medicalSpecialityId);
 
                 // Obtener cuenta de banco/caja según método de pago
                 $bankAccount = $this->getBankAccountForPaymentMethod(
@@ -394,8 +396,13 @@ class AccountingEngineService
                 ]);
 
                 // Obtener cuentas
-                $receivableAccount = $this->getReceivableAccount($invoice->client_id);
-                $defaultRevenueAccount = $this->getIncomeAccount($invoice->client_id);
+                // Determinar si el pago viene de paciente o seguro
+                $paymentSource = $invoice->has_insurance ? 'insurance' : 'patient';
+                $receivableAccount = $this->getReceivableAccount($invoice->client_id, $paymentSource);
+
+                // Obtener cuenta de ingresos con especialidad si aplica
+                $medicalSpecialityId = $invoice->encounter?->medical_speciality_id;
+                $defaultRevenueAccount = $this->getIncomeAccount($invoice->client_id, $medicalSpecialityId);
 
                 // Línea débito: Cuentas por Cobrar
                 JournalEntryLine::create([
@@ -561,29 +568,39 @@ class AccountingEngineService
     }
 
     /**
-     * Obtiene la cuenta contable de ingresos por servicios según reglas del cliente
+     * Obtiene la cuenta contable de ingresos por servicios según reglas del cliente.
+     * Soporta ingresos específicos por especialidad médica.
      */
-    private function getIncomeAccount(int $clientId): AccountingAccount
+    private function getIncomeAccount(int $clientId, ?int $medicalSpecialityId = null): AccountingAccount
     {
-        $mapping = ClientAccountingRuleMapping::where([
-            ['client_id', $clientId],
-            ['rule_type', 'income'],
-            ['status', 'active'],
-        ])->firstOrFail();
+        $mapping = ClientAccountingRuleMapping::forIncome($clientId, $medicalSpecialityId)->first();
+
+        if (! $mapping) {
+            throw new \Exception(
+                "No se encontró regla contable de ingresos para cliente {$clientId}".
+                ($medicalSpecialityId ? " y especialidad {$medicalSpecialityId}" : '')
+            );
+        }
 
         return $mapping->accountingAccount;
     }
 
     /**
-     * Obtiene la cuenta contable de cuentas por cobrar según reglas del cliente
+     * Obtiene la cuenta contable de cuentas por cobrar según reglas del cliente.
+     * Soporta reglas específicas por tipo de pagador (paciente vs. seguro).
+     *
+     * @param  string|null  $paymentSource  Puede ser 'patient', 'insurance', o null para default
      */
-    private function getReceivableAccount(int $clientId): AccountingAccount
+    private function getReceivableAccount(int $clientId, ?string $paymentSource = null): AccountingAccount
     {
-        $mapping = ClientAccountingRuleMapping::where([
-            ['client_id', $clientId],
-            ['rule_type', 'receivable'],
-            ['status', 'active'],
-        ])->firstOrFail();
+        $mapping = ClientAccountingRuleMapping::forReceivable($clientId, $paymentSource)->first();
+
+        if (! $mapping) {
+            throw new \Exception(
+                "No se encontró regla contable de cuentas por cobrar para cliente {$clientId}".
+                ($paymentSource ? " y pagador {$paymentSource}" : '')
+            );
+        }
 
         return $mapping->accountingAccount;
     }
