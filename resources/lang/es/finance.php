@@ -80,6 +80,8 @@ return [
         'contact_person' => 'Persona de Contacto',
         'credit_days' => 'Días de Crédito',
         'accounting_account' => 'Cuenta Contable (CxP)',
+        'expense_account' => 'Cuenta Contable de Gasto',
+        'expense_account_help' => 'Seleccione la cuenta de gasto según el tipo de servicio que proporciona este proveedor. Ej: Agua, Electricidad, Teléfono, etc.',
         'status' => 'Estado',
         'delete_confirmation' => '¿Está seguro de que desea eliminar este proveedor?',
         'created_successfully' => 'Proveedor creado exitosamente',

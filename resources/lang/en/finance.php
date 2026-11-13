@@ -80,6 +80,8 @@ return [
         'contact_person' => 'Contact Person',
         'credit_days' => 'Credit Days',
         'accounting_account' => 'Accounting Account (AP)',
+        'expense_account' => 'Expense Account',
+        'expense_account_help' => 'Select the expense account based on the type of service provided by this supplier. Ex: Water, Electricity, Telephone, etc.',
         'status' => 'Status',
         'delete_confirmation' => 'Are you sure you want to delete this supplier?',
         'created_successfully' => 'Supplier created successfully',
