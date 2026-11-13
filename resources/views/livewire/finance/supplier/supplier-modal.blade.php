@@ -85,7 +85,7 @@
     </div>
 
     <div class="row">
-        <!-- Accounting Account -->
+        <!-- Accounting Account (CxP) -->
         <div class="col-12">
             <div class="input-block local-forms">
                 <x-input-label for="accounting_account_id" :value="__('finance.suppliers.accounting_account')" required="true"/>
@@ -98,6 +98,25 @@
                     @endforeach
                 </select>
                 <x-input-error :messages="$errors->get('accounting_account_id')" class="mt-2" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Expense Account -->
+        <div class="col-12">
+            <div class="input-block local-forms">
+                <x-input-label for="expense_account_id" :value="__('finance.suppliers.expense_account')"/>
+                <select wire:model="expense_account_id" id="expense_account_id" class="form-control">
+                    <option value="">{{ __('generic.select') }}</option>
+                    @foreach ($expenseAccounts as $account)
+                        <option value="{{ $account->id }}">
+                            {{ $account->code }} - {{ $account->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <x-input-error :messages="$errors->get('expense_account_id')" class="mt-2" />
+                <small class="form-text text-muted">{{ __('finance.suppliers.expense_account_help') }}</small>
             </div>
         </div>
     </div>

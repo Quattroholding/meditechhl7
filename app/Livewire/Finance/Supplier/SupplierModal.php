@@ -43,6 +43,9 @@ class SupplierModal extends Component
     public int $accounting_account_id = 0;
 
     #[Validate]
+    public ?int $expense_account_id = null;
+
+    #[Validate]
     public string $status = 'active';
 
     public function mount(?Supplier $supplier = null): void
@@ -58,6 +61,7 @@ class SupplierModal extends Component
             $this->contact_person = $supplier->contact_person ?? '';
             $this->credit_days = $supplier->credit_days;
             $this->accounting_account_id = $supplier->accounting_account_id;
+            $this->expense_account_id = $supplier->expense_account_id;
             $this->status = $supplier->status;
         }
     }
@@ -90,6 +94,7 @@ class SupplierModal extends Component
             'contact_person' => 'nullable|string|max:255',
             'credit_days' => 'required|integer|min:0|max:365',
             'accounting_account_id' => 'required|exists:accounting_accounts,id',
+            'expense_account_id' => 'nullable|exists:accounting_accounts,id',
             'status' => 'required|in:active,inactive',
         ];
     }
@@ -112,6 +117,7 @@ class SupplierModal extends Component
                 'contact_person' => $this->contact_person,
                 'credit_days' => $this->credit_days,
                 'accounting_account_id' => $this->accounting_account_id,
+                'expense_account_id' => $this->expense_account_id,
                 'status' => $this->status,
                 'updated_by' => auth()->id(),
             ]);
@@ -129,6 +135,7 @@ class SupplierModal extends Component
                 'contact_person' => $this->contact_person,
                 'credit_days' => $this->credit_days,
                 'accounting_account_id' => $this->accounting_account_id,
+                'expense_account_id' => $this->expense_account_id,
                 'status' => $this->status,
                 'created_by' => auth()->id(),
                 'updated_by' => auth()->id(),
@@ -168,10 +175,20 @@ class SupplierModal extends Component
             ->get();
     }
 
+    public function getExpenseAccountsProperty()
+    {
+        return AccountingAccount::where('client_id', auth()->user()->getCurrentClient()->id)
+            ->where('account_type', 'expense')
+            ->where('status', 'active')
+            ->orderBy('code')
+            ->get();
+    }
+
     public function render()
     {
         return view('livewire.finance.supplier.supplier-modal', [
             'accounts' => $this->accountingAccounts,
+            'expenseAccounts' => $this->expenseAccounts,
         ]);
     }
 }

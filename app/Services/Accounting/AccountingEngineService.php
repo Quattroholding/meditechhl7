@@ -88,11 +88,8 @@ class AccountingEngineService
                 $costCenterId = $invoice->cost_center_id;
                 $amount = $invoice->total_amount;
 
-                // Obtener cuenta contable del costo center
-                $expenseAccount = $this->getExpenseAccountForCostCenter(
-                    $invoice->client_id,
-                    $costCenterId
-                );
+                // Obtener cuenta contable del proveedor o del cost center
+                $expenseAccount = $this->getExpenseAccountForSupplier($invoice, $costCenterId);
 
                 // Línea débito: Gasto
                 JournalEntryLine::create([
@@ -106,10 +103,7 @@ class AccountingEngineService
             } else {
                 // Con distribución por centros de costo
                 foreach ($distributions as $distribution) {
-                    $expenseAccount = $this->getExpenseAccountForCostCenter(
-                        $invoice->client_id,
-                        $distribution->cost_center_id
-                    );
+                    $expenseAccount = $this->getExpenseAccountForSupplier($invoice, $distribution->cost_center_id);
 
                     JournalEntryLine::create([
                         'journal_entry_id' => $entry->id,
@@ -161,6 +155,22 @@ class AccountingEngineService
      * Obtiene la cuenta de gasto según reglas del cliente
      * Todos los gastos se registran en la cuenta configurada en el mapping
      */
+    /**
+     * Obtiene la cuenta de gasto para una factura de proveedor.
+     * Primero intenta usar la cuenta configurada en el proveedor (expense_account_id).
+     * Si no existe, usa la cuenta por defecto del cost center.
+     */
+    private function getExpenseAccountForSupplier(FinanceSupplierInvoice $invoice, ?int $costCenterId): AccountingAccount
+    {
+        // Intentar usar cuenta específica del proveedor
+        if ($invoice->supplier->expense_account_id) {
+            return $invoice->supplier->expenseAccount;
+        }
+
+        // Fallback a cuenta del cost center
+        return $this->getExpenseAccountForCostCenter($invoice->client_id, $costCenterId);
+    }
+
     private function getExpenseAccountForCostCenter(int $clientId, ?int $costCenterId): AccountingAccount
     {
         $mapping = ClientAccountingRuleMapping::where([

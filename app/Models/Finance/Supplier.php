@@ -28,6 +28,7 @@ class Supplier extends BaseModel
         'contact_person',
         'credit_days',
         'accounting_account_id',
+        'expense_account_id',
         'status',
         'created_by',
         'updated_by',
@@ -56,6 +57,11 @@ class Supplier extends BaseModel
     public function accountingAccount(): BelongsTo
     {
         return $this->belongsTo(AccountingAccount::class);
+    }
+
+    public function expenseAccount(): BelongsTo
+    {
+        return $this->belongsTo(AccountingAccount::class, 'expense_account_id');
     }
 
     public function createdBy(): BelongsTo
