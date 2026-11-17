@@ -33,6 +33,7 @@ class User extends Authenticatable
         'profile_picture',
         'whatsapp_phone',
         'active',
+        'allow_multiple_appointments_per_block',
         'created_by',
         'register_source',
         'validation_status',
@@ -66,6 +67,7 @@ class User extends Authenticatable
             'validated_at' => 'datetime',
             'password' => 'hashed',
             'active' => 'boolean',
+            'allow_multiple_appointments_per_block' => 'boolean',
         ];
     }
 

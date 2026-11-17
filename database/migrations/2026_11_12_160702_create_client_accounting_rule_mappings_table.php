@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('rule_type', ['income', 'receivable', 'expense', 'bank'])->comment('Type of accounting rule');
             $table->foreignId('accounting_rule_id')->constrained('accounting_rules')->cascadeOnDelete();
             $table->foreignId('accounting_account_id')->constrained('accounting_accounts')->cascadeOnDelete();
+            $table->foreignId('medical_speciality_id')->nullable()->constrained('medical_specialties');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
             $table->softDeletes();

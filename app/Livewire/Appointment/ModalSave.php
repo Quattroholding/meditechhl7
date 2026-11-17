@@ -8,6 +8,7 @@ use App\Models\AppointmentWaitlistEntry;
 use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
+use App\Models\Scopes\PractitionerScope;
 use App\Models\User;
 use App\Models\UserClient;
 use App\Models\UserWorkingHour;
@@ -646,9 +647,6 @@ class ModalSave extends Component
             // Verificar disponibilidad si es nueva cita, si cambió fecha/hora o si cambió el asistente
             if (! $this->appointment || $hasDateTimeChanged || $hasAssistantChanged) {
                 if (! $this->checkAvailability()) {
-                    // Mostrar modal de lista de espera
-                    $this->showWaitlistOptions();
-
                     return;
                 }
             }
@@ -1210,6 +1208,10 @@ class ModalSave extends Component
             return;
         }
 
+        if (! $this->assisted_by && $this->doctorAllowsOverlappingAppointments()) {
+            return;
+        }
+
         $minutes = (int) $this->duration;
         $startTime = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
         $endTime = $startTime->copy()->addMinutes($minutes);
@@ -1257,6 +1259,16 @@ class ModalSave extends Component
         }
     }
 
+    /**
+     * Indica si el doctor seleccionado tiene habilitado agendar citas en bloques ya ocupados
+     */
+    private function doctorAllowsOverlappingAppointments(): bool
+    {
+        $practitioner = Practitioner::withoutGlobalScope(PractitionerScope::class)->find($this->doctor_id);
+
+        return (bool) $practitioner?->user?->allow_multiple_appointments_per_block;
+    }
+
     private function checkAvailability()
     {
         $minutes = (int) $this->duration;
@@ -1292,48 +1304,51 @@ class ModalSave extends Component
                 return false;
             }
 
-            // Validar que la hora esté dentro del horario laboral
-            $workingHour = $this->getWorkingHourForDate($this->appointment_date);
+            // Validar horario y consultorio contra todas las filas del día: un doctor puede
+            // tener varios consultorios el mismo día, cada uno con su propio horario
+            $isVirtual = $this->consultation_type === 'virtual';
+            $dayOfWeek = $this->getDayNameInSpanish(Carbon::parse($this->appointment_date));
+            $workingHoursForDay = $workingHours->where('day_of_week', $dayOfWeek);
+            $roomWorkingHours = $isVirtual
+                ? $workingHoursForDay
+                : $workingHoursForDay->where('consulting_room_id', $this->consulting_room_id);
 
-            if ($workingHour) {
+            $matchingWorkingHour = $roomWorkingHours->first(function ($workingHour) use ($startTime, $endTime) {
                 $workStart = Carbon::parse($this->appointment_date.' '.$workingHour->start_time);
                 $workEnd = Carbon::parse($this->appointment_date.' '.$workingHour->end_time);
 
-                Log::info('checkAvailability() - Validating working hours', [
-                    'workStart' => $workStart->format('Y-m-d H:i'),
-                    'workEnd' => $workEnd->format('Y-m-d H:i'),
-                    'startTime' => $startTime->format('Y-m-d H:i'),
-                    'endTime' => $endTime->format('Y-m-d H:i'),
-                ]);
+                return ! $startTime->lt($workStart) && ! $endTime->gt($workEnd);
+            });
 
-                if ($startTime->lt($workStart) || $endTime->gt($workEnd)) {
+            if (! $matchingWorkingHour) {
+                if (! $isVirtual && $roomWorkingHours->isEmpty()) {
+                    $roomNames = $workingHoursForDay
+                        ->map(fn ($workingHour) => $workingHour->consultingRoom->full_name_branch ?? 'N/A')
+                        ->unique()
+                        ->implode(', ');
+                    $this->addError('consulting_room_id',
+                        "El doctor no trabaja en el consultorio seleccionado este día. Consultorios: {$roomNames}. Por favor, seleccione el consultorio correcto."
+                    );
+                } else {
+                    $hours = $roomWorkingHours
+                        ->map(fn ($workingHour) => "{$workingHour->start_time} - {$workingHour->end_time}")
+                        ->implode(', ');
                     Log::info('checkAvailability() - Appointment outside working hours', [
                         'doctor_id' => $this->doctor_id,
                         'start_time' => $this->appointment_time,
-                        'working_hours' => $workingHour->start_time.' - '.$workingHour->end_time,
+                        'working_hours' => $hours,
                     ]);
                     $this->addError('appointment_time',
-                        "La cita debe estar dentro del horario laboral del doctor: {$workingHour->start_time} - {$workingHour->end_time}"
+                        "La cita debe estar dentro del horario laboral del doctor: {$hours}"
                     );
-
-                    return false;
                 }
 
-                // Validar que el consultorio seleccionado sea el configurado para ese día (solo para citas presenciales)
-                if ($this->consultation_type !== 'virtual' && $this->consulting_room_id != $workingHour->consulting_room_id) {
-                    Log::info('checkAvailability() - Consulting room mismatch', [
-                        'doctor_id' => $this->doctor_id,
-                        'selected_room' => $this->consulting_room_id,
-                        'required_room' => $workingHour->consulting_room_id,
-                    ]);
-                    $roomName = $workingHour->consultingRoom->full_name_branch ?? 'N/A';
-                    $this->addError('consulting_room_id',
-                        "El doctor trabaja en '{$roomName}' este día. Por favor, seleccione el consultorio correcto."
-                    );
-
-                    return false;
-                }
+                return false;
             }
+        }
+
+        if (! $this->assisted_by && $this->doctorAllowsOverlappingAppointments()) {
+            return true;
         }
 
         // Verificar conflictos con otras citas
@@ -1384,6 +1399,8 @@ class ModalSave extends Component
                 ? 'El asistente médico ya tiene una cita programada en ese horario.'
                 : 'El doctor ya tiene una cita programada en ese horario.';
             $this->addError('appointment_time', $errorMessage);
+            // Solo un conflicto de horario ofrece la lista de espera; errores de horario o consultorio no
+            $this->showWaitlistOptions();
 
             return false;
         }

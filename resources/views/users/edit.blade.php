@@ -66,6 +66,20 @@
                                     </div>
                                 </div>
                             </div>
+                            @if($data->practitioner)
+                                <div class="row">
+                                    <div class="col-12 col-md-6 col-xl-6">
+                                        <!-- Agendar en bloques ocupados -->
+                                        <div class="input-block local-forms">
+                                            <div class="form-check">
+                                                <input type="hidden" name="allow_multiple_appointments_per_block" value="0">
+                                                <input class="form-check-input" type="checkbox" id="allow_multiple_appointments_per_block" name="allow_multiple_appointments_per_block" value="1" {{ $data->allow_multiple_appointments_per_block ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="allow_multiple_appointments_per_block">Permitir agendar múltiples citas en el mismo bloque de tiempo</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             <div class="row">
                                 <!-- PICTURE -->
                                 <div class="col-12 col-md-6 col-xl-12">

@@ -172,6 +172,7 @@ class UserController extends Controller
                 unset($fields['password']);
             }
             $user->fill($fields);
+            $user->allow_multiple_appointments_per_block = $request->boolean('allow_multiple_appointments_per_block');
 
             if ($request->has('clients') && ! empty($request->input('clients'))) {
                 $clientIds = $request->input('clients');
