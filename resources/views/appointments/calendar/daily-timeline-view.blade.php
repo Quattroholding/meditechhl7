@@ -22,6 +22,18 @@
             box-shadow: 0 8px 25px rgba(8, 160, 208, 0.3);
         }
 
+        div.timeline-item.fulfilled.next-appointment-pulse > div.appointment-header > div.appointment-patient > div > a{
+            color: #34495e!important;
+        }
+
+        div.timeline-item.checked-in > div.appointment-header > div.appointment-patient > div > a{
+            color:#fff !important;
+        }
+
+        div.timeline-item.checked-in > div.appointment-details > div:nth-child(1) > div:nth-child(2){
+            color:#fff !important;
+        }
+
         .timeline-date {
             font-size: 24px;
             font-weight: 700;
@@ -198,7 +210,7 @@
         .appointment-patient {
             font-size: 18px;
             font-weight: 700;
-            color: #2c3e50;
+            color: #000;
         }
 
         .appointment-status-badge {
@@ -705,7 +717,6 @@
                                 $patient = isset($appointment['patient']['id']) ? \App\Models\Patient::find($appointment['patient']['id']) : null;
                             @endphp
                             {!! $patient ? $patient->profile_name : ($appointment['patient']['name'] ?? 'Paciente no encontrado') !!}
-
                         </div>
                         <div class="appointment-status-badge" style="background:
                             @if($status === 'next') #007bff

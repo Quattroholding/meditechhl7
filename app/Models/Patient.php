@@ -195,6 +195,11 @@ class Patient extends BaseModel
         return $this->hasMany(Referral::class);
     }
 
+    public function city(): BelongsTo
+    {
+        return $this->hasMany(State::class,'state');
+    }
+
     public function notes()
     {
         return $this->hasMany(ClinicalImpression::class);
@@ -297,7 +302,7 @@ class Patient extends BaseModel
         }
 
         return '<div class="profile-image m-0">
-                  <a href="'.$route.'" title="'.$title.'" class= "text-base">
+                  <a href="'.$route.'" title="'.$title.'" class="text-base">
                                         <img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
                                         '.$this->name.'
                                     </a>

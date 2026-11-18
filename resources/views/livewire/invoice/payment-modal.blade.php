@@ -25,6 +25,9 @@
                                                         <p class="mb-0">
                                                             <strong>Fecha:</strong> {{ $invoice->issue_date?->format('d/m/Y') }}
                                                         </p>
+                                                        <p class="mb-1">
+                                                            <strong>Ubicación:</strong> {{$invoice->encounter->appointment->consultingRoom->name}}
+                                                        </p>
                                                     </div>
                                                     <div class="col-md-6 text-md-end">
                                                         <h6 class="mb-2">
