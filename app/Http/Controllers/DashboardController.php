@@ -82,6 +82,13 @@ class DashboardController extends Controller
 
     public function doctor(Request $request)
     {
+        // Los widgets del dashboard de médico requieren un practitioner asociado al usuario
+        if (! auth()->user()->practitioner) {
+            session()->flash('message.error', 'Su usuario no tiene un perfil de médico asociado.');
+
+            return redirect()->route('assistence.dashboard');
+        }
+
         // Si no tiene el parámetro show_salute y es la primera visita, redirigir con el parámetro
         /*if (! $request->has('show_salute') && ! session()->has('dashboard_doctor_visited')) {
             session()->put('dashboard_doctor_visited', true);
