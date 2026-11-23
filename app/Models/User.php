@@ -147,6 +147,21 @@ class User extends Authenticatable
         });
     }
 
+    /**
+     * Igual que scopeActiveAgent, pero también acepta suscripciones past_due (periodo de gracia).
+     */
+    public function scopeActiveAgentIncludingPastDue($query)
+    {
+        return $query->whereHas('clients', function ($query) {
+            $query->whereHas('subscription', function ($query) {
+                $query->whereIn('client_subscriptions.status', ['active', 'trial', 'past_due']);
+                $query->whereHas('package', function ($query) {
+                    $query->where('packages.agent_available', true);
+                });
+            });
+        });
+    }
+
     public function scopePackage($query, $packageId)
     {
         return $query->whereHas('clients', function ($query) use ($packageId) {

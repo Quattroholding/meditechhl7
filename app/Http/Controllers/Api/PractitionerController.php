@@ -109,7 +109,14 @@ class PractitionerController extends Controller
                         });
                 });
             })
-            ->activeAgent()
+            // Agente dedicado también acepta suscripciones past_due (periodo de gracia)
+            ->when($whatsappClientId, function ($query) {
+                return $query->whereHas('user', function ($userQuery) {
+                    $userQuery->activeAgentIncludingPastDue();
+                });
+            }, function ($query) {
+                return $query->activeAgent();
+            })
             ->userActive()
             // Optimized: Use whereIn instead of nested whereHas
             ->whereIn('user_id', $userIdsWithConsultingRooms)
