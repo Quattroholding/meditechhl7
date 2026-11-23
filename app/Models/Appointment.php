@@ -9,7 +9,7 @@ use App\Notifications\AppointmentBookedForPractitionerNotification;
 use App\Notifications\AppointmentBookedNotification;
 use App\Notifications\AppointmentCancelledNotification;
 use App\Notifications\AppointmentConfirmedNotification;
-use App\Notificacations\AppointmentProposedNotification;
+use App\Notifications\AppointmentProposedNotification;
 use App\Notifications\AppointmentRejectedNotification;
 use App\Notifications\AppointmentRescheduledForPractitionerNotification;
 use App\Notifications\AppointmentRescheduledNotification;
