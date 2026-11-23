@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Channels\WhatsAppN8NChannel;
 use App\Models\Appointment;
+use App\Models\WhatsappAgent;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
@@ -165,6 +166,18 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
             'virtual_room_url' => $isVirtual ? $this->appointment->getPatientJoinUrl() : null,
             'sent_at' => now()->toDateTimeString(),
         ];
+    }
+
+    /**
+     * Número de WhatsApp (phone_number_id de Meta) del agente n8n activo del cliente de la cita.
+     */
+    public function whatsAppSenderPhoneNumberId(): ?string
+    {
+        return WhatsappAgent::query()
+            ->where('client_id', $this->appointment->client_id)
+            ->where('type', 'n8n')
+            ->where('active', true)
+            ->value('phone_number_id');
     }
 
     /**

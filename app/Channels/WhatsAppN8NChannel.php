@@ -32,6 +32,20 @@ class WhatsAppN8NChannel
                 return;
             }
 
+            // El mensaje debe salir desde el mismo número por el que el paciente escribió (agente del cliente)
+            $senderPhoneNumberId = method_exists($notification, 'whatsAppSenderPhoneNumberId')
+                ? $notification->whatsAppSenderPhoneNumberId()
+                : null;
+
+            if (! $senderPhoneNumberId) {
+                Log::warning('WhatsApp N8N notification skipped: No sender phone_number_id for client', [
+                    'user_id' => $notifiable->id ?? null,
+                    'notification' => get_class($notification),
+                ]);
+
+                return;
+            }
+
             // Extract message body if it's an array
             $messageBody = is_array($message) ? ($message['body'] ?? '') : $message;
 
@@ -49,6 +63,7 @@ class WhatsAppN8NChannel
                 ->post($webHoorUrl, [
                     'output' => $messageBody,
                     'userPhone' => $phoneNumber,
+                    'phone_number_id' => $senderPhoneNumberId,
                 ]);
 
             if ($response->successful()) {
