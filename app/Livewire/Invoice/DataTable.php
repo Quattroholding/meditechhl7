@@ -61,6 +61,9 @@ class DataTable extends Component
                             $patientQuery->where('name', 'like', '%'.$this->search.'%')
                                 ->orWhere('given_name', 'like', '%'.$this->search.'%')
                                 ->orWhere('family_name', 'like', '%'.$this->search.'%');
+                        })
+                        ->orWhereHas('encounter.appointment.consultingRoom', function ($roomQuery) {
+                            $roomQuery->where('name', 'like', '%'.$this->search.'%');
                         });
                 });
             })
