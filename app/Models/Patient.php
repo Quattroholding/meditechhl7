@@ -156,7 +156,6 @@ class Patient extends BaseModel
 
     public function allergies()
     {
-
         return $this->hasMany(MedicalHistory::class, 'patient_id')->whereCategory('allergy');
     }
 
@@ -307,6 +306,11 @@ class Patient extends BaseModel
                                         '.$this->name.'
                                     </a>
                     </div>';
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->name.' '.$this->family_name;
     }
 
     protected function getEncountersWithDetails(): Collection

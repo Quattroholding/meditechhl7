@@ -31,6 +31,7 @@ return [
     'type' => 'Tipo',
     'bill_to' => 'Facturar a',
     'bill_by' => 'Facturado Por',
+    'consulting_room' => 'Consultorio',
     'patient' => 'Paciente',
     'amount' => 'Monto',
     'total_amount' => 'Monto Total',

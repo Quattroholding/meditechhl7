@@ -53,7 +53,7 @@ class DataTable extends Component
     public function getInvoicesProperty()
     {
         return Invoice::query()
-            ->with(['patient', 'encounter', 'performerPractitioner', 'client'])
+            ->with(['patient', 'encounter.appointment.consultingRoom', 'performerPractitioner', 'client'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('invoice_number', 'like', '%'.$this->search.'%')

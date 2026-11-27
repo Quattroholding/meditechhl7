@@ -34,11 +34,14 @@
                                 <th data-column="patient" data-priority="6">
                                     <x-table-sort-button title="{{ __('invoice.bill_to') }}" columnName=""/>
                                 </th>
+                                <th data-column="consulting_room" data-priority="6">
+                                    <x-table-sort-button title="{{ __('invoice.consulting_room') }}" columnName=""/>
+                                </th>
                                 <th data-column="total_amount" data-priority="7">
                                     <x-table-sort-button title="{{__('invoice.amount')}}" columnName="total_amount" :sortField="$sortField" :sortDirection="$sortDirection"/>
                                 </th>
                                 <th data-column="due_date" data-priority="8">
-                                    <x-table-sort-button title="{{__('invoice.due_date')}}" columnName="due_date" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                                    <x-table-sort-button title="Vence el" columnName="due_date" :sortField="$sortField" :sortDirection="$sortDirection"/>
                                 </th>
                                 <th data-column="payment_status" data-priority="9">
                                     <x-table-sort-button title="{{ __('invoice.statuss') }}" columnName=""></x-table-sort-button>
@@ -56,7 +59,7 @@
                                             <i class="fas fa-plus-circle text-primary" style="cursor: pointer;"></i>
                                         </span>
                                         <span class="cell-content">
-                                            <a href="{{ route('invoice.show', $invoice->id) }}" class="invoice-link">{{ $invoice->invoice_number }}</a>
+                                            <a title="{{$invoice->invoice_number}}" href="{{ route('invoice.show', $invoice->id) }}" class="invoice-link">{{ substr($invoice->invoice_number, -6) }}</a>
                                         </span>
                                     </td>
                                     <td data-column="type" data-priority="2" data-label="{{ __('invoice.type') }}">
@@ -71,12 +74,19 @@
                                         </td>
                                     @endif
                                     <td data-column="patient" data-priority="4" data-label="{{ __('invoice.bill_to') }}">
-                                        <span class="cell-content">
+                                        <span class="cell-content" title="{{ $invoice->patient->full_name }}">
                                             @if($invoice->patient)
-                                                {!!  $invoice->patient->profile_name !!}
+                                                {{ \Illuminate\Support\Str::limit($invoice->patient->full_name, 25)}}
+
                                             @else
                                                 <span class="text-muted">N/A</span>
                                             @endif
+                                        </span>
+                                    </td>
+                                    <td data-column="consulting_room" data-priority="6" data-label="{{ __('invoice.consulting_room') }}">
+                                        @php($consultingRoomName = $invoice->encounter?->appointment?->consultingRoom?->name ?? 'N/A')
+                                        <span class="cell-content" title="{{ $consultingRoomName }}">
+                                            {{ \Illuminate\Support\Str::limit($consultingRoomName, 20) }}
                                         </span>
                                     </td>
                                     <td data-column="total_amount" data-priority="5" data-label="{{__('invoice.amount')}}">

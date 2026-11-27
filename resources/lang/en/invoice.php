@@ -31,6 +31,7 @@ return [
     'type' => 'Type',
     'bill_to' => 'Bill To',
     'bill_by' => 'Billed By',
+    'consulting_room' => 'Consulting Room',
     'patient' => 'Patient',
     'amount' => 'Amount',
     'total_amount' => 'Total Amount',
